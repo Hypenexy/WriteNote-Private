@@ -1,0 +1,2 @@
+<?php
+$writenoteversion = '3.0.0';

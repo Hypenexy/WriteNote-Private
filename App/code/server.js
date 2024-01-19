@@ -1,0 +1,75 @@
+const MidelightServer = "http://writenote.midelightdev.localhost/",
+    WriteNoteServer = "http://midelightdev.localhost:2053",
+    imageServer = MidelightServer.replace("writenote", "i"),
+    weatherServer = MidelightServer.replace("writenote", "weather");
+var socket;
+var storedData; // Object is linked not cloned! Do not modify response.
+
+async function connectMidelight(){
+    const loadStartDate = Date.now();
+    const data = queryStringSerialize(datalog);
+    try {
+        const response = await fetch(MidelightServer + "app/startup.php", {
+            method: 'POST',
+            body: data,
+            credentials: "include",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        });
+
+        try {
+            const responseData = await response.json();
+            if(responseData.status=="success"){
+                storedData = responseData;
+                if(Date.now() - loadStartDate > 1000){
+                    logo.classList.add("loaded");
+                }
+                else{
+                    setTimeout(() => {
+                        logo.classList.add("loaded");
+                    }, 2000);
+                }
+                // console.log("loading took: " + (Date.now() - loadStartDate) + "ms");
+                welcome.classList.add("loaded");
+                loadWelcome(responseData);
+                if(responseData.user != false){
+                    socket = io(WriteNoteServer);
+                    socket.on("connect", () => {
+                        socket.emit("logon", responseData.user.sessionId, (success, error) => {
+                            if(success){
+                                socket.emit("getNotes", null, (success, error) => {
+                                    if(success){
+                                        loadNotesWelcome(success[0]);
+                                    }
+                                });
+                                socket.emit("getDevices", null, (success, error) => {
+                                    if(success){
+                                        loadDevicesWelcome(success[0]);
+                                    }
+                                });
+                                // log('s', success);
+                            }
+                            if(error){
+                                // log('f', error);
+                            }
+                        });
+                        // notesonline = true;
+                        
+                    });
+                    socket.on("notesInfo", function(type, data){
+                        notesInfo(type, data);
+                    });
+                }
+        }
+        return response;
+        } catch (error) {
+            loadErrorWelcome("wrong_response", error);
+        }
+    } catch (error) {
+        loadErrorWelcome("couldnt_connect", error);
+    }
+}
+
+connectMidelight();

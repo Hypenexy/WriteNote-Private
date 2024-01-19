@@ -1,0 +1,53 @@
+.loading{
+    z-index: 2;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%)scale(.35);
+    filter: invert(.75);
+    transition: 1s;
+    animation-name: logo;
+    animation-duration: 1s;
+    animation-timing-function: cubic-bezier(.9, -.2, .2, 1);
+}
+
+@keyframes logo {
+    from {
+        filter: invert(0.1);
+        transform: translate(-50%, -50%)scale(.15);
+    }
+    to {
+        filter: invert(.75);
+        transform: translate(-50%, -50%)scale(.35);
+    }
+}
+
+.loading.loaded{
+    filter: invert(0.04);
+    animation-name: logoLoaded;
+    animation-duration: 1s;
+    animation-timing-function: cubic-bezier(.9, -.2, .2, 1);
+    animation-fill-mode: forwards;
+}
+
+@keyframes logoLoaded {
+    from {
+        filter: invert(.75);
+    }
+    to {
+        opacity: 0;
+        visibility: hidden;
+        filter: invert(0.04);
+    }
+}
+
+writenote{
+    animation-name: load;
+    animation-duration: 2s;
+    animation-timing-function: cubic-bezier(1, .5, .5, 1);
+}
+
+@keyframes load {
+    from {background: #000;}
+    to {background: #222242;}
+}
