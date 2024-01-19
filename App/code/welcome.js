@@ -312,11 +312,12 @@ function loadErrorWelcome(errorType, error){
     welcome.classList.add("error");
     logo.classList.add("loaded");
     welcome.innerHTML += "<div class='motd'>"+locale[errorType]+"</div>"+
-        "<div class='btn i'><i>refresh</i> "+locale.retry+"</div>"+
-        "<div class='btn i'><i>public</i> "+locale.status+"</div>";
+        "<div class='btn i' data-btn='error'><i>refresh</i> "+locale.retry+"</div>"+
+        "<div class='btn i' data-btn='error'><i>public</i> "+locale.status+"</div>";
 
-    const btns = welcome.getElementsByClassName("btn");
-    
+    // const btns = welcome.getElementsByClassName("btn");
+    const btns = welcome.querySelectorAll(".btn[data-btn='error']");
+
     const errorInfo = expandableBox(error);
     // welcome.appendChild(errorInfo);
     welcome.insertBefore(errorInfo, btns[0]);

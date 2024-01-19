@@ -313,6 +313,7 @@ modal{
 }
 
 .expandableBox{
+    position: relative;
     cursor: pointer;
     padding: 12px;
     color: #bbb;
@@ -323,8 +324,21 @@ modal{
 .expandableBox *{
     vertical-align: middle;
 }
+
+.expandableBox i:first-child{
+    user-select: none;
+    transition: .2s;
+}
+.expandableBox i:nth-child(2){
+    position: absolute;
+    top: 3px;
+    right: 3px;
+}
 .expandableBox.expanded{
     height: 300px;
+}
+.expandableBox.expanded i:first-child{
+    transform: rotate(90deg);
 }
 
 /* md style */

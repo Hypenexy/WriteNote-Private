@@ -763,6 +763,8 @@ function createAppendIcon(icon, tag, parent){
 }
 
 /**
+ * TODO: I need to figure out how to remove tooltips!
+ * 
  * ! This function is compatible only with app.js and app.css from the newest WriteNote repo. 
  * Displays tooltip on hover of element
  * @param {HTMLElement} element The element that will have a tooltip

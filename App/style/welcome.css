@@ -17,16 +17,18 @@
 
 .welcome.error{
     max-width: 400px;
-    max-height: 169px;
+    max-height: initial;
+    height: initial;
 }
 
-.welcome.error .btn{
+.welcome.error .btn[data-btn='error']{
     padding: 16px;
     padding-left: 36px;
     width: calc(50% - 2px);
     margin-right: 4px;
+    margin-top: 6px;
 }
-.welcome.error .btn:last-child{
+.welcome.error .btn[data-btn='error']:last-child{
     margin: 0;
 }
 

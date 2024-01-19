@@ -65,4 +65,5 @@ var locale = {
     retry: "Retry",
     status: "Status",
     click_expand: "Click to expand more",
+    click_shrink: "Click to hide",
 };

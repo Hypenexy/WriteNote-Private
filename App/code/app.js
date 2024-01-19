@@ -299,17 +299,107 @@ function expandableBox(text){
     var element = document.createElement("div");
     element.classList.add("expandableBox");
 
-    // function toggle
-
     var btn = document.createElement("i");
     btn.innerText = "chevron_right";
     element.appendChild(btn);
-    ButtonEvent(btn, () => {element.classList.toggle("expanded")});
+    ButtonEvent(element, () => {
+        element.classList.toggle("expanded");
+        attachTooltip(element, locale["click_shrink"]);
+    });
+
+    var copybtn = document.createElement("i");
+    copybtn.classList.add("btn");
+    copybtn.innerText = "copy";
+    element.appendChild(copybtn);
+    ButtonEvent(copybtn, function(e){
+        e.stopPropagation();
+        copyTextToClipboard(textElement.textContent);
+        // navigator.clipboard.writeText(textElement.textContent);
+    }, null, true);
 
     var textElement = document.createElement("span");
     textElement.textContent = text;
     element.appendChild(textElement);
-    
+
     attachTooltip(element, locale["click_expand"]);
     return element;
 }
+
+
+/**
+ * Play a sound
+ * @param {String} url Link to the audio file 
+ * @param {Int} volume Volume from 0 (0%) to 1 (100%)
+ */
+function playSound(url, volume) {
+    // if(interacted==true){
+        const audio = new Audio(url);
+        if(volume){
+            audio.volume = volume;
+        }
+        audio.play();
+    // }
+}
+
+// Implement later when I'm for sure this is the correct way
+// document.addEventListener("click", function(){
+//     interacted = true
+// })
+// document.addEventListener("keydown", function(){
+//     interacted = true
+// })
+
+
+
+//** text POPUPS! */
+var textPopupsContainer = document.createElement("div");
+function textPopup(text){
+    if(textPopupsContainer.parentNode != app){
+        app.appendChild(textPopupsContainer);
+    }
+    
+    // at bottom of screen displaying temporary information
+
+}
+
+
+
+
+// Copying text
+
+function fallbackCopyTextToClipboard(text) {
+    var textArea = document.createElement("textarea");
+    textArea.value = text;
+
+    // Avoid scrolling to bottom
+    textArea.style.top = "0";
+    textArea.style.left = "0";
+    textArea.style.position = "fixed";
+
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+
+    try {
+        var successful = document.execCommand('copy');
+        var msg = successful ? 'successful' : 'unsuccessful';
+        console.log('Fallback: Copying text command was ' + msg);
+    } catch (err) {
+        console.error('Fallback: Oops, unable to copy', err);
+    }
+
+    document.body.removeChild(textArea);
+}
+
+function copyTextToClipboard(text) {
+    if (!navigator.clipboard) {
+        fallbackCopyTextToClipboard(text);
+        return;
+    }
+    navigator.clipboard.writeText(text).then(function () {
+        console.log('Async: Copying to clipboard was successful!');
+    }, function (err) {
+        console.error('Async: Could not copy text: ', err);
+    });
+}
+
