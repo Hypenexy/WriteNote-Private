@@ -355,11 +355,25 @@ function playSound(url, volume) {
 var textPopupsContainer = document.createElement("div");
 function textPopup(text){
     if(textPopupsContainer.parentNode != app){
+        textPopupsContainer.classList.add("textPopupsContainer");
         app.appendChild(textPopupsContainer);
     }
     
-    // at bottom of screen displaying temporary information
 
+    var element = document.createElement("div");
+    element.textContent = text;
+    element.classList.add("textPopups");
+    textPopupsContainer.appendChild(element);
+
+    setTimeout(() => {
+        element.classList.add("hide");
+        setTimeout(() => {
+            element.remove();
+            if(textPopupsContainer.childElementCount == 0){
+                textPopupsContainer.remove();
+            }
+        }, element.computedStyleMap().get('animation-duration').value * 1000);
+    }, 2000);
 }
 
 
@@ -396,8 +410,8 @@ function copyTextToClipboard(text) {
         fallbackCopyTextToClipboard(text);
         return;
     }
-    navigator.clipboard.writeText(text).then(function () {
-        console.log('Async: Copying to clipboard was successful!');
+    navigator.clipboard.writeText(text).then(function() {
+        textPopup("Copied to clipboard");
     }, function (err) {
         console.error('Async: Could not copy text: ', err);
     });
