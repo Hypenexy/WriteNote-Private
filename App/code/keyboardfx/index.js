@@ -72,7 +72,6 @@ class keyboardSFX{
         document.addEventListener("keydown", function(e){
             if(!e.repeat){
                 var localization = physicalLocalization(e, true);
-                console.log(localization);
                 play(localization[0], localization[1]);
             }
         });
@@ -124,4 +123,4 @@ class keyboardSFX{
     }
 }
 
-var testkbfx = new keyboardSFX();
+// var testkbfx = new keyboardSFX();

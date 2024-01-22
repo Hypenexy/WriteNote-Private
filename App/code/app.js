@@ -302,9 +302,15 @@ function expandableBox(text){
     var btn = document.createElement("i");
     btn.innerText = "chevron_right";
     element.appendChild(btn);
+    var lastTooltipRemove;
     ButtonEvent(element, () => {
-        element.classList.toggle("expanded");
-        attachTooltip(element, locale["click_shrink"]);
+        lastTooltipRemove();
+        if(element.classList.toggle("expanded") == true){   
+            attachTooltip(element, locale["click_shrink"]);
+        }
+        else{
+            attachTooltip(element, locale["click_expand"]);
+        }
     });
 
     var copybtn = document.createElement("i");
@@ -321,7 +327,7 @@ function expandableBox(text){
     textElement.textContent = text;
     element.appendChild(textElement);
 
-    attachTooltip(element, locale["click_expand"]);
+    lastTooltipRemove = attachTooltip(element, locale["click_expand"]);
     return element;
 }
 
@@ -351,8 +357,12 @@ function playSound(url, volume) {
 
 
 
-//** text POPUPS! */
+
 var textPopupsContainer = document.createElement("div");
+/**
+ * Text popups
+ * @param {*} text 
+ */
 function textPopup(text){
     if(textPopupsContainer.parentNode != app){
         textPopupsContainer.classList.add("textPopupsContainer");
@@ -417,3 +427,85 @@ function copyTextToClipboard(text) {
     });
 }
 
+
+
+/** CONTEXT MENUS!!! */
+
+function contextMenu(type){
+    const contextMenu = {};
+    contextMenu.node = document.createElement("div");
+    contextMenu.node.classList.add("contextMenu", "hide");
+    contextMenu.type = type;
+
+    // contextMenu.create = () => {
+        
+    // }
+
+    /**
+     * Add elements to the context menu.
+     * @param {String} type Type of element, either Text, Line, Button, Input, Extra
+     * @param {String} text Display text of the element
+     * @param {Function} action Action the element will take on provocation
+     * @param {JSON} options Option of element, either {disabled: true}
+     */
+    contextMenu.add = (type, text, action, options) => {
+        switch (type) {
+            case "text":
+                const elementText = document.createElement("p");
+                elementText.innerHTML = text;
+                contextMenu.node.appendChild(elementText);
+                break;
+            case "button":
+                const elementButton = document.createElement("div");
+                elementButton.innerHTML = text;
+                // elementButton.classList.add("btn");
+                contextMenu.node.appendChild(elementButton);
+                break;
+            case "line":
+                const elementLine = document.createElement("hr");
+                contextMenu.node.appendChild(elementLine);
+            default:
+                break;
+        }
+    }
+
+    /**
+     * Attach to specific element to contain context menu.
+     * @param {HTMLElement} element An html element that
+     * if context clicked will spawn the menu
+     */
+    contextMenu.attach = (element) =>{
+        element.addEventListener("contextmenu", contextMenu.append);
+        document.addEventListener("click", contextMenu.remove);
+    }
+
+    /**
+     * Display the created context menu.
+     * @param {Object} Event event info
+     * @param {HTMLElement} toElement If an element is specified
+     * the context menu will position (appear) under it
+     */
+    contextMenu.append = (event, toElement) => {
+        event.preventDefault();
+        if(contextMenu.node.classList.contains("hide")){
+            contextMenu.node.classList.remove("hide");
+        }
+        contextMenu.node.style.top = event.clientY + "px"; // test event.clientY with buttons and mobile browsers
+        contextMenu.node.style.left = event.clientX + "px";
+        app.appendChild(contextMenu.node);
+    }
+
+    contextMenu.remove = (event) => {
+        if(!contextMenu.node.classList.contains("hide")){
+            if(event.target == contextMenu.node){
+                return;
+            }
+            contextMenu.node.classList.add("hide");
+            setTimeout(() => {
+                contextMenu.node.remove();
+            }, contextMenu.node.computedStyleMap().get('animation-duration').value * 1000);
+        }
+    }
+
+    return contextMenu;
+}

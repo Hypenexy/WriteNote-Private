@@ -775,17 +775,21 @@ function attachTooltip(element, text, isInstant){
     const tooltipElement = document.createElement("div");
     tooltipElement.classList.add("tooltip");
     tooltipElement.innerHTML = text;
-    element.addEventListener("click", function(){
+    function toolClick(){
         tooltipElement.remove();
         tooltipElement.classList.remove("active");
-    });
-    element.addEventListener("mousemove", function(e){
+    }
+    element.addEventListener("click", toolClick);
+
+    function toolMouseMove(e){
         tooltipElement.style.left = (e.clientX - 15) + "px";
         var offset = normalizeOffset(getBoundingClientRectObject(tooltipElement))
         tooltipElement.style.top = offset.top + "px"
         tooltipElement.style.left = offset.left + "px"
-    });
-    element.addEventListener("mouseenter", function(e){
+    }
+    element.addEventListener("mousemove", toolMouseMove);
+
+    function toolMouseEnter(e){
         app.appendChild(tooltipElement);
         var elementRects = element.getClientRects();
         tooltipElement.style.left = (e.clientX - 15) + "px";
@@ -800,9 +804,23 @@ function attachTooltip(element, text, isInstant){
             tooltipElement.classList.add("delayed");
         }
         tooltipElement.classList.add("active");
-    });
-    element.addEventListener("mouseleave", function(){
+    }
+    element.addEventListener("mouseenter", toolMouseEnter);
+
+    function toolMouseLeave(){
         tooltipElement.remove();
         tooltipElement.classList.remove("active");
-    });
+    }
+    element.addEventListener("mouseleave", toolMouseLeave);
+
+    function removeTooltip(){
+        tooltipElement.remove();
+        tooltipElement.classList.remove("active");
+        element.removeEventListener("click", toolClick);
+        element.removeEventListener("mousemove", toolMouseMove);
+        element.removeEventListener("mouseenter", toolMouseEnter);
+        element.removeEventListener("mouseleave", toolMouseLeave);
+    }
+
+    return removeTooltip;
 }

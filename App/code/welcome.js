@@ -304,10 +304,25 @@ function loadNotesWelcome(data, space){
 
 function loadDevicesWelcome(data){
     const count = data.devices.length;
-    console.log(count);
+    console.log(count); // work!! here.
 }
 
 function loadErrorWelcome(errorType, error){
+    function retry(){
+        location.reload();
+    }
+    function status(){
+        window.open(MidelightServer + "status");
+    }
+
+    const welcomeContextMenu = contextMenu();
+
+    welcomeContextMenu.add("text", locale[errorType]);
+    welcomeContextMenu.add("button", locale.retry, retry);
+    welcomeContextMenu.add("line", locale.retry, retry);
+    welcomeContextMenu.add("button", locale.status, status);
+    welcomeContextMenu.attach(welcome);
+
     welcome.classList.add("loaded");
     welcome.classList.add("error");
     logo.classList.add("loaded");
@@ -322,10 +337,6 @@ function loadErrorWelcome(errorType, error){
     // welcome.appendChild(errorInfo);
     welcome.insertBefore(errorInfo, btns[0]);
 
-    ButtonEvent(btns[0], function(){
-        location.reload();
-    });
-    ButtonEvent(btns[1], function(){
-        window.open(MidelightServer + "status");
-    });
+    ButtonEvent(btns[0], retry);
+    ButtonEvent(btns[1], status);
 }
