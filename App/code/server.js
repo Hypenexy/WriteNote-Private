@@ -18,7 +18,7 @@ async function connectMidelight(){
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         }).catch((error) => {
-            console.log(error)
+            console.log(error);
         });
 
         try {

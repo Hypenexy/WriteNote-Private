@@ -78,7 +78,6 @@ class keyboardSFX{
         });
         document.addEventListener("keyup", function(e){
             var localization = physicalLocalization(e);
-            console.log(localization);
             play(localization[0], localization[1]);
         });
     }
