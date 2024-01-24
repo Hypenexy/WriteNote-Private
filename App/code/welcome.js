@@ -318,9 +318,11 @@ function loadErrorWelcome(errorType, error){
     const welcomeContextMenu = contextMenu();
 
     welcomeContextMenu.add("text", locale[errorType]);
-    welcomeContextMenu.add("button", locale.retry, retry);
-    welcomeContextMenu.add("line", locale.retry, retry);
-    welcomeContextMenu.add("button", locale.status, status);
+    welcomeContextMenu.add("button", locale.retry, {"action": retry, "icon":"refresh"});
+    // welcomeContextMenu.add("line", null, {"action": retry}); line example
+    welcomeContextMenu.add("button", locale.status, {"action": status, "icon":"public"});
+    const extraTest = welcomeContextMenu.add("extra", locale.recover, {"action": status, "icon":"logout"});
+    welcomeContextMenu.add("button", locale.actions, {"action":status,"submenu": extraTest});
     welcomeContextMenu.attach(welcome);
 
     welcome.classList.add("loaded");

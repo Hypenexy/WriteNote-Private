@@ -436,36 +436,92 @@ function contextMenu(type){
     contextMenu.node = document.createElement("div");
     contextMenu.node.classList.add("contextMenu", "hide");
     contextMenu.type = type;
+    contextMenu.submenus = [];
 
-    // contextMenu.create = () => {
-        
-    // }
+    function hideSubmenu(submenu){
+        // Using animations makes everything shitty and buggy
+        // Make this with 1 class not animations and more classes
+        submenu.classList.add("hide");
+        setTimeout(() => {
+            submenu.classList.remove("hide");
+            submenu.classList.remove("visible");
+        }, submenu.computedStyleMap().get('animation-duration').value * 1000);
+    }
 
     /**
      * Add elements to the context menu.
      * @param {String} type Type of element, either Text, Line, Button, Input, Extra
      * @param {String} text Display text of the element
-     * @param {Function} action Action the element will take on provocation
-     * @param {JSON} options Option of element, either {disabled: true}
+     * @param {JSON} options Option of element, either {disabled: Boolean, action: Function, icon: String}
      */
-    contextMenu.add = (type, text, action, options) => {
+    contextMenu.add = (type, text, options) => {
+        const element = document.createElement("div");
+        if(options){
+            if(typeof options.action == "function" && options.disabled != true){
+                ButtonEvent(element, options.action);
+            }
+            if(options.disabled == true){
+                element.classList.add("disabled");
+            }
+            if(options.icon){
+                text = '<i>'+options.icon+'</i>' + text;
+                element.classList.add("i");
+            }
+        }
         switch (type) {
             case "text":
-                const elementText = document.createElement("p");
-                elementText.innerHTML = text;
-                contextMenu.node.appendChild(elementText);
+                element.classList.add("text");
                 break;
             case "button":
-                const elementButton = document.createElement("div");
-                elementButton.innerHTML = text;
-                // elementButton.classList.add("btn");
-                contextMenu.node.appendChild(elementButton);
+                element.classList.add("btn");
                 break;
             case "line":
-                const elementLine = document.createElement("hr");
-                contextMenu.node.appendChild(elementLine);
+                element.classList.add("hr");
+                break;
+            case "extra":
+                element.classList.add("extra", "btn");
+                text += '<i>chevron_right</i>';
+                element.classList.add("i");
+                break;
             default:
                 break;
+            }
+        if(typeof text == "string"){
+            element.innerHTML = text;
+        }
+        if(options && typeof options.submenu == "object"){
+            options.submenu.appendChild(element);
+        }
+        else{
+            contextMenu.node.appendChild(element);
+        }
+        if(type == "extra"){
+            const subMenu = document.createElement("div");
+            subMenu.classList.add("contextMenu", "submenu");
+            function showSubmenu(){
+                var getPosition = element.getBoundingClientRect();
+                subMenu.style.left = getPosition.right + "px";
+                subMenu.style.top = getPosition.top + "px";
+                subMenu.classList.add("visible");
+            }
+            function mouseOut(event){ // I need to figure a way for when user TABs after the last child element.
+                if(event.type == "focusout" && event.relatedTarget != element.previousElementSibling){
+                    event.preventDefault();
+                    subMenu.children[0].focus();
+                    return;
+                }
+                if(event.toElement != subMenu && event.toElement != element){
+                    hideSubmenu(subMenu);
+                }
+            }
+            element.addEventListener("mouseenter", showSubmenu);
+            element.addEventListener("focusin", showSubmenu);
+            element.addEventListener("focusout", mouseOut);
+            element.addEventListener("mouseleave", mouseOut);
+            subMenu.addEventListener("mouseleave", mouseOut);
+            app.appendChild(subMenu);
+            contextMenu.submenus.push(subMenu);
+            return subMenu;
         }
     }
 
@@ -491,14 +547,24 @@ function contextMenu(type){
             contextMenu.node.classList.remove("hide");
         }
         contextMenu.node.style.top = event.clientY + "px"; // test event.clientY with buttons and mobile browsers
-        contextMenu.node.style.left = event.clientX + "px";
+        contextMenu.node.style.left = event.clientX + "px";// and make functions for fitting inside the app
         app.appendChild(contextMenu.node);
+        for (let i = 0; i < contextMenu.submenus.length; i++) {
+            const element = contextMenu.submenus[i];
+            app.appendChild(element);
+        }
     }
 
     contextMenu.remove = (event) => {
         if(!contextMenu.node.classList.contains("hide")){
             if(event.target == contextMenu.node){
                 return;
+            }
+            for (let i = 0; i < contextMenu.submenus.length; i++) {
+                const element = contextMenu.submenus[i];
+                if(element.classList.contains("visible")){
+                    hideSubmenu(element);
+                }
             }
             contextMenu.node.classList.add("hide");
             setTimeout(() => {
