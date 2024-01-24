@@ -557,6 +557,9 @@ function contextMenu(type){
 
     contextMenu.remove = (event) => {
         if(!contextMenu.node.classList.contains("hide")){
+            // var composedPath = event.composedPath();
+            // if(composedPath.includes(contextMenu.node) || composedPath.some(r=> contextMenu.submenus.includes(r))){
+            // this is way too slow!
             if(event.target == contextMenu.node){
                 return;
             }
