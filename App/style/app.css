@@ -404,26 +404,30 @@ modal{
 
 .contextMenu.submenu{
     opacity: 0;
+    visibility: hidden;
+    transform: translateX(-8px);
+    transition: .2s, top 0s, left 0s;
+
     position: absolute;
     top: 0;
     left: 0;
     z-index: 52;
-    visibility: hidden;
     box-shadow: 1px 1px 4px 1px #111;
 }
 
 .contextMenu.submenu.visible{
     opacity: 1;
     visibility: visible;
-    animation-name: submenuAppear;
+    transform: initial;
+    /* animation-name: submenuAppear;
     animation-duration: .2s;
-    animation-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+    animation-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1); */
 }
 
-.contextMenu.submenu.hide{
+/* .contextMenu.submenu.hide{
     animation-name: submenuAppearReverse;
-}
-@keyframes submenuAppear {
+} */
+/* @keyframes submenuAppear {
     from{
         opacity: .2;
         transform: translateX(-8px);
@@ -440,7 +444,7 @@ modal{
     from{
         transform: initial;
     }
-}
+} */
 
 .contextMenu .i{
     position: relative;

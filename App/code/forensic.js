@@ -43,3 +43,11 @@ function createForensic(){
 // I got some weird ?gpu? error? Idk. Refreshed 5 times and it fixed.
 // Maybe try catch will be good for security
 const datalog = createForensic();
+
+
+// Useful for future forensic development
+var forensicConsent = false;
+
+function logForensic(text){
+
+}

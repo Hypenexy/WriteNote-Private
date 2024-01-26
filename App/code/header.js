@@ -30,9 +30,11 @@ function loadHeader(){
     const profile = createAppendElement("profile", infotainment);
     attachTooltip(profile, locale["view_profile"]);
     profile.innerHTML = "<p>"+storedData.user.username+"</p> ";
+    var pfpURL = assetsServer + "/ui/pfp.png";
     if(storedData.user.pfp){
-        profile.innerHTML += "<img src='"+imageServer+"?i="+storedData.user.pfp+"'>";
+        pfpURL = "<img src='"+imageServer+"?i="+storedData.user.pfp+"'>";
     }
+    profile.innerHTML += "<img src='"+pfpURL+"'>";
     ButtonEvent(profile, function(e){
         e.stopPropagation();
         const element = document.createElement("div");

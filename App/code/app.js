@@ -441,11 +441,12 @@ function contextMenu(type){
     function hideSubmenu(submenu){
         // Using animations makes everything shitty and buggy
         // Make this with 1 class not animations and more classes
-        submenu.classList.add("hide");
-        setTimeout(() => {
-            submenu.classList.remove("hide");
-            submenu.classList.remove("visible");
-        }, submenu.computedStyleMap().get('animation-duration').value * 1000);
+        submenu.classList.remove("visible");
+        // submenu.classList.add("hide");
+        // setTimeout(() => {
+        //     submenu.classList.remove("hide");
+        //     submenu.classList.remove("visible");
+        // }, submenu.computedStyleMap().get('animation-duration').value * 1000);
     }
 
     /**
@@ -546,6 +547,7 @@ function contextMenu(type){
         if(contextMenu.node.classList.contains("hide")){
             contextMenu.node.classList.remove("hide");
         }
+        // compute width here
         contextMenu.node.style.top = event.clientY + "px"; // test event.clientY with buttons and mobile browsers
         contextMenu.node.style.left = event.clientX + "px";// and make functions for fitting inside the app
         app.appendChild(contextMenu.node);
@@ -560,7 +562,7 @@ function contextMenu(type){
             // var composedPath = event.composedPath();
             // if(composedPath.includes(contextMenu.node) || composedPath.some(r=> contextMenu.submenus.includes(r))){
             // this is way too slow!
-            if(event.target == contextMenu.node){
+            if(event.target == contextMenu.node || contextMenu.submenus.includes(event.target)){
                 return;
             }
             for (let i = 0; i < contextMenu.submenus.length; i++) {

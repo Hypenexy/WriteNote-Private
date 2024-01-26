@@ -1,7 +1,8 @@
-const MidelightServer = "http://writenote.midelightdev.localhost/",
-    WriteNoteServer = "http://midelightdev.localhost:2053",
+const MidelightServer = "https://writenote.midelight.net/",
+    WriteNoteServer = "https://midelight.net:2053",
     imageServer = MidelightServer.replace("writenote", "i"),
-    weatherServer = MidelightServer.replace("writenote", "weather");
+    weatherServer = MidelightServer.replace("writenote", "weather"),
+    assetsServer = MidelightServer.replace("writenote", "assets");
 var socket;
 var storedData; // Object is linked not cloned! Do not modify response.
 
@@ -63,6 +64,10 @@ async function connectMidelight(){
                     socket.on("notesInfo", function(type, data){
                         notesInfo(type, data);
                     });
+                }
+                else{
+                    // make a specific menu for this
+                    textPopup("You're not logged in");
                 }
         }
         return response;
