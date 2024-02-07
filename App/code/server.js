@@ -1,10 +1,11 @@
-const MidelightServer = "https://writenote.midelight.net/",
-    WriteNoteServer = "https://midelight.net:2053",
+const MidelightServer = "http://writenote.midelightdev.localhost/",
+    WriteNoteServer = "http://midelightdev.localhost:2053",
     imageServer = MidelightServer.replace("writenote", "i"),
     weatherServer = MidelightServer.replace("writenote", "weather"),
     assetsServer = MidelightServer.replace("writenote", "assets");
 var socket;
 var storedData; // Object is linked not cloned! Do not modify response.
+var socketOnline = false;
 
 async function connectMidelight(){
     const loadStartDate = Date.now();
@@ -35,11 +36,25 @@ async function connectMidelight(){
                     }, 2000);
                 }
                 // console.log("loading took: " + (Date.now() - loadStartDate) + "ms");
+                logForensic("loading " + (Date.now() - loadStartDate) + "ms");
                 welcome.classList.add("loaded");
                 loadWelcome(responseData);
                 if(responseData.user != false){
                     socket = io(WriteNoteServer);
+
+                    socket.on("disconnect", () => {
+                        socketOnline = false;
+                        for (let i = 0; i < onlineStatusElements.length; i++) {
+                            const element = onlineStatusElements[i];
+                            if(element.classList.contains("online")){
+                                element.classList.remove("online");
+                            }
+                            element.classList.add("offline");
+                        }
+                    });
+
                     socket.on("connect", () => {
+                        socketOnline = true;
                         socket.emit("logon", responseData.user.sessionId, (success, error) => {
                             if(success){
                                 socket.emit("getNotes", null, (success, error) => {
@@ -53,6 +68,13 @@ async function connectMidelight(){
                                     }
                                 });
                                 // log('s', success);
+                                for (let i = 0; i < onlineStatusElements.length; i++) {
+                                    const element = onlineStatusElements[i];
+                                    if(element.classList.contains("offline")){
+                                        element.classList.remove("offline");
+                                    }
+                                    element.classList.add("online");
+                                }
                             }
                             if(error){
                                 // log('f', error);
@@ -80,3 +102,17 @@ async function connectMidelight(){
 }
 
 connectMidelight();
+
+
+
+var onlineStatusElements = [];
+
+function attachOnlineStatus(element){
+    if(socketOnline==true){
+        element.classList.add("online");
+    }
+    else{
+        element.classList.add("offline");
+    }
+    onlineStatusElements.push(element);
+}

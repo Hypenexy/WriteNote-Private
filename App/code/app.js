@@ -429,8 +429,11 @@ function copyTextToClipboard(text) {
 
 
 
-/** CONTEXT MENUS!!! */
-
+/**
+ * Creates a contextMenu to attach to specific element
+ * @param {*} type not used 
+ * @returns An object with functions and properties.
+ */
 function contextMenu(type){
     const contextMenu = {};
     contextMenu.node = document.createElement("div");
@@ -551,6 +554,7 @@ function contextMenu(type){
         contextMenu.node.style.top = event.clientY + "px"; // test event.clientY with buttons and mobile browsers
         contextMenu.node.style.left = event.clientX + "px";// and make functions for fitting inside the app
         app.appendChild(contextMenu.node);
+        // contextMenu.node.children[0].focus(); Doesn't focus
         for (let i = 0; i < contextMenu.submenus.length; i++) {
             const element = contextMenu.submenus[i];
             app.appendChild(element);

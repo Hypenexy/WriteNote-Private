@@ -28,11 +28,12 @@ function loadHeader(){
     ButtonEvent(showSubHeader, toggleSubHeader);
 
     const profile = createAppendElement("profile", infotainment);
+    attachOnlineStatus(profile);
     attachTooltip(profile, locale["view_profile"]);
-    profile.innerHTML = "<p>"+storedData.user.username+"</p> ";
+    profile.innerHTML = "<div class='line'></div><p>"+storedData.user.username+"</p> ";
     var pfpURL = assetsServer + "/ui/pfp.png";
     if(storedData.user.pfp){
-        pfpURL = "<img src='"+imageServer+"?i="+storedData.user.pfp+"'>";
+        pfpURL = imageServer+"?i="+storedData.user.pfp;
     }
     profile.innerHTML += "<img src='"+pfpURL+"'>";
     ButtonEvent(profile, function(e){

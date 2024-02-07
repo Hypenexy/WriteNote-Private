@@ -46,8 +46,12 @@ const datalog = createForensic();
 
 
 // Useful for future forensic development
+// const temporaryforensicID = uuid();
 var forensicConsent = false;
+var forensicToSend = [];
 
 function logForensic(text){
-
+    const dateNow = Date.now();
+    console.log(text);
+    // upload forensicToSend to server and empty it
 }
