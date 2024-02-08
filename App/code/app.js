@@ -456,13 +456,13 @@ function contextMenu(type){
      * Add elements to the context menu.
      * @param {String} type Type of element, either Text, Line, Button, Input, Extra
      * @param {String} text Display text of the element
-     * @param {JSON} options Option of element, either {disabled: Boolean, action: Function, icon: String}
+     * @param {JSON} options Option of element, either {disabled: Boolean, action: Function, actionEvent: Boolean, icon: String}
      */
     contextMenu.add = (type, text, options) => {
         const element = document.createElement("div");
         if(options){
             if(typeof options.action == "function" && options.disabled != true){
-                ButtonEvent(element, options.action);
+                ButtonEvent(element, options.action, null, options.actionEvent);
             }
             if(options.disabled == true){
                 element.classList.add("disabled");

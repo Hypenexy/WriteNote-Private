@@ -2,6 +2,15 @@ const header = document.createElement("header");
 const noteList = createAppendElement("noteList", header);
 
 function loadHeader(){
+    const headerContextMenu = contextMenu();
+    headerContextMenu.add("button", locale.create_new, {"action": createNewNote, "icon":"add"});
+    headerContextMenu.add("button", locale.open_new, {"action": function(e){
+        e.stopPropagation();
+        showHeaderDropdown("notes", openNew);
+        headerContextMenu.remove(e);
+    }, "actionEvent":true, "icon":"file_open"});
+    headerContextMenu.attach(header);
+
     const createNew = document.createElement("i");
     createNew.classList.add("new");
     createNew.innerText = "add";

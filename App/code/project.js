@@ -1,3 +1,7 @@
+const userNotes = {};
+
+
+
 const openNotes = {};
 var activeNID;
 
@@ -180,7 +184,9 @@ function closeNote(noteInfo, noteData){
         }
     });
 
-    writenote.loadData("");
+    if(NID == activeNID){
+        writenote.loadData("");
+    }
     
     if(Object.keys(openNotes).length>0){
         var closestNID = closestSibling.getAttribute("NID");
