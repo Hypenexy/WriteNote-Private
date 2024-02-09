@@ -61,6 +61,14 @@ class WriteNote{
             }
         });
 
+
+        // Find code
+
+        // notearea.addEventListener("click", function(e){
+        //     console.log(e.target.innerHTML);
+        // });
+
+
         writenote.appendChild(notearea);
         parent.appendChild(writenote);
     }
@@ -122,4 +130,6 @@ class WriteNote{
             });
         }
     }
+    
+    
 }
