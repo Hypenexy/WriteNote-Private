@@ -13,8 +13,8 @@ function openNote(noteData){
         welcome.classList.add("hide");
         loadHeader();
     }
-    if(writenote.isEnabled == false){
-        writenote.enabled(true);
+    if(writenote[activeInstanceWN].isEnabled == false){
+        writenote[activeInstanceWN].enabled(true);
     }
     const NID = Object.keys(noteData)[0];
     if(Object.keys(openNotes).includes(NID)){
@@ -29,7 +29,7 @@ function openNote(noteData){
         return;
     }
     if(activeNID){
-        openNotes[activeNID].data = writenote.unloadData();
+        openNotes[activeNID].data = writenote[activeInstanceWN].unloadData();
     }
     if(noteList.getElementsByClassName("active").length > 0){
         noteList.getElementsByClassName("active")[0].classList.remove("active");
@@ -101,10 +101,10 @@ function openNote(noteData){
         if(success == true){
             socket.emit("modifyNote", {type: "load"}, (success, error) => {
                 if(success){
-                    writenote.loadData(success);
+                    writenote[activeInstanceWN].loadData(success);
                 }
                 if(error=="Note empty"){
-                    writenote.loadData("");
+                    writenote[activeInstanceWN].loadData("");
                 }
             });
         }
@@ -126,6 +126,30 @@ function openNote(noteData){
         e.stopPropagation();
         noteDropdownMenu();
     });
+
+
+    // Drag & drop
+    noteInfo.draggable = true;
+    noteInfo.addEventListener("dragstart", function(){
+        createInstanceZones();
+        noteInfo.classList.add("dragging");
+    });
+    var noteCooldown = false;
+    // noteInfo.addEventListener("drag", function(e){
+    //     if(noteCooldown == false){
+    //         console.log(e.clientX > document.body.clientWidth / 2);
+    //         noteCooldown = true;
+    //         setTimeout(() => {
+    //             noteCooldown = false;
+    //         }, 500);
+    //     }
+    // });
+    noteInfo.addEventListener("dragend", function(e){
+        removeInstanceZones()
+        noteInfo.classList.remove("dragging");
+        console.log(e.clientX > document.body.clientWidth / 2);
+        // addInstance();
+    });
 }
 
 function switchToNote(noteInfo, noteData){
@@ -133,7 +157,7 @@ function switchToNote(noteInfo, noteData){
     socket.emit("openNote", NID, (success, error) => {
         if(success == true){
             if(activeNID){
-                openNotes[activeNID].data = writenote.unloadData();
+                openNotes[activeNID].data = writenote[activeInstanceWN].unloadData();
             }
 
             if(noteList.getElementsByClassName("active").length > 0){
@@ -143,7 +167,7 @@ function switchToNote(noteInfo, noteData){
             showSubHeader(noteData[NID].type);
             noteInfo.classList.add("active");
             activeNID = NID;
-            writenote.loadData(openNotes[NID].data);
+            writenote[activeInstanceWN].loadData(openNotes[NID].data);
             openNotes[NID].data = "";
         }
         if(error == "Not found"){
@@ -185,7 +209,7 @@ function closeNote(noteInfo, noteData){
     });
 
     if(NID == activeNID){
-        writenote.loadData("");
+        writenote[activeInstanceWN].loadData("");
     }
     
     if(Object.keys(openNotes).length>0){
@@ -193,7 +217,7 @@ function closeNote(noteInfo, noteData){
         switchToNote(closestSibling, openNotes[closestNID]);
     }
     else{
-        writenote.enabled(false);
+        writenote[activeInstanceWN].enabled(false);
     }
 }
 
@@ -201,7 +225,7 @@ function saveNote(NID){
     if(openNotes[NID].saved == false){
         var content;
         if(activeNID == NID){
-            content = writenote.unloadData();
+            content = writenote[activeInstanceWN].unloadData();
         }
         else{
             content = openNotes[NID].data;
@@ -233,7 +257,7 @@ function saveNote(NID){
     }
 }
 
-writenote.notearea.addEventListener("input", function(){
+writenote[activeInstanceWN].notearea.addEventListener("input", function(){
     if(openNotes[activeNID].saved == true){
         openNotes[activeNID].saved = false;
         const activeNoteInfo = noteList.getElementsByClassName("active")[0];

@@ -44,6 +44,9 @@ function createForensic(){
 // Maybe try catch will be good for security
 const datalog = createForensic();
 
+// send screen resolution too
+// both client, screen
+
 
 // Useful for future forensic development
 // const temporaryforensicID = uuid();

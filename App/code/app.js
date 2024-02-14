@@ -1,12 +1,37 @@
 const app = document.createElement("app");
 document.body.appendChild(app);
 
-const writenote = new WriteNote({linkEngine: "http://ixeo.midelightdev.localhost/Metadata/"});
-writenote.init(app);
+const writenote = [new WriteNote({linkEngine: "http://ixeo.midelightdev.localhost/Metadata/"})];
+var activeInstanceWN = 0;
 
-writenote.enabled(false);
+writenote[activeInstanceWN].init(app);
 
+writenote[activeInstanceWN].enabled(false);
 
+function addInstance(){
+    writenote.push(new WriteNote({linkEngine: "http://ixeo.midelightdev.localhost/Metadata/"}));
+}
+
+function createInstanceZones(){
+    var zoneHolder = document.createElement("div");
+    zoneHolder.classList.add("zoneHolder");
+    app.appendChild(zoneHolder);
+    for (let i = 0; i < 4; i++) {
+        var element = document.createElement("div");
+        element.addEventListener("dragenter", function(){
+            this.classList.add("active");
+        });
+        element.addEventListener("dragleave", function(){
+            this.classList.remove("active");
+        });
+        zoneHolder.appendChild(element);
+    }
+}
+
+function removeInstanceZones(){
+    var zoneHolder = document.getElementsByClassName("zoneHolder")[0];
+    zoneHolder.remove();
+}
 
 /**
  * Creates a <mselect> (custom select element), with search functionality.

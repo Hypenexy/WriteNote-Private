@@ -782,24 +782,24 @@ function attachTooltip(element, text, isInstant){
     element.addEventListener("click", toolClick);
 
     function toolMouseMove(e){
-        tooltipElement.style.left = (e.clientX - 15) + "px";
-        var offset = normalizeOffset(getBoundingClientRectObject(tooltipElement))
-        tooltipElement.style.top = offset.top + "px"
-        tooltipElement.style.left = offset.left + "px"
+        var offset = getBoundingClientRectObject(tooltipElement);
+        tooltipElement.style.left = (e.clientX - offset.width / 2) + "px";
+        var normalOffset = normalizeOffset(getBoundingClientRectObject(tooltipElement));
+        console.log(normalOffset);
+        tooltipElement.style.left = normalOffset.left + "px"
     }
     element.addEventListener("mousemove", toolMouseMove);
 
     function toolMouseEnter(e){
         app.appendChild(tooltipElement);
         var elementRects = element.getClientRects();
-        tooltipElement.style.left = (e.clientX - 15) + "px";
         tooltipElement.style.top = (e.clientY + 22) + "px";
         if(e.clientY + 22 < elementRects[0].bottom){
             tooltipElement.style.top = elementRects[0].bottom + "px";
         }
-        var offset = normalizeOffset(getBoundingClientRectObject(tooltipElement))
-        tooltipElement.style.top = offset.top + "px"
-        tooltipElement.style.left = offset.left + "px"
+        var offset = normalizeOffset(getBoundingClientRectObject(tooltipElement));
+        tooltipElement.style.top = offset.top + "px";
+        tooltipElement.style.left = offset.left + 90 + "px";
         if(!isInstant){
             tooltipElement.classList.add("delayed");
         }
