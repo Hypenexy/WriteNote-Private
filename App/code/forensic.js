@@ -52,6 +52,23 @@ var forensicToSend = [];
 
 function logForensic(text){
     const dateNow = Date.now();
-    console.log(text);
-    // upload forensicToSend to server and empty it
+    forensicToSend.push([dateNow, text])
+}
+
+function uploadForensicLog(){
+    socket.emit("forensic", forensicToSend, function(success, error){
+        if(success=="success"){
+
+            forensicToSend = [];
+        }
+    });
+}
+
+
+const forensicTimer = setInterval(function(){
+    uploadForensicLog();
+}, 60 * 1000 * 5);
+
+function disablePeriodicForensic(){
+    clearInterval(forensicTimer);
 }

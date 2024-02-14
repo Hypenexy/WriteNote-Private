@@ -322,7 +322,15 @@ modal{
         opacity: 0;
     }
 }
-
+.contextMenu .drag{
+    user-select: none;
+    cursor: move;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 10px;
+}
 .contextMenu::-webkit-scrollbar-thumb{
     border-radius: 8px;
 }

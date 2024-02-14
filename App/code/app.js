@@ -1,3 +1,5 @@
+const version = [1, 0, 0];
+
 const app = document.createElement("app");
 document.body.appendChild(app);
 
@@ -6,6 +8,29 @@ writenote.init(app);
 
 writenote.enabled(false);
 
+if(settings.version && settings.version != version){
+    if(version.toString() == settings.version.toString()){
+        // Haven't updated
+    }
+    if(version[0] > settings.version[0]){
+        // You've updated a major release
+    }
+    if(version[1] > settings.version[1]){
+        // You've updated a minor release
+    }
+    if(version[2] > settings.version[2]){
+        // You've updated a patch release
+    }
+    var outdated = false;
+    for (let i = 0; i < version.length; i++) {
+        if(version[i] < settings.version[i]){
+            outdated = true;
+        }
+    }
+    if(outdated == true){
+        // You've downgraded
+    }
+}
 
 
 /**
@@ -201,7 +226,7 @@ function showContext(){
 
     function show(){
         app.appendChild(contextMenu)
-        var offset = normalizeOffset(getBoundingClientRectObject(contextMenu))
+        var offset = normalizeOffsetRightBottom(getBoundingClientRectObject(contextMenu))
         contextMenu.style.transition = 'initial'
         contextMenu.style.top = offset.top + "px"
         contextMenu.style.left = offset.left + "px"
@@ -268,6 +293,10 @@ function ShowModal(RemoteClose, Intensity, Index){
             RemoteClose()
         }
     }
+    modal.close = function(){
+        HideModal();
+        RemoteClose();
+    }
 
     return HideModal;
 }
@@ -292,6 +321,15 @@ function CreateModal(Element, ClassName, Intensity, Index){
     const closeModal = ShowModal(modalClose, Intensity, Index);
     app.appendChild(element);
 }
+
+document.addEventListener("keydown", function(e){
+    if(e.key == "Escape"){
+        var modals = app.getElementsByTagName("modal");
+        if(modals.length > 0){
+            modals[modals.length - 1].close();
+        }
+    }
+});
 
 
 
@@ -441,6 +479,46 @@ function contextMenu(type){
     contextMenu.type = type;
     contextMenu.submenus = [];
 
+    const dragElement = document.createElement("div");
+    dragElement.classList.add("drag");
+    contextMenu.node.appendChild(dragElement);
+    dragElement.addEventListener("click", function(e){
+        e.stopPropagation();
+        // make it draggable
+    });
+    draggableElement(contextMenu.node, dragElement);
+    // var dragElementHeld = false;
+    // var dragElementRect;
+    // var lastX;
+    // var lastY;
+    // dragElement.addEventListener("mousedown", function(e){
+    //     dragElementRect = contextMenu.node.getBoundingClientRect();
+    //     dragElementHeld = true;
+    // });
+    // dragElement.addEventListener("mouseup", function(e){
+    //     dragElementHeld = false;
+    // });
+    // dragElement.addEventListener("mouseleave", function(e){
+    //     dragElementHeld = false;
+    // });
+    // dragElement.addEventListener("mousemove", function(e){
+    //     if(dragElementHeld == true){
+    //         if(typeof lastX == "undefined"){
+    //             lastX = e.clientX;
+    //             lastY = e.clientY;
+    //         }
+    //         var newX = dragElementRect.x + (e.clientX - lastX);
+    //         var newY = dragElementRect.y + (e.clientY - lastY);
+            
+    //         contextMenu.node.style.left = newX + "px";
+    //         contextMenu.node.style.top = newY + "px";
+            
+    //         lastX = e.clientX;
+    //         lastY = e.clientY;
+            
+    //     }
+    // });
+
     function hideSubmenu(submenu){
         // Using animations makes everything shitty and buggy
         // Make this with 1 class not animations and more classes
@@ -456,7 +534,7 @@ function contextMenu(type){
      * Add elements to the context menu.
      * @param {String} type Type of element, either Text, Line, Button, Input, Extra
      * @param {String} text Display text of the element
-     * @param {JSON} options Option of element, either {disabled: Boolean, action: Function, actionEvent: Boolean, icon: String}
+     * @param {JSON} options Option of element, either {disabled: Boolean, action: Function, actionEvent: Boolean, icon: String, input: Function}
      */
     contextMenu.add = (type, text, options) => {
         const element = document.createElement("div");
@@ -527,6 +605,23 @@ function contextMenu(type){
             contextMenu.submenus.push(subMenu);
             return subMenu;
         }
+        if(type == "input"){
+            element.innerHTML = "";
+            const input = document.createElement("input");
+            element.appendChild(input);
+            input.value = text;
+            input.addEventListener("click", function(e){
+                e.stopPropagation();
+            });
+            if(options){
+                if(options.action && typeof options.action == "function"){
+                    input.addEventListener("change", options.action);
+                }
+                if(options.input && typeof options.input == "function"){
+                    input.addEventListener("input", options.input);
+                }
+            }
+        }
     }
 
     /**
@@ -546,6 +641,10 @@ function contextMenu(type){
      * the context menu will position (appear) under it
      */
     contextMenu.append = (event, toElement) => {
+        const allContextMenus = app.getElementsByClassName("contextMenu"); // test for performance
+        if(allContextMenus.length > 0){
+            allContextMenus[0].remove();
+        }
         event.preventDefault();
         if(contextMenu.node.classList.contains("hide")){
             contextMenu.node.classList.remove("hide");
@@ -583,4 +682,49 @@ function contextMenu(type){
     }
 
     return contextMenu;
+}
+
+
+
+function draggableElement(element, header){
+    var pos1 = 0, 
+        pos2 = 0,
+        pos3 = 0,
+        pos4 = 0;
+    if(header){
+        header.onmousedown = dragMouseDown;
+    }
+    else{
+        element.onmousedown = dragMouseDown;
+    }
+
+    function dragMouseDown(e){
+        e = e || window.event;
+        e.preventDefault();
+        
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    }
+
+    function elementDrag(e){
+        e = e || window.event;
+        e.preventDefault();
+        
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        
+        var normalized = normalizeOffset([(element.offsetLeft - pos1), (element.offsetTop - pos2), (element.offsetLeft + element.offsetWidth) - 10, (element.offsetTop + element.offsetHeight) - 10]);
+        element.style.left = normalized[0] + "px";
+        element.style.top = normalized[1] + "px";
+    }
+
+    function closeDragElement(){
+        document.onmouseup = null;
+        document.onmousemove = null;
+    }
 }

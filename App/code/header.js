@@ -139,7 +139,7 @@ function showHeaderDropdown(menu, element, elementToAppend){
     headerDropdown.style.left = targetRect.left + "px";
 
     var rect = getBoundingClientRectObject(headerDropdown);
-    var normalizedRect = normalizeOffset(rect);
+    var normalizedRect = normalizeOffsetRightBottom(rect);
     headerDropdown.style.top = normalizedRect.top + "px";
     headerDropdown.style.left = normalizedRect.left + "px";
 }

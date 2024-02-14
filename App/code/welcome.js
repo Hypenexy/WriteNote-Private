@@ -184,6 +184,42 @@ function loadWelcome(responseData){
 const notesElement = document.createElement("div");
 notesElement.classList.add("notes");
 
+function noteContextMenuUpdated(noteData, element){
+    const NID = Object.keys(noteData)[0];
+    const name = noteData[NID].name;
+    if(!noteData[NID].size){
+        noteData[NID].size = 0;
+    }
+    const size = humanFileSize(noteData[NID].size);
+    const dateOpen = new Date(noteData[NID].fO);
+    const dateOpenFormatted = dateOpen.toLocaleDateString() + ", " + dateOpen.toLocaleTimeString();
+    const dateModified = new Date(noteData[NID].fM);
+    const dateModifiedFormatted = dateModified.toLocaleDateString() + ", " + dateModified.toLocaleTimeString();
+    
+    const noteContextMenu = contextMenu();
+
+    noteContextMenu.add("input", name); // add rename functions
+
+    noteContextMenu.add("text", locale.actions); // make so that the line can have text alongside it
+
+    noteContextMenu.add("button", locale.share, {"icon":"share", "disabled":true});
+    noteContextMenu.add("button", locale.duplicate, {"icon":"content_copy"});
+    noteContextMenu.add("button", locale.delete, {"icon":"delete"});
+
+    noteContextMenu.add("text", locale.properties);
+    
+    noteContextMenu.add("text", dateOpenFormatted, {"icon":"calendar_month"});
+    noteContextMenu.add("text", dateModifiedFormatted, {"icon":"calendar_month"});
+    noteContextMenu.add("text", size, {"icon":"save"});
+
+    // noteContextMenu.add("button", locale.retry, {"action": retry, "icon":"refresh"});
+    // noteContextMenu.add("line", null, {"action": retry});
+    // noteContextMenu.add("button", locale.status, {"action": status, "icon":"public"});
+    // const extraTest = noteContextMenu.add("extra", locale.recover, {"action": status, "icon":"logout"});
+    // noteContextMenu.add("button", locale.actions, {"action":status,"submenu": extraTest});
+    noteContextMenu.attach(element);
+}
+
 function noteContextMenu(noteData, e, element){
     e.preventDefault();
     var show = showContext();
@@ -253,7 +289,8 @@ function addNoteToList(notedata, space){
     }
     element.setAttribute("NID", NID);
     ButtonEvent(element, openNote, notedata);
-    element.addEventListener("contextmenu", function(e){noteContextMenu(notedata, e, element)});
+    // element.addEventListener("contextmenu", function(e){noteContextMenu(notedata, e, element)});
+    noteContextMenuUpdated(notedata, element)
     element.innerHTML = "<p class='title'>"+notedata[NID].name+"</p>";
     if(notedata[NID].fL){
         element.innerHTML += "<p class='description'>"+notedata[NID].fL+"</p>";

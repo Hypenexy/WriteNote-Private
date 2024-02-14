@@ -230,7 +230,7 @@ function getBoundingClientRectObject(element) {
  * @param {JSON} offset Takes a JSON as a parameter
  * @returns the same JSON but with calculated value if it's out of the screen 
  */
-function normalizeOffset(offset){
+function normalizeOffsetRightBottom(offset){
     if(offset.right === undefined){ // I'm not sure if this is a proper way to check for undefined
         if(offset.width&&offset.left){
             offset.right = offset.left+offset.width
@@ -248,6 +248,21 @@ function normalizeOffset(offset){
         offset.top = offset.top - (offset.bottom - window.innerHeight)
     }
     return offset
+}
+function normalizeOffset(offset){
+    if(offset[0] <= 0){
+        offset[0] = 0;
+    }
+    if(offset[1] <= 0){
+        offset[1] = 0;
+    }
+    if(offset[2] >= window.innerWidth){
+        offset[0] = offset[0] - (offset[2] - window.innerWidth);
+    }
+    if(offset[3] >= window.innerHeight){
+        offset[1] = offset[1] - (offset[3] - window.innerHeight); 
+    }
+    return offset;
 }
 
 /**
@@ -783,7 +798,7 @@ function attachTooltip(element, text, isInstant){
 
     function toolMouseMove(e){
         tooltipElement.style.left = (e.clientX - 15) + "px";
-        var offset = normalizeOffset(getBoundingClientRectObject(tooltipElement))
+        var offset = normalizeOffsetRightBottom(getBoundingClientRectObject(tooltipElement))
         tooltipElement.style.top = offset.top + "px"
         tooltipElement.style.left = offset.left + "px"
     }
@@ -797,7 +812,7 @@ function attachTooltip(element, text, isInstant){
         if(e.clientY + 22 < elementRects[0].bottom){
             tooltipElement.style.top = elementRects[0].bottom + "px";
         }
-        var offset = normalizeOffset(getBoundingClientRectObject(tooltipElement))
+        var offset = normalizeOffsetRightBottom(getBoundingClientRectObject(tooltipElement))
         tooltipElement.style.top = offset.top + "px"
         tooltipElement.style.left = offset.left + "px"
         if(!isInstant){
