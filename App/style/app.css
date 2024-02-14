@@ -112,6 +112,7 @@ input{
 }
 
 .tooltip{
+    white-space: nowrap;
     z-index: 99;
     opacity: 0;
     visibility: hidden;
@@ -465,6 +466,47 @@ modal{
     transform: translateY(-50%);
 }
 
+.zoneHolder{
+    display: flex;
+    z-index: 2;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+.zoneHolder div{
+    transition: .2s;
+}
+.zoneHolder div:hover, .zoneHolder div.active{
+    background-color: #05050599;
+}
+.zoneHolder div:nth-child(1){
+    width: 40%;
+    height: 100%;
+}
+.zoneHolder div:nth-child(2){
+    pointer-events: none;
+    width: 20%;
+    height: 100%;
+}
+.zoneHolder div:nth-child(3){
+    width: 40%;
+    height: 100%;
+}
+.zoneHolder div:nth-child(4){
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 35%;
+}
+.zoneHolder div.active{
+    width: 50%;
+}
+.zoneHolder div.active:nth-child(4){
+    height: 40%;
+    width: 100%;
+}
 
 /* md style */
 input.md{

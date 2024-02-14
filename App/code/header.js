@@ -78,8 +78,8 @@ function showSubHeader(type){
         return element;
     }
     if(type == "note"){
-        subHeaderButton("undo", "undo", writenote.undo);
-        subHeaderButton("redo", "redo", writenote.redo);
+        subHeaderButton("undo", "undo", writenote[activeInstanceWN].undo);
+        subHeaderButton("redo", "redo", writenote[activeInstanceWN].redo);
         createAppendElement("vl", subHeader);
         const insert = subHeaderButton("add_to_photos", "insert");
         const find = subHeaderButton("search", "search");
@@ -100,7 +100,7 @@ function showSubHeader(type){
 
 function toggleSubHeader(){
     subHeader.classList.toggle("hidden");
-    writenote.notearea.classList.toggle("noSubHeader");
+    writenote[activeInstanceWN].notearea.classList.toggle("noSubHeader");
     header.classList.toggle("noSubHeader");
 }
 
