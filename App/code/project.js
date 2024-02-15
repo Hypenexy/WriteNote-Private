@@ -176,7 +176,13 @@ function switchToNote(noteInfo, noteData){
     });
 }
 
+
+//rework everything here!!!!!!!!!!!!!!!!!!!!!!!!!!
 function closeNote(noteInfo, noteData){
+    if(noteInfo == "current"){
+        
+        return;
+    }
     const NID = Object.keys(noteData)[0];
     if(openNotes[NID].saved == false){
 
@@ -267,6 +273,7 @@ writenote[activeInstanceWN].notearea.addEventListener("input", function(){
 });
 
 function createNewNote(){
+    const selected = {};
 
     const element = document.createElement("div");
     
@@ -277,10 +284,41 @@ function createNewNote(){
     nameInput.classList.add("md");
     element.appendChild(nameInput);
 
+    var filetypes = {
+        "Note" : ["Text with media", "description"],
+        "Calculator" : ["Math optimized workspace", "calculate"],
+        "Webapp" : ["Site builder", "web_asset"]
+    };
+    var filetypesKeys = Object.keys(filetypes);
+
     const fileType = document.createElement("div");
+    fileType.classList.add("filetypes");
+    function addFileType(type, typedata){
+        const element = document.createElement("div");
+        element.classList.add("filetype");
+        element.innerHTML = `<div class='m-i'>${typedata[1]}</div><div class='title'>${type}</div><div class='description'>${typedata[0]}</div>`;
+        element.addEventListener("click", function(e){
+            var lastSelected = fileType.getElementsByClassName("active");
+            for (let i = 0; i < lastSelected.length; i++) {
+                lastSelected[i].classList.remove("active");
+            }
+            selected["type"] = type;
+            element.classList.add("active");
+        });
+        fileType.appendChild(element);
+    }
+    for (let i = 0; i < filetypesKeys.length; i++) {
+        const type = filetypesKeys[i];
+        const typedata = filetypes[type];
+        addFileType(type, typedata)
+    }
     element.appendChild(fileType);
 
 
+    const createBtn = document.createElement("div");
+    createBtn.classList.add("btn");
+    createBtn.textContent = "Create";
+    element.appendChild(createBtn);
 
     CreateModal(element, "createNew");
 
@@ -317,7 +355,7 @@ function newNoteSuggestions(){
 }
 
 window.addEventListener("keydown", function(e){
-    if(e.ctrlKey && e.key.toLowerCase() == "s"){
+    if(e.ctrlKey && e.code == "KeyS"){
         e.preventDefault();
         saveNote(activeNID);
     }
@@ -358,3 +396,15 @@ function addIconHeaderNote(headerElement, icon, tooltip, customClass){
     headerElement.appendChild(element);
     attachTooltip(element, tooltip);
 }
+
+
+document.addEventListener("keydown", function(e){
+    if(e.altKey){
+        if(e.code == "KeyW"){
+            closeNote();
+        }
+        if(e.code == "KeyN"){
+            createNewNote();
+        }
+    }
+});

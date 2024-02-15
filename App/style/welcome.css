@@ -49,6 +49,21 @@
     }
 }
 
+.welcome.loadedAgain{
+    animation-name: welcomeLoaded;
+    animation-duration: 0.2s;
+}
+
+@keyframes welcomeLoaded {
+    from{
+        transform: translate(-50%, -50%)scale(.9);
+        opacity: 0;
+    }
+    to{
+        opacity: 1;
+    }
+}
+
 .welcome.hide{
     visibility: visible;
     animation-name: welcomeLoadReverse;

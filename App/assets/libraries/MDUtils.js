@@ -800,7 +800,6 @@ function attachTooltip(element, text, isInstant){
         var offset = getBoundingClientRectObject(tooltipElement);
         tooltipElement.style.left = (e.clientX - offset.width / 2) + "px";
         var normalOffset = normalizeOffsetRightBottom(getBoundingClientRectObject(tooltipElement));
-        console.log(normalOffset);
         tooltipElement.style.left = normalOffset.left + "px"
     }
     element.addEventListener("mousemove", toolMouseMove);

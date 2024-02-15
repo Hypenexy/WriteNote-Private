@@ -179,6 +179,25 @@ function loadWelcome(responseData){
     }
 
     notesSide.appendChild(notesElement);
+
+    
+    const welcomeContextMenu = contextMenu();
+
+    // welcomeContextMenu.add("text", locale.display);
+
+    const extraView = welcomeContextMenu.add("extra", locale.view, {"icon":"view_carousel"});
+    welcomeContextMenu.add("button", locale.grid, {"icon":"grid_view", "submenu":extraView});
+    welcomeContextMenu.add("button", locale.list, {"icon":"view_list", "submenu":extraView});
+
+    const extraSort = welcomeContextMenu.add("extra", locale.sort, {"icon":"sort"});
+    welcomeContextMenu.add("button", locale.name, {"icon":"sort_by_alpha", "submenu":extraSort});
+    welcomeContextMenu.add("button", locale.size, {"icon":"save", "submenu":extraSort});
+    welcomeContextMenu.add("button", locale.type, {"icon":"note", "submenu":extraSort});
+
+    // welcomeContextMenu.add("text", locale.edit);
+    welcomeContextMenu.add("button", locale.select_all, {"icon":"select_all"});
+    welcomeContextMenu.add("button", locale.new_folder, {"icon":"folder"});
+    welcomeContextMenu.attach(welcome);
 }
 
 const notesElement = document.createElement("div");

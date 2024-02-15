@@ -120,7 +120,7 @@ function showHeaderDropdown(menu, element, elementToAppend){
 
         headerDropdown.classList.add("welcome");
         headerDropdown.classList.add("loaded");
-        headerDropdown.style.animationDuration = '0.1s';
+        headerDropdown.classList.add("loadedAgain");
         if(notesElement.children[0].style.animationDelay == '0.5s'){
             for (let i = 0; i < notesElement.children.length; i++) {
                 const element = notesElement.children[i];
@@ -167,7 +167,26 @@ function hideHeaderDropdown(instant){
 }
 
 document.addEventListener("click", function(e){
-    if(headerDropdown.innerHTML != "" && !e.composedPath().includes(headerDropdown) && !e.composedPath().includes(contextMenu)){
+    function isContextMenu(){
+        var isIt = false;
+        for (let i = 0; i < e.composedPath.length; i++) {
+            if(e.composedPath[i].className == "contextMenu"){
+                isIt = true;
+            }
+        }
+        return isIt;
+    }
+    if(
+        headerDropdown.innerHTML != "" &&
+        !e.composedPath().includes(headerDropdown) &&
+        !e.composedPath().includes(contextMenu) &&
+        isContextMenu()
+    ){
+        hideHeaderDropdown();
+    }
+});
+document.addEventListener("keydown", function(e){
+    if(e.key == "Escape"){
         hideHeaderDropdown();
     }
 });

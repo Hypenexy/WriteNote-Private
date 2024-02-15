@@ -7,3 +7,23 @@
     border-radius: 12px;
 }
 
+
+.createNew .filetypes{
+    display: flex;
+    justify-content: space-between;
+}
+
+.createNew .filetype{
+    cursor: pointer;
+    user-select: none;
+    
+    background: #1c1c1c;
+    padding: 12px;
+    border-radius: 12px;
+    transition: .2s;
+}
+
+.createNew .filetype.active{
+    background: #65baff;
+    color: #111;
+}

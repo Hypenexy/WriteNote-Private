@@ -1,5 +1,5 @@
-const MidelightServer = "http://writenote.midelightdev.localhost/",
-    WriteNoteServer = "http://midelightdev.localhost:2053",
+const MidelightServer = "https://writenote.midelight.net/",
+    WriteNoteServer = "https://midelight.net:2053",
     imageServer = MidelightServer.replace("writenote", "i"),
     weatherServer = MidelightServer.replace("writenote", "weather"),
     assetsServer = MidelightServer.replace("writenote", "assets");

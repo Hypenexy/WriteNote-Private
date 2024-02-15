@@ -671,6 +671,7 @@ function contextMenu(type){
         if(allContextMenus.length > 0){
             allContextMenus[0].remove();
         }
+        event.stopPropagation();
         event.preventDefault();
         if(contextMenu.node.classList.contains("hide")){
             contextMenu.node.classList.remove("hide");
@@ -744,7 +745,7 @@ function draggableElement(element, header){
         pos3 = e.clientX;
         pos4 = e.clientY;
         
-        var normalized = normalizeOffset([(element.offsetLeft - pos1), (element.offsetTop - pos2), (element.offsetLeft + element.offsetWidth) - 10, (element.offsetTop + element.offsetHeight) - 10]);
+        var normalized = normalizeOffset([(element.offsetLeft - pos1), (element.offsetTop - pos2), (element.offsetLeft + element.offsetWidth) + 10, (element.offsetTop + element.offsetHeight) + 10]);
         element.style.left = normalized[0] + "px";
         element.style.top = normalized[1] + "px";
     }
