@@ -167,22 +167,25 @@ function hideHeaderDropdown(instant){
 }
 
 document.addEventListener("click", function(e){
-    function isContextMenu(){
+    function isContextMenu(composedPath){
         var isIt = false;
-        for (let i = 0; i < e.composedPath.length; i++) {
-            if(e.composedPath[i].className == "contextMenu"){
+        for (let i = 0; i < composedPath.length; i++) {
+            if(composedPath[i].className == "contextMenu"){
                 isIt = true;
             }
         }
         return isIt;
     }
-    if(
-        headerDropdown.innerHTML != "" &&
-        !e.composedPath().includes(headerDropdown) &&
-        !e.composedPath().includes(contextMenu) &&
-        isContextMenu()
-    ){
-        hideHeaderDropdown();
+    
+    if(headerDropdown.innerHTML != ""){
+        var composedPath = e.composedPath();
+        if(
+            composedPath.includes(headerDropdown)
+            || isContextMenu(composedPath)
+        ){}
+        else{
+            hideHeaderDropdown();
+        }
     }
 });
 document.addEventListener("keydown", function(e){

@@ -197,7 +197,7 @@ function loadWelcome(responseData){
     // welcomeContextMenu.add("text", locale.edit);
     welcomeContextMenu.add("button", locale.select_all, {"icon":"select_all"});
     welcomeContextMenu.add("button", locale.new_folder, {"icon":"folder"});
-    welcomeContextMenu.attach(welcome);
+    welcomeContextMenu.attach(notesSide);
 }
 
 const notesElement = document.createElement("div");
