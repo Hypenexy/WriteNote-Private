@@ -6,3 +6,7 @@ if(localStorage.getItem("options")){
 else{
     firstTimeLaunch = true;
 }
+
+function settingsGui(){
+    
+}
