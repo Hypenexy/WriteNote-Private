@@ -508,6 +508,15 @@ modal{
     width: 100%;
 }
 
+.selectArea{
+    position: absolute;
+    background-color: #4b23ff66;
+    border: 2px solid #4b23ff;
+    z-index: 10;
+    width: 100px;
+    height: 100px;
+}
+
 /* md style */
 input.md{
     background-color: #050505;

@@ -713,7 +713,7 @@ function contextMenu(type){
 
 
 
-function draggableElement(element, header){
+function draggableElement(element, header, options){
     var pos1 = 0, 
         pos2 = 0,
         pos3 = 0,
@@ -746,6 +746,13 @@ function draggableElement(element, header){
         pos4 = e.clientY;
         
         var normalized = normalizeOffset([(element.offsetLeft - pos1), (element.offsetTop - pos2), (element.offsetLeft + element.offsetWidth) + 10, (element.offsetTop + element.offsetHeight) + 10]);
+        if(options && options.isSelection == true){
+            // element.style.right = normalized[0] + "px";
+            // element.style.bottom = normalized[1] + "px";
+            element.style.width = (e.clientX - options.x) + "px";
+            element.style.height = (e.clientY - options.y) + "px";
+            return;
+        }
         element.style.left = normalized[0] + "px";
         element.style.top = normalized[1] + "px";
     }
@@ -755,3 +762,22 @@ function draggableElement(element, header){
         document.onmousemove = null;
     }
 }
+
+// selection
+function selectableElement(element){
+    element.addEventListener("click", function(e){
+        if(e.detail == 2){
+            const selectArea = document.createElement("div");
+            selectArea.classList.add("selectArea");
+    
+            selectArea.style.top = e.clientY + "px";
+            selectArea.style.left = e.clientX + "px";
+    
+            draggableElement(selectArea, null, {isSelection: true, x: e.clientX, y: e.clientY});
+    
+            app.appendChild(selectArea);
+        }
+    });
+}
+
+// selectableElement(app);
