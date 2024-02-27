@@ -108,6 +108,14 @@
 .welcome .weatherHalf{
     margin-right: -12px;
 }
+.welcome .weatherHalf::after{
+    transition: .5s;
+    opacity: 1;
+}
+.welcome .weatherHalf:hover::after{
+    opacity: 0.3;
+    background: linear-gradient(90deg, #111 0%, transparent 10%);
+}
 .welcome .userHalf, .welcome .weatherHalf{
     position: relative;
     padding: 12px;

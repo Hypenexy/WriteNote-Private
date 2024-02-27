@@ -149,6 +149,8 @@ function loadWelcome(responseData){
     side.classList.add("side");
     notesSide.appendChild(side);
 
+    const topBtns = ["New Folder", "Bin"];
+
     const sideBtns = ["Home", "Bin"];
     const sideBtnsIcons = ["home", "delete"];
     for (let i = 0; i < sideBtns.length; i++) {
