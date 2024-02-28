@@ -16,7 +16,7 @@ function openNote(noteData){
     if(writenote[activeInstanceWN].isEnabled == false){
         writenote[activeInstanceWN].enabled(true);
     }
-    const NID = Object.keys(noteData)[0];
+    const NID = noteData.nid;
     if(Object.keys(openNotes).includes(NID)){
         if(activeNID!=NID){
             for (let i = 0; i < noteList.children.length; i++) {
@@ -39,11 +39,11 @@ function openNote(noteData){
     openNotes[NID] = JSON.parse(JSON.stringify(noteData));
     openNotes[NID].saved = true;
     activeNID = NID;
-    showSubHeader(noteData[NID].type);
-    if(noteData[NID].type == "note"){
+    showSubHeader(noteData.type);
+    if(noteData.type == "note"){
         noteInfo.innerHTML += "<i>description</i>";
     }
-    noteInfo.innerHTML += " <p>"+noteData[NID].name+"</p>";
+    noteInfo.innerHTML += " <p>"+noteData.name+"</p>";
     noteInfo.innerHTML += "<div class='line'></div>";
     // <i class="status">share</i> Make sure to add the hover tool tips
     // <i class="status">person<p>15</p></i>"
@@ -153,7 +153,7 @@ function openNote(noteData){
 }
 
 function switchToNote(noteInfo, noteData){
-    const NID = Object.keys(noteData)[0];
+    const NID = noteData.nid;
     socket.emit("openNote", NID, (success, error) => {
         if(success == true){
             if(activeNID){
@@ -164,7 +164,7 @@ function switchToNote(noteInfo, noteData){
                 noteList.getElementsByClassName("active")[0].classList.remove("active");
             }
 
-            showSubHeader(noteData[NID].type);
+            showSubHeader(noteData.type);
             noteInfo.classList.add("active");
             activeNID = NID;
             writenote[activeInstanceWN].loadData(openNotes[NID].data);
@@ -183,7 +183,7 @@ function closeNote(noteInfo, noteData){
         
         return;
     }
-    const NID = Object.keys(noteData)[0];
+    const NID = noteData.nid;
     if(openNotes[NID].saved == false){
 
     }

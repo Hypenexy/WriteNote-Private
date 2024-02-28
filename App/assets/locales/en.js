@@ -76,4 +76,8 @@ var locale = {
     type: "Type",
     edit: "Edit",
     new_folder: "New folder",
+    bin: "Bin",
+    date_opened: "Date opened",
+    date_modified: "Date modified",
+    date_created: "Date created",
 };

@@ -504,6 +504,7 @@ function contextMenu(type){
     contextMenu.node.classList.add("contextMenu", "hide");
     contextMenu.type = type;
     contextMenu.submenus = [];
+    contextMenu.selectedConditions = [];
 
     const dragElement = document.createElement("div");
     dragElement.classList.add("drag");
@@ -560,7 +561,7 @@ function contextMenu(type){
      * Add elements to the context menu.
      * @param {String} type Type of element, either Text, Line, Button, Input, Extra
      * @param {String} text Display text of the element
-     * @param {JSON} options Option of element, either {disabled: Boolean, action: Function, actionEvent: Boolean, icon: String, input: Function}
+     * @param {JSON} options Option of element, either {disabled: Boolean, action: Function, actionEvent: Boolean, icon: String, input: Function, selected: Boolean, selectedReason: Function}
      */
     contextMenu.add = (type, text, options) => {
         const element = document.createElement("div");
@@ -574,6 +575,19 @@ function contextMenu(type){
             if(options.icon){
                 text = '<i>'+options.icon+'</i>' + text;
                 element.classList.add("i");
+            }
+            if(options.selected == true){
+                element.classList.add("selected");
+            }
+            if(typeof options.selectedReason == "function"){
+                contextMenu.selectedConditions.push(() => {
+                    if(options.selectedReason()){
+                        element.classList.add("selected");
+                    }
+                    else{
+                        element.classList.remove("selected");
+                    }
+                });
             }
         }
         switch (type) {
@@ -667,6 +681,10 @@ function contextMenu(type){
      * the context menu will position (appear) under it
      */
     contextMenu.append = (event, toElement) => {
+        for (let i = 0; i < contextMenu.selectedConditions.length; i++) {
+            const element = contextMenu.selectedConditions[i];
+            element();   
+        }
         const allContextMenus = app.getElementsByClassName("contextMenu"); // test for performance
         if(allContextMenus.length > 0){
             allContextMenus[0].remove();

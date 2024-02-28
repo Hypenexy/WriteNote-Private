@@ -196,6 +196,39 @@
     margin-top: 60px;
 }
 
+.welcome .notesSide .top{
+    width: 100%;
+    margin-bottom: 12px;
+}
+
+.welcome .notesSide .top p{
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    user-select: none;
+    /* color: #bbb;
+    background: #222; */
+    border-radius: 12px;
+    padding: 12px;
+    font-size: 20px;
+    margin-right: 16px;
+    animation-duration: 1s;
+    animation-timing-function: cubic-bezier(.9, -.2, .2, 1);
+    animation-fill-mode: forwards;
+    transition: .1s;
+
+    padding-left: 36px;
+}
+
+/* .welcome .notesSide .top p, .welcome .notesSide .top i{
+    vertical-align: middle;
+} */
+/* .welcome .notesSide .top i{
+    position: absolute;
+    left: 12px;
+    transform: translateY(-2px);
+} */
+
 .welcome .notesSide .side{
     width: 200px;
     height: 100%;
@@ -345,7 +378,7 @@
 .welcome .notesSide .notes{
     overflow: auto;
     float: left;
-    width: calc(100% - 200px);
+    width: calc(100% - 265px);
     height: 100%;
 }
 

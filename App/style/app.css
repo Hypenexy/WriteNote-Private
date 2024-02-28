@@ -381,6 +381,10 @@ modal{
     color: #555;
     background: #222;
 }
+.contextMenu .selected{
+    color: #111;
+    background: #65baff;
+} 
 .contextMenu .text{
     color: #ddd;
     cursor: initial;

@@ -144,41 +144,53 @@ function loadWelcome(responseData){
     notesSide.classList.add("notesSide");
     welcome.appendChild(notesSide);
     
-    
-    const side = document.createElement("div");
-    side.classList.add("side");
-    notesSide.appendChild(side);
-
-    const topBtns = ["New Folder", "Bin"];
-
-    const sideBtns = ["Home", "Bin"];
-    const sideBtnsIcons = ["home", "delete"];
-    for (let i = 0; i < sideBtns.length; i++) {
-        const element = sideBtns[i];
+    const top = document.createElement("div");
+    top.classList.add("top");
+    notesSide.appendChild(top);
+    const topBtns = [locale.new_folder, locale.bin];
+    const topBtnsIcons = ["folder", "delete"];
+    for (let i = 0; i < topBtns.length; i++) {
+        const element = topBtns[i];
         const htmlElement = document.createElement("p");
-        htmlElement.innerHTML = "<i>"+sideBtnsIcons[i]+"</i>" + element;
-        const htmlElementExtra = document.createElement("div");
-        htmlElementExtra.classList.add("extra");
-        // htmlElementExtra.innerHTML = "<label><div class='label'><div>Used 1.3 GB of 2 GB</div><div class='storageLine'><div></div></div></label>"
-        ButtonEvent(htmlElement, function(){
-            var actives = side.querySelectorAll(".active");
-            actives.forEach(element => {
-                element.classList.add("hide");
-                element.classList.remove("active");
-            });
-            htmlElement.classList.add("active");
-            htmlElement.classList.add("instant");
-            htmlElementExtra.classList.add("active");
-            htmlElementExtra.classList.add("instant");
-            loadNotesWelcome(storedNotesData, sideBtns[i].toLowerCase());
-        });
-        side.appendChild(htmlElement);
-        side.appendChild(htmlElementExtra);
-        if(i==0){
-            htmlElement.classList.add("active");
-            htmlElementExtra.classList.add("active");
-        }
+        htmlElement.classList.add("btn");
+        htmlElement.innerHTML = "<i>"+topBtnsIcons[i]+"</i><span>"+element+"</span>";
+        
+        top.appendChild(htmlElement);
     }
+
+    
+    // const side = document.createElement("div");
+    // side.classList.add("side");
+    // notesSide.appendChild(side);
+
+    // const sideBtns = ["Home", "Bin"];
+    // const sideBtnsIcons = ["home", "delete"];
+    // for (let i = 0; i < sideBtns.length; i++) {
+    //     const element = sideBtns[i];
+    //     const htmlElement = document.createElement("p");
+    //     htmlElement.innerHTML = "<i>"+sideBtnsIcons[i]+"</i>" + element;
+    //     const htmlElementExtra = document.createElement("div");
+    //     htmlElementExtra.classList.add("extra");
+    //     // htmlElementExtra.innerHTML = "<label><div class='label'><div>Used 1.3 GB of 2 GB</div><div class='storageLine'><div></div></div></label>"
+    //     ButtonEvent(htmlElement, function(){
+    //         var actives = side.querySelectorAll(".active");
+    //         actives.forEach(element => {
+    //             element.classList.add("hide");
+    //             element.classList.remove("active");
+    //         });
+    //         htmlElement.classList.add("active");
+    //         htmlElement.classList.add("instant");
+    //         htmlElementExtra.classList.add("active");
+    //         htmlElementExtra.classList.add("instant");
+    //         loadNotesWelcome(storedNotesData, sideBtns[i].toLowerCase());
+    //     });
+    //     side.appendChild(htmlElement);
+    //     side.appendChild(htmlElementExtra);
+    //     if(i==0){
+    //         htmlElement.classList.add("active");
+    //         htmlElementExtra.classList.add("active");
+    //     }
+    // }
 
     notesSide.appendChild(notesElement);
 
@@ -192,9 +204,20 @@ function loadWelcome(responseData){
     welcomeContextMenu.add("button", locale.list, {"icon":"view_list", "submenu":extraView});
 
     const extraSort = welcomeContextMenu.add("extra", locale.sort, {"icon":"sort"});
-    welcomeContextMenu.add("button", locale.name, {"icon":"sort_by_alpha", "submenu":extraSort});
+    
+    welcomeContextMenu.add("button", locale.name, {
+        "icon":"sort_by_alpha",
+        "submenu":extraSort,
+        "action":()=>{appendNoteList("name")},
+        "selectedReason":()=>{return settings.sort == "name";}
+        // ...(settings.sort == "name" || console.log(settings.sort)) && {selected: true}
+    });
     welcomeContextMenu.add("button", locale.size, {"icon":"save", "submenu":extraSort});
     welcomeContextMenu.add("button", locale.type, {"icon":"note", "submenu":extraSort});
+    welcomeContextMenu.add("line", null, {"submenu":extraSort});
+    welcomeContextMenu.add("button", locale.date_created, {"icon":"calendar_month", "submenu":extraSort});
+    welcomeContextMenu.add("button", locale.date_modified, {"icon":"calendar_month", "submenu":extraSort});
+    welcomeContextMenu.add("button", locale.date_opened, {"icon":"calendar_month", "submenu":extraSort});
 
     // welcomeContextMenu.add("text", locale.edit);
     welcomeContextMenu.add("button", locale.select_all, {"icon":"select_all"});
@@ -298,23 +321,78 @@ function noteContextMenu(noteData, e, element){
     show();
 }
 
+const notesList = [];
+
+function appendNoteList(sort){
+    notesElement.innerHTML = "";
+
+    if(!sort && settings && settings.sort){
+        sort = settings.sort;
+    }
+    if(!sort){
+        settings.sort = "dateModified";
+    }
+    if(sort){
+        settings.sort = sort
+    }
+
+    function sortData(type){
+        notesList.sort(function(b, a){
+            if(typeof a[type] == "undefined"){
+                a[type] = 0;
+            }
+            if(typeof b[type] == "undefined"){
+                b[type] = 0;
+            }
+            if(type == "name"){
+                return b["name"].localeCompare(a["name"]);
+            }
+            return a[type] - b[type];
+        });
+    }
+
+    if(sort == "dateModified"){
+        sortData("fM");
+    }
+    if(sort == "dateCreated"){
+        sortData("fC");
+    }
+    if(sort == "dateOpened"){
+        sortData("fO");
+    }
+    if(sort == "name"){
+        sortData("name");
+    }
+    if(sort == "type"){
+        sortData("type");
+    }
+    if(sort == "size"){
+        sortData("size");
+    }
+
+    for (let i = 0; i < notesList.length; i++) {
+        const element = notesList[i];
+        addNoteToList(element);
+    }
+}
+
 function addNoteToList(notedata, space){
     const element = document.createElement("div");
     element.classList.add("note");
-    const NID = Object.keys(notedata)[0];
-    if(notedata[NID].bin==true && space!="bin"){
+    const NID = notedata.nid;
+    if(notedata.bin==true && space!="bin"){
         return;
     }
-    if(!notedata[NID].bin && space=="bin"){
+    if(!notedata.bin && space=="bin"){
         return;
     }
     element.setAttribute("NID", NID);
     ButtonEvent(element, openNote, notedata);
     // element.addEventListener("contextmenu", function(e){noteContextMenu(notedata, e, element)});
     noteContextMenuUpdated(notedata, element)
-    element.innerHTML = "<p class='title'>"+notedata[NID].name+"</p>";
-    if(notedata[NID].fL){
-        element.innerHTML += "<p class='description'>"+notedata[NID].fL+"</p>";
+    element.innerHTML = "<p class='title'>"+notedata.name+"</p>";
+    if(notedata.fL){
+        element.innerHTML += "<p class='description'>"+notedata.fL+"</p>";
     }
     notesElement.appendChild(element);
 }
@@ -335,8 +413,13 @@ function loadNotesWelcome(data, space){
 
     for (let i = 0; i < data.notes.length; i++) {
         const element = data.notes[i];
-        addNoteToList(element, space);
+        // addNoteToList(element, space);
+        const pushelement = element[Object.keys(element)[0]];
+        pushelement["nid"] = Object.keys(element)[0];
+        notesList.push(pushelement);
     }
+
+    appendNoteList();
 
     const createBtn = document.createElement("div");
     createBtn.classList.add("note");
