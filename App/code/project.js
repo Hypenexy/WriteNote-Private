@@ -36,8 +36,18 @@ function openNote(noteData){
     }
     const noteInfo = createAppendElement("note", noteList);
     noteInfo.classList.add("active");
+
     openNotes[NID] = JSON.parse(JSON.stringify(noteData));
     openNotes[NID].saved = true;
+    const dateNow = Date.now();
+    openNotes[NID].fO = dateNow;
+    for (let i = 0; i < notesList.length; i++) {
+        const element = notesList[i];
+        if(element.nid == NID){
+            element.fO = dateNow;
+        }
+    }
+
     activeNID = NID;
     showSubHeader(noteData.type);
     if(noteData.type == "note"){

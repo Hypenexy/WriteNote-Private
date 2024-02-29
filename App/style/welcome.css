@@ -378,14 +378,14 @@
 .welcome .notesSide .notes{
     overflow: auto;
     float: left;
-    width: calc(100% - 265px);
+    width: 100%;
     height: 100%;
 }
 
 
 .welcome .notes .filters{
     display: none;
-    /* coming soon */
+    /* coming soon, they came */
 }
 
 .welcome .notes .note{
@@ -433,7 +433,7 @@
 .welcome.loaded .notes .note{
     animation-name: fileAppear;
     animation-timing-function: cubic-bezier(.9, -.2, .2, 1);
-    animation-delay: .5s;
+    animation-delay: .1s;
     animation-duration: 1s;
     animation-fill-mode: forwards;
 }

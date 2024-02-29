@@ -205,6 +205,8 @@ function loadWelcome(responseData){
 
     const extraSort = welcomeContextMenu.add("extra", locale.sort, {"icon":"sort"});
     
+
+
     welcomeContextMenu.add("button", locale.name, {
         "icon":"sort_by_alpha",
         "submenu":extraSort,
@@ -212,12 +214,39 @@ function loadWelcome(responseData){
         "selectedReason":()=>{return settings.sort == "name";}
         // ...(settings.sort == "name" || console.log(settings.sort)) && {selected: true}
     });
-    welcomeContextMenu.add("button", locale.size, {"icon":"save", "submenu":extraSort});
-    welcomeContextMenu.add("button", locale.type, {"icon":"note", "submenu":extraSort});
+    welcomeContextMenu.add("button", locale.size, {
+        "icon":"save",
+        "submenu":extraSort,
+        "action":()=>{appendNoteList("size")},
+        "selectedReason":()=>{return settings.sort == "size";}
+    });
+    welcomeContextMenu.add("button", locale.type, {
+        "icon":"note",
+        "submenu":extraSort,
+        "action":()=>{appendNoteList("type")},
+        "selectedReason":()=>{return settings.sort == "type";}
+    });
+    
     welcomeContextMenu.add("line", null, {"submenu":extraSort});
-    welcomeContextMenu.add("button", locale.date_created, {"icon":"calendar_month", "submenu":extraSort});
-    welcomeContextMenu.add("button", locale.date_modified, {"icon":"calendar_month", "submenu":extraSort});
-    welcomeContextMenu.add("button", locale.date_opened, {"icon":"calendar_month", "submenu":extraSort});
+
+    welcomeContextMenu.add("button", locale.date_created, {
+        "icon":"calendar_month",
+        "submenu":extraSort,
+        "action":()=>{appendNoteList("dateCreated")},
+        "selectedReason":()=>{return settings.sort == "dateCreated";}
+    });
+    welcomeContextMenu.add("button", locale.date_modified, {
+        "icon":"calendar_month",
+        "submenu":extraSort,
+        "action":()=>{appendNoteList("dateModified")},
+        "selectedReason":()=>{return settings.sort == "dateModified";}
+    });
+    welcomeContextMenu.add("button", locale.date_opened, {
+        "icon":"calendar_month",
+        "submenu":extraSort,
+        "action":()=>{appendNoteList("dateOpened")},
+        "selectedReason":()=>{return settings.sort == "dateOpened";}
+    });
 
     // welcomeContextMenu.add("text", locale.edit);
     welcomeContextMenu.add("button", locale.select_all, {"icon":"select_all"});
