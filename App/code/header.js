@@ -170,7 +170,8 @@ document.addEventListener("click", function(e){
     function isContextMenu(composedPath){
         var isIt = false;
         for (let i = 0; i < composedPath.length; i++) {
-            if(composedPath[i].classList.includes("contextMenu")){
+            console.log(composedPath[i].classList);
+            if(composedPath[i].className && composedPath[i].classList.contains("contextMenu")){
                 isIt = true;
             }
         }

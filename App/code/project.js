@@ -320,7 +320,7 @@ function createNewNote(){
     for (let i = 0; i < filetypesKeys.length; i++) {
         const type = filetypesKeys[i];
         const typedata = filetypes[type];
-        addFileType(type, typedata)
+        addFileType(type, typedata);
     }
     element.appendChild(fileType);
 
@@ -328,6 +328,7 @@ function createNewNote(){
     const createBtn = document.createElement("div");
     createBtn.classList.add("btn");
     createBtn.textContent = "Create";
+    ButtonEvent(createBtn, createValidate);
     element.appendChild(createBtn);
 
     CreateModal(element, "createNew");
@@ -339,6 +340,12 @@ function createNewNote(){
 
 
 
+    function createValidate(){
+        console.log(selected.type)
+        const name = nameInput.value;
+        const type = selected.type.toLowerCase();
+        create(name, type);
+    }
     /**
      * Finalize the form and creation process.
      * @param {String} name The name of the project
@@ -347,17 +354,38 @@ function createNewNote(){
     function create(name, type){
         socket.emit("createNote",
             {
-                name: "Untitled",
-                type: "note"
+                name: name,
+                type: type
             },
             function(success, error){
                 if(success){
-                    openNote(success);
-                    notesInfo("created", success);
+                    const NID = Object.keys(success)[0];
+                    const noteData = success[NID];
+                    noteData["nid"] = NID;
+                    openNote(noteData);
+                    notesInfo("created", noteData);
+                }
+                if(error){
+                    console.log(error);
                 }
             }
         );
     }
+}
+
+function createFolder(){
+    const name = "New folder";
+    socket.emit("createNote", 
+        {name: name, type: "folder"},
+        (success, error) => {
+            if(success){
+                const NID = Object.keys(success)[0];
+                const noteData = success[NID];
+                noteData["nid"] = NID;
+                notesInfo("created", noteData);
+            }
+        }
+    );
 }
 
 function newNoteSuggestions(){
@@ -373,6 +401,7 @@ window.addEventListener("keydown", function(e){
 
 function deleteNote(NID, callback){
     socket.emit("bin", NID, function(success, error){
+        console.log(success, error)
         if(error){
             callback(null, error);
         }
@@ -386,6 +415,7 @@ function deleteNote(NID, callback){
 function notesInfo(type, data){
     if(type=="created"){
         addNoteToList(data);
+        appendNoteList();
     }
     if(type=="binned"){
         const headerElement = noteList.querySelectorAll('[NID="'+data+'"]')[0];

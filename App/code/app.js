@@ -336,11 +336,12 @@ function CreateModal(Element, ClassName, Intensity, Index){
 
     const closeButton = document.createElement("x");
     closeButton.innerText = "close";
-    function modalClose(){
+    function modalClose(e){
+        e.stopPropagation();
         closeModal();
         element.remove();
     }
-    ButtonEvent(closeButton, modalClose);
+    ButtonEvent(closeButton, modalClose, null, true);
     element.appendChild(closeButton);
 
     element.appendChild(Element);

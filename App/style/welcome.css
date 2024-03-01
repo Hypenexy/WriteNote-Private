@@ -123,12 +123,13 @@
     font-size: 24px;
     width: calc(50% + 12px);
     float: left;
+    height: 90px;
 }
 .welcome .userHalf::after, .welcome .weatherHalf::after{
     z-index: -1;
     content: ' ';
     width: 100%;
-    height: calc(100% + 8px);
+    height: 100%;
     position: absolute;
     top: 0;
     left: 0;
@@ -187,10 +188,23 @@
     opacity: 1;
     transform: initial;
 }
+.welcome .weatherHalf .extra{
+    display: inline-block;
+    max-width: 0px;
+    opacity: 0;
+    transition: .2s;
+}
+.welcome .weatherHalf:hover .extra{
+    opacity: 1;
+    max-width: 40px;
+}
+.welcome .weatherHalf:hover{
+    text-shadow: 1px 1px 1px 2px #11111199;
+}
 
 .welcome .notesSide{
     margin-top: 128px;
-    height: calc(100% - 169px);
+    height: calc(100% - 186px);
 }
 .headerDropdown.welcome .notesSide{
     margin-top: 60px;
@@ -389,22 +403,56 @@
 }
 
 .welcome .notes .note{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
     opacity: 0;
     user-select: none;
     cursor: pointer;
     color: #bbb;
     background: #191919;
-    padding: 12px;
+    border: 2px solid #191919;
+    /* padding: 12px; */
     border-radius: 12px;
     float: left;
-    width: 140px;
-    height: 80px;
+    width: 170px;
+    height: 120px;
     text-align: center;
     margin: 0 8px 8px 0;
     transition: .1s;
 }
+.welcome .notes .note.folder{
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
 .welcome .notes .note .title{
+    padding: 4px;
     color: #eee;
+    border-bottom: 1px solid #333;
+}
+.welcome .notes .note .description{
+    padding: 4px;
+    flex: 1;
+    background: #121212;
+}
+.welcome .notes .note .info{
+    padding: 12px;
+    text-align: left;
+    border-top: 1px solid #333;
+}
+.welcome .notes .note .info span:last-child{
+    float: right;
+    text-transform: capitalize;
+}
+.welcome .notes .note.selected{
+    background-color: #65baff;
+    color: #333;
+}
+.welcome .notes .note.selected .title{
+    color: #111;
 }
 .welcome .notes .create{
     /* width: 139px;

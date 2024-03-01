@@ -5,6 +5,7 @@ welcome.innerHTML = "<img class='logo' src='/assets/ui/logo.svg'>";
 app.appendChild(welcome);
 const notesSide = document.createElement("div");
 
+var binBtn; 
 function loadWelcome(responseData){
     function createMOTD(name){
         var now24 = new Date().toLocaleTimeString([], { hour: '2-digit', minute: "2-digit", hour12: false });
@@ -130,8 +131,7 @@ function loadWelcome(responseData){
         }
 
         timedescription += " " + info.city;
-
-        return '<img src="'+weatherServer+'images/'+info.image+'.jpg"><timed> '+locale.lastupdated+ ' ' + now + '</timed><p>' + timedescription +'.</p><w>' + info.temp.toString().slice(0, 2) + '°C ' + info.desc + '</w>';
+        return '<img src="'+weatherServer+'images/'+info.image+'.jpg"><timed> '+locale.lastupdated+ ' ' + now + '</timed><p>' + timedescription +'.</p><w>' + info.temp.toString().slice(0, 1) + "<span class='extra'>"+info.temp.toString().slice(1, info.temp.length)+"</span>" + '°C ' + info.desc + '</w>';
     }
 
 
@@ -156,6 +156,13 @@ function loadWelcome(responseData){
         htmlElement.innerHTML = "<i>"+topBtnsIcons[i]+"</i><span>"+element+"</span>";
         
         top.appendChild(htmlElement);
+
+        if(topBtnsIcons[i] == "delete"){
+            binBtn = htmlElement;
+        }
+        if(topBtnsIcons[i] == "folder"){
+            ButtonEvent(htmlElement, createFolder)
+        }
     }
 
     
@@ -205,48 +212,24 @@ function loadWelcome(responseData){
 
     const extraSort = welcomeContextMenu.add("extra", locale.sort, {"icon":"sort"});
     
+    function createObjectParams(icon, type){
+        return {
+            "icon":icon,
+            "submenu":extraSort,
+            "action":()=>{appendNoteList(type)},
+            "selectedReason":()=>{return settings.sort == type;}
+        }
+    }
 
-
-    welcomeContextMenu.add("button", locale.name, {
-        "icon":"sort_by_alpha",
-        "submenu":extraSort,
-        "action":()=>{appendNoteList("name")},
-        "selectedReason":()=>{return settings.sort == "name";}
-        // ...(settings.sort == "name" || console.log(settings.sort)) && {selected: true}
-    });
-    welcomeContextMenu.add("button", locale.size, {
-        "icon":"save",
-        "submenu":extraSort,
-        "action":()=>{appendNoteList("size")},
-        "selectedReason":()=>{return settings.sort == "size";}
-    });
-    welcomeContextMenu.add("button", locale.type, {
-        "icon":"note",
-        "submenu":extraSort,
-        "action":()=>{appendNoteList("type")},
-        "selectedReason":()=>{return settings.sort == "type";}
-    });
+    welcomeContextMenu.add("button", locale.name, createObjectParams("sort_by_alpha", "name"));
+    welcomeContextMenu.add("button", locale.size, createObjectParams("save", "size"));
+    welcomeContextMenu.add("button", locale.type, createObjectParams("note", "type"));
     
     welcomeContextMenu.add("line", null, {"submenu":extraSort});
 
-    welcomeContextMenu.add("button", locale.date_created, {
-        "icon":"calendar_month",
-        "submenu":extraSort,
-        "action":()=>{appendNoteList("dateCreated")},
-        "selectedReason":()=>{return settings.sort == "dateCreated";}
-    });
-    welcomeContextMenu.add("button", locale.date_modified, {
-        "icon":"calendar_month",
-        "submenu":extraSort,
-        "action":()=>{appendNoteList("dateModified")},
-        "selectedReason":()=>{return settings.sort == "dateModified";}
-    });
-    welcomeContextMenu.add("button", locale.date_opened, {
-        "icon":"calendar_month",
-        "submenu":extraSort,
-        "action":()=>{appendNoteList("dateOpened")},
-        "selectedReason":()=>{return settings.sort == "dateOpened";}
-    });
+    welcomeContextMenu.add("button", locale.date_created, createObjectParams("calendar_month", "dateCreated"));
+    welcomeContextMenu.add("button", locale.date_modified, createObjectParams("calendar_month", "dateModified"));
+    welcomeContextMenu.add("button", locale.date_opened, createObjectParams("calendar_month", "dateOpened"));
 
     // welcomeContextMenu.add("text", locale.edit);
     welcomeContextMenu.add("button", locale.select_all, {"icon":"select_all"});
@@ -258,15 +241,15 @@ const notesElement = document.createElement("div");
 notesElement.classList.add("notes");
 
 function noteContextMenuUpdated(noteData, element){
-    const NID = Object.keys(noteData)[0];
-    const name = noteData[NID].name;
-    if(!noteData[NID].size){
-        noteData[NID].size = 0;
+    const NID = noteData.nid;
+    const name = noteData.name;
+    if(!noteData.size){
+        noteData.size = 0;
     }
-    const size = humanFileSize(noteData[NID].size);
-    const dateOpen = new Date(noteData[NID].fO);
+    const size = humanFileSize(noteData.size);
+    const dateOpen = new Date(noteData.fO);
     const dateOpenFormatted = dateOpen.toLocaleDateString() + ", " + dateOpen.toLocaleTimeString();
-    const dateModified = new Date(noteData[NID].fM);
+    const dateModified = new Date(noteData.fM);
     const dateModifiedFormatted = dateModified.toLocaleDateString() + ", " + dateModified.toLocaleTimeString();
     
     const noteContextMenu = contextMenu();
@@ -277,7 +260,7 @@ function noteContextMenuUpdated(noteData, element){
 
     noteContextMenu.add("button", locale.share, {"icon":"share", "disabled":true});
     noteContextMenu.add("button", locale.duplicate, {"icon":"content_copy"});
-    noteContextMenu.add("button", locale.delete, {"icon":"delete"});
+    noteContextMenu.add("button", locale.delete, {"icon":"delete", "action":()=>{deleteNote(NID, (success, error)=>{});}});
 
     noteContextMenu.add("text", locale.properties);
     
@@ -293,66 +276,66 @@ function noteContextMenuUpdated(noteData, element){
     noteContextMenu.attach(element);
 }
 
-function noteContextMenu(noteData, e, element){
-    e.preventDefault();
-    var show = showContext();
+// function noteContextMenu(noteData, e, element){
+//     e.preventDefault();
+//     var show = showContext();
 
-    if(e.left){
-        contextMenu.style.top = e.top + 20 + "px";
-        contextMenu.style.left = e.left + 20 + "px";
-    }
-    else{
-        contextMenu.style.top = e.clientY + "px";
-        contextMenu.style.left = e.clientX + "px";
-    }
-    const NID = Object.keys(noteData)[0];
+//     if(e.left){
+//         contextMenu.style.top = e.top + 20 + "px";
+//         contextMenu.style.left = e.left + 20 + "px";
+//     }
+//     else{
+//         contextMenu.style.top = e.clientY + "px";
+//         contextMenu.style.left = e.clientX + "px";
+//     }
+//     const NID = Object.keys(noteData)[0];
 
-    const name = noteData[NID].name;
-    if(!noteData[NID].size){
-        noteData[NID].size = 0;
-    }
-    const size = humanFileSize(noteData[NID].size);
-    const dateOpen = new Date(noteData[NID].fO);
-    const dateOpenFormatted = dateOpen.toLocaleDateString() + ", " + dateOpen.toLocaleTimeString();
-    const dateModified = new Date(noteData[NID].fM);
-    const dateModifiedFormatted = dateModified.toLocaleDateString() + ", " + dateModified.toLocaleTimeString();
+//     const name = noteData[NID].name;
+//     if(!noteData[NID].size){
+//         noteData[NID].size = 0;
+//     }
+//     const size = humanFileSize(noteData[NID].size);
+//     const dateOpen = new Date(noteData[NID].fO);
+//     const dateOpenFormatted = dateOpen.toLocaleDateString() + ", " + dateOpen.toLocaleTimeString();
+//     const dateModified = new Date(noteData[NID].fM);
+//     const dateModifiedFormatted = dateModified.toLocaleDateString() + ", " + dateModified.toLocaleTimeString();
 
-    if(!noteData[NID].bin){
-        contextMenu.innerHTML = '<input value="'+name+'" placeholder=>'+
-        "<de>"+locale.actions+"</de>"+
-        "<p><i>share</i> "+locale.share+"</p>"+
-        "<p><i>content_copy</i>"+locale.duplicate+"</p>"+
-        "<p><i>delete</i>"+locale.delete+"</p>"+
-        "<de>"+locale.properties+"</de>"+
-        "<pr><i>calendar_month</i>opened: "+dateOpenFormatted+"</pr>"+
-        "<pr><i>calendar_month</i>modified: "+dateModifiedFormatted+"</pr>"+
-        "<pr><i>save</i>"+size+"</pr>";
+//     if(!noteData[NID].bin){
+//         contextMenu.innerHTML = '<input value="'+name+'" placeholder=>'+
+//         "<de>"+locale.actions+"</de>"+
+//         "<p><i>share</i> "+locale.share+"</p>"+
+//         "<p><i>content_copy</i>"+locale.duplicate+"</p>"+
+//         "<p><i>delete</i>"+locale.delete+"</p>"+
+//         "<de>"+locale.properties+"</de>"+
+//         "<pr><i>calendar_month</i>opened: "+dateOpenFormatted+"</pr>"+
+//         "<pr><i>calendar_month</i>modified: "+dateModifiedFormatted+"</pr>"+
+//         "<pr><i>save</i>"+size+"</pr>";
 
-        ButtonEvent(contextMenu.getElementsByTagName("p")[2], function(e){
-            // e.stopPropagation();
-            deleteNote(NID, function(success, error){
-                if(success){
-                    element.remove();
-                    hideContext();
-                }
-            });
-        }, null, true)
-    }
-    else{
-        contextMenu.innerHTML = "<pr>"+name+"</pr>"+
-        "<de>"+locale.actions+"</de>"+
-        "<p><i>star</i> "+locale.recover+"</p>"+
-        "<p><i>delete_forever</i> "+locale.perm_delete+"</p>"
-    }
+//         ButtonEvent(contextMenu.getElementsByTagName("p")[2], function(e){
+//             // e.stopPropagation();
+//             deleteNote(NID, function(success, error){
+//                 if(success){
+//                     element.remove();
+//                     hideContext();
+//                 }
+//             });
+//         }, null, true)
+//     }
+//     else{
+//         contextMenu.innerHTML = "<pr>"+name+"</pr>"+
+//         "<de>"+locale.actions+"</de>"+
+//         "<p><i>star</i> "+locale.recover+"</p>"+
+//         "<p><i>delete_forever</i> "+locale.perm_delete+"</p>"
+//     }
 
 
 
-    show();
-}
+//     show();
+// }
 
-const notesList = [];
+var notesList = [];
 
-function appendNoteList(sort){
+function appendNoteList(sort, space){
     notesElement.innerHTML = "";
 
     if(!sort && settings && settings.sort){
@@ -399,56 +382,13 @@ function appendNoteList(sort){
         sortData("size");
     }
 
+    // make sure to put folders first
+    sortData("type");
+
     for (let i = 0; i < notesList.length; i++) {
         const element = notesList[i];
         addNoteToList(element);
     }
-}
-
-function addNoteToList(notedata, space){
-    const element = document.createElement("div");
-    element.classList.add("note");
-    const NID = notedata.nid;
-    if(notedata.bin==true && space!="bin"){
-        return;
-    }
-    if(!notedata.bin && space=="bin"){
-        return;
-    }
-    element.setAttribute("NID", NID);
-    ButtonEvent(element, openNote, notedata);
-    // element.addEventListener("contextmenu", function(e){noteContextMenu(notedata, e, element)});
-    noteContextMenuUpdated(notedata, element)
-    element.innerHTML = "<p class='title'>"+notedata.name+"</p>";
-    if(notedata.fL){
-        element.innerHTML += "<p class='description'>"+notedata.fL+"</p>";
-    }
-    notesElement.appendChild(element);
-}
-
-var storedNotesData;
-function loadNotesWelcome(data, space){
-    storedNotesData = data;
-    notesElement.innerHTML = "";
-
-    const filters = document.createElement("div");
-    filters.classList.add("filters");
-    notesElement.appendChild(filters);
-    const sort = createSelect("Modified Date")
-    sort.addOption("Opened Date");
-    sort.classList.add("sort");
-    filters.appendChild(sort);
-     
-
-    for (let i = 0; i < data.notes.length; i++) {
-        const element = data.notes[i];
-        // addNoteToList(element, space);
-        const pushelement = element[Object.keys(element)[0]];
-        pushelement["nid"] = Object.keys(element)[0];
-        notesList.push(pushelement);
-    }
-
-    appendNoteList();
 
     const createBtn = document.createElement("div");
     createBtn.classList.add("note");
@@ -470,6 +410,76 @@ function loadNotesWelcome(data, space){
             element.style.animationDuration = ".3s";
         }
     }
+}
+
+const selectedNotes = [];
+function selectNote(notedata){
+    binBtn.children[1].textContent = `Move ${selectedNotes.length + 1} to Bin`;
+    selectedNotes.push(notedata);
+}
+
+function addNoteToList(notedata, space){
+    const element = document.createElement("div");
+    element.classList.add("note");
+    const NID = notedata.nid;
+    if(notedata.bin==true && space!="bin"){
+        return;
+    }
+    if(!notedata.bin && space=="bin"){
+        return;
+    }
+    element.setAttribute("NID", NID);
+    element.addEventListener("click", function(e){
+        if(e.ctrlKey){
+            e.stopPropagation();
+            element.classList.add("selected");
+            selectNote(notedata);
+        }
+    });
+    
+    noteContextMenuUpdated(notedata, element);
+    if(notedata.type != "folder"){
+        ButtonEvent(element, openNote, notedata);
+        // element.addEventListener("contextmenu", function(e){noteContextMenu(notedata, e, element)});
+        element.innerHTML = "<p class='title'>"+notedata.name+"</p>";
+        if(notedata.fL){
+            element.innerHTML += "<p class='description'>"+notedata.fL+"</p>";
+        }
+        element.innerHTML += `<p class='info'><span>${humanFileSize(notedata.size)}</span><span>${notedata.type}</span></p>`;
+    }
+    else{
+        element.classList.add("folder");
+        element.innerHTML = "<i>folder</i><span>"+notedata.name+"<span>";
+    }
+    notesElement.appendChild(element);
+}
+
+var storedNotesData;
+function loadNotesWelcome(data, space){
+    storedNotesData = data;
+    notesElement.innerHTML = "";
+
+    // const filters = document.createElement("div");
+    // filters.classList.add("filters");
+    // notesElement.appendChild(filters);
+    // const sort = createSelect("Modified Date")
+    // sort.addOption("Opened Date");
+    // sort.classList.add("sort");
+    // filters.appendChild(sort);
+
+    if(notesList.length > 0){
+        notesList = [];
+    }
+
+    for (let i = 0; i < data.notes.length; i++) {
+        const element = data.notes[i];
+        // addNoteToList(element, space);
+        const pushelement = element[Object.keys(element)[0]];
+        pushelement["nid"] = Object.keys(element)[0];
+        notesList.push(pushelement);
+    }
+
+    appendNoteList(null, space);
 }
 
 function loadDevicesWelcome(data){
