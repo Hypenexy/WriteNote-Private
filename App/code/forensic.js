@@ -75,3 +75,17 @@ const forensicTimer = setInterval(function(){
 function disablePeriodicForensic(){
     clearInterval(forensicTimer);
 }
+
+
+document.addEventListener("visibilitychange", function(){
+    if(document.visibilityState === "visible"){
+        
+    }
+    else{
+        uploadForensicLog();
+        // This should be considered closing the tab
+        // anyway i have socket on disconnect so its fine
+
+        // There's no reason but I could use sendBeacon() method
+    }
+});
