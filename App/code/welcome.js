@@ -4,23 +4,24 @@ welcome.innerHTML = "<img class='logo' src='/assets/ui/logo.svg'>";
 // welcome.appendChild(logo);
 app.appendChild(welcome);
 const notesSide = document.createElement("div");
+const devicesSide = document.createElement("div");
 
 var binBtn; 
 function loadWelcome(responseData){
     function createMOTD(name){
         var now24 = new Date().toLocaleTimeString([], { hour: '2-digit', minute: "2-digit", hour12: false });
         var hour = parseInt(now24.slice(0, 2));
-        var welcomeMessage = locale.goodmorning;
-        if(hour>13&&hour<18){
+        var welcomeMessage = locale.goodmorning; // From 6 to 12
+        if(hour>12&&hour<18){ // From 14:00 to 17:00
             welcomeMessage = locale.goodafternoon;
         }
-        if(hour>17&&hour<23){
+        if(hour>17&&hour<23){ // From 18:00 to 22:00
             welcomeMessage = locale.goodevening;
         }
-        if(hour>22||hour<6){
+        if(hour>22||hour<6){ // From 23:00 to 5:00
             welcomeMessage = locale.goodnight;
         }
-        if(hour==0||hour==24){
+        if(hour==0||hour==24){ // At 00:00 midnight (24:00)
             welcomeMessage = locale.goodmidnight;
         }
         welcomeMessage += ", " + name;
@@ -111,27 +112,27 @@ function loadWelcome(responseData){
 
         timedescription = `${locale.its} ${feel} `;
 
-        if(hour<12&&hour>=6){
+        if(hour<12&&hour>=6){ // From 6:00 to 12:00
             timedescription += locale.morningin;
         }
-        if(hour==12){
+        if(hour==12){ // At 12:00
             timedescription += locale.noonin;
         }
-        if(hour>13&&hour<18){
+        if(hour>12&&hour<18){ // From 13:00 to 17:00
             timedescription += locale.afternoonin;
         }
-        if(hour>17&&hour<23){
+        if(hour>17&&hour<23){ // From 18:00 to 22:00
             timedescription += locale.eveningin;
         }
-        if(hour>22||hour<6){
+        if(hour>22||hour<6){ // From 23:00 to 5:00
             timedescription += locale.nightin;
         }
-        if(hour==0&&hour==24){
+        if(hour==0&&hour==24){ // At midnight 0:00, 24:00
             timedescription += locale.midnightin;
         }
 
         timedescription += " " + info.city;
-        return '<img src="'+weatherServer+'images/'+info.image+'.jpg"><timed> '+locale.lastupdated+ ' ' + now + '</timed><p>' + timedescription +'.</p><w>' + info.temp.toString().slice(0, 1) + "<span class='extra'>"+info.temp.toString().slice(1, info.temp.length)+"</span>" + '°C ' + info.desc + '</w>';
+        return '<img src="'+weatherServer+'images/'+info.image+'.jpg"><timed> '+locale.lastupdated+ ' ' + now + '</timed><p>' + timedescription +'.</p><w>' + info.temp.toString().split('.')[0] + "<span class='extra'>."+info.temp.toString().split('.')[1]+"</span>" + '°C ' + info.desc + '</w>';
     }
 
 
@@ -147,6 +148,7 @@ function loadWelcome(responseData){
     const top = document.createElement("div");
     top.classList.add("top");
     notesSide.appendChild(top);
+    top.appendChild(devicesSide);
     const topBtns = [locale.new_folder, locale.bin];
     const topBtnsIcons = ["folder", "delete"];
     for (let i = 0; i < topBtns.length; i++) {
@@ -393,7 +395,7 @@ function appendNoteList(sort, space){
     const createBtn = document.createElement("div");
     createBtn.classList.add("note");
     createBtn.classList.add("create");
-    createBtn.innerHTML = "<p><i>add</i> "+locale.create_new+"</p>";
+    createBtn.innerHTML = "<i>add</i><span>"+locale.create_new+"</span>";
     ButtonEvent(createBtn, createNewNote);
     notesElement.appendChild(createBtn);
 
@@ -482,9 +484,33 @@ function loadNotesWelcome(data, space){
     appendNoteList(null, space);
 }
 
+
+var devicesList = {};
 function loadDevicesWelcome(data){
+    var devicesKeys = Object.keys(data.devices);
+    for (let i = 0; i < devicesKeys.length; i++) {
+        devicesList[devicesKeys[i]] = data.devices[devicesKeys[i]];
+    }
     const count = data.devices.length;
-    console.log(count); // work!! here.
+    console.log(data);
+    console.log(count); // work!! here. Okey
+}
+function updateDeviceList(data){ // This might not be properly formatted on the database. Check later!
+    if(data.type == "leave"){
+        var devicesKeys = Object.keys(data.devices);
+        for (let i = 0; i < devicesKeys.length; i++) {
+            const element = devicesKeys[i];
+            if(devicesList[element].DID){ // device id
+
+            }
+            
+        }
+    }
+    if(data.type == "join"){
+        // devicesList[data.content] This scheme is weird
+    }
+    // devicesList
+    console.log(data)
 }
 
 function loadErrorWelcome(errorType, error){

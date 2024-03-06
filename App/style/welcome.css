@@ -455,27 +455,12 @@
     color: #111;
 }
 .welcome .notes .create{
-    /* width: 139px;
-    height: 79px; */
     border: 1px solid #333;
     background: initial;
-    /* padding: 28px 12px; */
     padding: 12px;
-    vertical-align: middle;
-}
-.welcome .notes .create i{
-    vertical-align: middle;
-}
-.welcome .notes .create p{
-    position: absolute;
-    top: 50%;
-    padding-left: 26px;
-    transform: translateY(-50%);
-}
-.welcome .notes .create p i{
-    position: absolute;
-    left: 0;
-    transform: translateY(-3px);
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
 }
 
 .welcome.loaded .notes .note{
