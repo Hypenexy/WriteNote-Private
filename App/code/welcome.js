@@ -240,7 +240,7 @@ function loadWelcome(responseData){
 const notesElement = document.createElement("div");
 notesElement.classList.add("notes");
 
-function noteContextMenuUpdated(noteData, element){
+function noteContextMenu(noteData, element){
     const NID = noteData.nid;
     const name = noteData.name;
     if(!noteData.size){
@@ -260,7 +260,11 @@ function noteContextMenuUpdated(noteData, element){
 
     noteContextMenu.add("button", locale.share, {"icon":"share", "disabled":true});
     noteContextMenu.add("button", locale.duplicate, {"icon":"content_copy"});
-    noteContextMenu.add("button", locale.delete, {"icon":"delete", "action":()=>{deleteNote(NID, (success, error)=>{});}});
+    noteContextMenu.add("button", locale.delete, {"icon":"delete", "action":()=>{deleteNote(NID, (success, error)=>{
+        if(success){
+            element.remove();
+        }
+    });}});
 
     noteContextMenu.add("text", locale.properties);
     
@@ -382,8 +386,11 @@ function appendNoteList(sort, space){
         sortData("size");
     }
 
-    // make sure to put folders first
-    sortData("type");
+    notesList.sort(function(b){
+        if(b["type"] == "folder"){
+            return -1;
+        }
+    });
 
     for (let i = 0; i < notesList.length; i++) {
         const element = notesList[i];
@@ -393,7 +400,7 @@ function appendNoteList(sort, space){
     const createBtn = document.createElement("div");
     createBtn.classList.add("note");
     createBtn.classList.add("create");
-    createBtn.innerHTML = "<p><i>add</i> "+locale.create_new+"</p>";
+    createBtn.innerHTML = "<i>add</i><p> "+locale.create_new+"</p>";
     ButtonEvent(createBtn, createNewNote);
     notesElement.appendChild(createBtn);
 
@@ -437,7 +444,7 @@ function addNoteToList(notedata, space){
         }
     });
     
-    noteContextMenuUpdated(notedata, element);
+    noteContextMenu(notedata, element);
     if(notedata.type != "folder"){
         ButtonEvent(element, openNote, notedata);
         // element.addEventListener("contextmenu", function(e){noteContextMenu(notedata, e, element)});

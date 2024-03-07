@@ -337,7 +337,9 @@ function CreateModal(Element, ClassName, Intensity, Index){
     const closeButton = document.createElement("x");
     closeButton.innerText = "close";
     function modalClose(e){
-        e.stopPropagation();
+        if(e){
+            e.stopPropagation();
+        }
         closeModal();
         element.remove();
     }
@@ -347,6 +349,8 @@ function CreateModal(Element, ClassName, Intensity, Index){
     element.appendChild(Element);
     const closeModal = ShowModal(modalClose, Intensity, Index);
     app.appendChild(element);
+
+    return modalClose;
 }
 
 document.addEventListener("keydown", function(e){
