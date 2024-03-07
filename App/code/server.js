@@ -86,6 +86,9 @@ async function connectMidelight(){
                     socket.on("notesInfo", function(type, data){
                         notesInfo(type, data);
                     });
+                    socket.on("deviceInfo", function(data){
+                        updateDeviceList(data);
+                    });
                 }
                 else{
                     // make a specific menu for this

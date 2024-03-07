@@ -455,11 +455,8 @@
     color: #111;
 }
 .welcome .notes .create{
-    /* width: 139px;
-    height: 79px; */
     border: 1px solid #333;
     background: initial;
-    /* padding: 28px 12px; */
     padding: 12px;
 
     gap: 4px;
