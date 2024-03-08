@@ -79,9 +79,10 @@ function disablePeriodicForensic(){
 
 document.addEventListener("visibilitychange", function(){
     if(document.visibilityState === "visible"){
-        
+        logForensic("app_visible");
     }
     else{
+        logForensic("app_hidden");
         uploadForensicLog();
         // This should be considered closing the tab
         // anyway i have socket on disconnect so its fine

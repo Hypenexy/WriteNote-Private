@@ -495,3 +495,36 @@ background: #0089ff;
 border-radius: 99px;
 background: rgb(107,99,251);
 background: linear-gradient(90deg, rgba(107,99,251,1) 0%, rgba(152,36,211,1) 66%, rgba(230,47,47,1) 100%); */
+
+
+.devicesSide{
+    display: flex;
+    gap: 5px;
+    user-select: none;
+    float: right;
+    color: #bbb;
+}
+
+.devicesSide i{
+    margin-left: -16px;
+    cursor: pointer;
+    background-color: #222;
+    border: 2px solid #58da97;
+    padding: 10px;
+    border-radius: 99px;
+}
+.devicesSide .away{
+    border: 2px solid #e4f359;
+}
+.devicesSide .dnd{
+    border: 2px solid #F35959;
+}
+.devicesSide i:hover, .devicesSide i:focus-visible{
+    background-color: #333;
+
+}
+
+.deviceInfo{
+    position: absolute;
+    background-color: #292929;
+}

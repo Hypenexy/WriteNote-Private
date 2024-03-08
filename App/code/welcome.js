@@ -5,6 +5,7 @@ welcome.innerHTML = "<img class='logo' src='/assets/ui/logo.svg'>";
 app.appendChild(welcome);
 const notesSide = document.createElement("div");
 const devicesSide = document.createElement("div");
+devicesSide.classList.add("devicesSide");
 
 var binBtn; 
 function loadWelcome(responseData){
@@ -148,7 +149,6 @@ function loadWelcome(responseData){
     const top = document.createElement("div");
     top.classList.add("top");
     notesSide.appendChild(top);
-    top.appendChild(devicesSide);
     const topBtns = [locale.new_folder, locale.bin];
     const topBtnsIcons = ["folder", "delete"];
     for (let i = 0; i < topBtns.length; i++) {
@@ -166,6 +166,7 @@ function loadWelcome(responseData){
             ButtonEvent(htmlElement, createFolder)
         }
     }
+    top.appendChild(devicesSide);
 
     
     // const side = document.createElement("div");
@@ -490,6 +491,7 @@ function loadDevicesWelcome(data){
     var devicesKeys = Object.keys(data.devices);
     for (let i = 0; i < devicesKeys.length; i++) {
         devicesList[devicesKeys[i]] = data.devices[devicesKeys[i]];
+        addDeviceElement(data.devices[devicesKeys[i]]);
     }
     const count = data.devices.length;
     console.log(data);
@@ -508,9 +510,54 @@ function updateDeviceList(data){ // This might not be properly formatted on the 
     }
     if(data.type == "join"){
         // devicesList[data.content] This scheme is weird
+        addDeviceElement(data) // fr fix the schema first then finish up here
     }
     // devicesList
     console.log(data)
+}
+
+function showDeviceOptions(element, data){
+    // Add the functionality to change other devices' settings
+    // from this one
+    const infoElement = document.createElement("div");
+    infoElement.classList.add("deviceInfo");
+
+    var name = document.createElement("div");
+    name.textContent = data.toString();
+    infoElement.appendChild(name);
+
+    var btns = [ // Rethink those
+        ["sms", "Chat with device"], 
+        ["settings", "Change device settings"],
+        ["logout", "Sign device out"],
+    ];
+    for (let i = 0; i < btns.length; i++) {
+        const btn = btns[i];
+        const htmlElement = document.createElement("div");
+        htmlElement.innerHTML = `<i>${btn[0]}</i><span>${btn[1]}</span>`;
+        infoElement.appendChild(htmlElement);
+    }
+
+    function show(){
+        infoElement.classList.add("show");
+    }
+    function hide(){
+        infoElement.classList.remove("show");
+    }
+
+    element.addEventListener("mouseover", show);
+}
+
+function addDeviceElement(data){
+    console.log(data);
+    const element = document.createElement("i");
+    element.textContent = "computer";
+    // element.setAttribute("DID", DID);
+    showDeviceOptions(element, data);
+    devicesSide.appendChild(element);
+}
+function removeDeviceElement(data){
+    devicesSide.querySelector("['DID'='"+DID+"']");
 }
 
 function loadErrorWelcome(errorType, error){
