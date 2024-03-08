@@ -1,0 +1,52 @@
+:root{
+    --c1: #7469B6;
+    --c2: #AD88C6;
+    --c3: #E1AFD1;
+    --c4: #FFE6E6;
+
+    --foreground: #000;
+    --fg1: #111;
+    --fg2: #333;
+    --background: #FFE6E6;
+}
+
+writenote{
+    background-color: var(--background);
+}
+notearea{
+    color: var(--foreground);
+}
+
+@keyframes load {
+    from {background: #eee;}
+    to {background: var(--background);}
+}
+
+.welcome{
+    background: var(--c4);
+    color: var(--fg1);
+}
+.welcome .motd{
+    color: var(--fg2);
+}
+
+.btn{
+    color: var(--fg1);
+    border: 1px solid var(--c3);
+    background: var(--c3);
+}
+
+.welcome .notes .note{
+    color: var(--foreground);
+    background: var(--c2);
+}
+.welcome .notes .note .title{
+    color: var(--fg1);
+}
+.welcome .notes .note .description{
+    color: var(--fg2);
+    background-color: var(--c3);
+}
+.welcome .notes .note:hover, .welcome .notes .note:focus-visible{
+    background: var(--c1);
+}

@@ -1,6 +1,12 @@
-const userNotes = {};
+// const userNotes = {};
 
 
+function convertNoteData(data){
+    const NID = Object.keys(data)[0];
+    const noteData = data[NID];
+    noteData["nid"] = NID;
+    return noteData;
+}
 
 const openNotes = {};
 var activeNID;
@@ -162,6 +168,7 @@ function openNote(noteData){
     });
 }
 
+// This is real weird design, because each time you switch note it connects and awaits for a response
 function switchToNote(noteInfo, noteData){
     const NID = noteData.nid;
     socket.emit("openNote", NID, (success, error) => {
@@ -331,7 +338,7 @@ function createNewNote(){
     ButtonEvent(createBtn, createValidate);
     element.appendChild(createBtn);
 
-    CreateModal(element, "createNew");
+    const closeModal = CreateModal(element, "createNew");
 
     // var media = document.createElement("media")
     // media.innerHTML = "<h1><i>folder</i>Media</h1><x class='m-i'>close</x>"
@@ -341,7 +348,6 @@ function createNewNote(){
 
 
     function createValidate(){
-        console.log(selected.type)
         const name = nameInput.value;
         const type = selected.type.toLowerCase();
         create(name, type);
@@ -359,11 +365,12 @@ function createNewNote(){
             },
             function(success, error){
                 if(success){
+                    closeModal();
                     const NID = Object.keys(success)[0];
                     const noteData = success[NID];
                     noteData["nid"] = NID;
                     openNote(noteData);
-                    notesInfo("created", noteData);
+                    notesInfo("created", success);
                 }
                 if(error){
                     console.log(error);
@@ -379,10 +386,7 @@ function createFolder(){
         {name: name, type: "folder"},
         (success, error) => {
             if(success){
-                const NID = Object.keys(success)[0];
-                const noteData = success[NID];
-                noteData["nid"] = NID;
-                notesInfo("created", noteData);
+                notesInfo("created", success);
             }
         }
     );
@@ -401,7 +405,6 @@ window.addEventListener("keydown", function(e){
 
 function deleteNote(NID, callback){
     socket.emit("bin", NID, function(success, error){
-        console.log(success, error)
         if(error){
             callback(null, error);
         }
@@ -414,12 +417,23 @@ function deleteNote(NID, callback){
 
 function notesInfo(type, data){
     if(type=="created"){
-        addNoteToList(data);
+        const noteData = convertNoteData(data);
+        console.log(noteData);
+        notesList.push(noteData);
         appendNoteList();
     }
     if(type=="binned"){
+        for (let i = 0; i < notesList.length; i++) {
+            const element = notesList[i];
+            if(element.nid == data){
+                element.bin = true;
+            }
+        }
+
         const headerElement = noteList.querySelectorAll('[NID="'+data+'"]')[0];
-        addIconHeaderNote(headerElement, "delete", locale.binned_note, "binned");
+        if(headerElement){
+            addIconHeaderNote(headerElement, "delete", locale.binned_note, "binned");
+        }
 
         const welcomeElement = notesElement.querySelectorAll('[NID="'+data+'"]')[0];
         welcomeElement.remove();

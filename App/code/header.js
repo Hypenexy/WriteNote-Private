@@ -166,11 +166,12 @@ function hideHeaderDropdown(instant){
     }
 }
 
+// !! Maybe make it so that it only closes when elements BELOW
+// the popup are clicked? Wouldn't be such a mess here
 document.addEventListener("click", function(e){
     function isContextMenu(composedPath){
         var isIt = false;
         for (let i = 0; i < composedPath.length; i++) {
-            console.log(composedPath[i].classList);
             if(composedPath[i].className && composedPath[i].classList.contains("contextMenu")){
                 isIt = true;
             }
@@ -189,6 +190,8 @@ document.addEventListener("click", function(e){
         }
     }
 });
+// ??????????????????
+// Looks weird with multiple menus being closed at the same time
 document.addEventListener("keydown", function(e){
     if(e.key == "Escape"){
         hideHeaderDropdown();
