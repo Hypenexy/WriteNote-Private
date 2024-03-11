@@ -592,7 +592,7 @@ function removeDeviceElement(data){
 }
 
 function loadUsageWelcome(data){
-    const rawRatio = data/8000000000 + 1;
+    const rawRatio = data/8000000000;
     attachTooltip(usageElement, `${rawRatio}%`);
     const percentage = Math.round((rawRatio*100 + Number.EPSILON) * 100) / 100;
     const roundedPercentage = Math.round(percentage);
