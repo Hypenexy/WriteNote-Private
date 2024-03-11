@@ -243,6 +243,39 @@
     transform: translateY(-2px);
 } */
 
+.welcome .notesSide .top .usageElement{
+    position: relative;
+    display: inline-block;
+    background-color: #222;
+    color: #bbb;
+    padding: 12px;
+    border-radius: 12px;
+    width: 200px;
+}
+
+
+.welcome .notesSide .top .usageElement::before{
+    content: ' ';
+    position: absolute;
+    left: 12px;
+    bottom: 6px;
+    background-color: #444;
+    width: calc(100% - 24px);
+    height: 4px;
+    border-radius: 99px;
+}
+.welcome .notesSide .top .usageElement::after{
+    content: ' ';
+    position: absolute;
+    left: 12px;
+    bottom: 6px;
+    background: var(--gradient);
+    /* width: calc(var(--size) - var(--size) * 13.3333%); */
+    width: var(--size);
+    height: 4px;
+    border-radius: 99px;
+}
+
 .welcome .notesSide .side{
     width: 200px;
     height: 100%;
@@ -527,6 +560,20 @@ background: linear-gradient(90deg, rgba(107,99,251,1) 0%, rgba(152,36,211,1) 66%
 }
 
 .deviceInfo{
+    z-index: 9;
     position: absolute;
+    color: #bbb;
     background-color: #292929;
+    left: 0;
+    top: 0;
+    /* width: 200px;
+    height: 100px; */
+
+    transform: translateY(8px);
+    opacity: 0;
+    transition: .2s;
+}
+.deviceInfo.show{
+    transform: initial;
+    opacity: 1;
 }

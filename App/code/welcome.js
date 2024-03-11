@@ -7,7 +7,9 @@ const notesSide = document.createElement("div");
 const devicesSide = document.createElement("div");
 devicesSide.classList.add("devicesSide");
 
-var binBtn; 
+var binBtn;
+var usageElement = document.createElement("div");
+usageElement.classList.add("usageElement");
 function loadWelcome(responseData){
     function createMOTD(name){
         var now24 = new Date().toLocaleTimeString([], { hour: '2-digit', minute: "2-digit", hour12: false });
@@ -166,6 +168,7 @@ function loadWelcome(responseData){
             ButtonEvent(htmlElement, createFolder)
         }
     }
+    top.appendChild(usageElement);
     top.appendChild(devicesSide);
 
     
@@ -545,11 +548,32 @@ function showDeviceOptions(element, data){
         infoElement.appendChild(htmlElement);
     }
 
+    
     function show(){
+        // var elementOffset = normalizeOffset([element.offsetLeft, element.offsetTop, element.offsetLeft + element.offsetWidth, element.offsetTop + element.offsetHeight]);
+        var elementOffset = getBoundingClientRectObject(element);
+
+        app.appendChild(infoElement);
+        
+        infoElement.style.top = (elementOffset.bottom + 10) + "px";
+        infoElement.style.left = (elementOffset.right) + "px";
+        // var normalized = normalizeOffset(getBoundingClientRectObject(infoElement))
+        
+        // infoElement.style.top = normalized.top + "px";
+        // infoElement.style.right = normalized.right + "px";
+        
+        var reac = getBoundingClientRectObject(infoElement);
+        var offset = normalizeOffset([reac.left, reac.top, reac.right, reac.bottom]);
+        infoElement.style.top = offset.top + "px";
+        infoElement.style.left = offset.left - offset.width/2 + "px";
+
         infoElement.classList.add("show");
     }
     function hide(){
         infoElement.classList.remove("show");
+        setTimeout(() => {
+            infoElement.remove();
+        }, infoElement.computedStyleMap().get('transition').value * 1000);
     }
 
     element.addEventListener("mouseover", show);
@@ -565,6 +589,22 @@ function addDeviceElement(data){
 }
 function removeDeviceElement(data){
     devicesSide.querySelector("['DID'='"+DID+"']");
+}
+
+function loadUsageWelcome(data){
+    const rawRatio = data/8000000000 + 1;
+    attachTooltip(usageElement, `${rawRatio}%`);
+    const percentage = Math.round((rawRatio*100 + Number.EPSILON) * 100) / 100;
+    const roundedPercentage = Math.round(percentage);
+    const gradient = `linear-gradient(90deg, rgba(0,207,255,1) 0%, rgba(127,255,212,1) ${100 + 36 - roundedPercentage}%, rgba(228,243,89,1) ${100 + 76 - roundedPercentage}%, rgba(243,89,89,1) ${100 + 94 - roundedPercentage}%)`;
+    usageElement.style.setProperty('--gradient', gradient);
+    function rangeTranslate(n, x, y){
+        var OldRange = (x[1] - x[0]);
+        var NewRange = (y[1] - y[0]);
+        return (((n - x[0]) * NewRange) / OldRange) + y[0];
+    }
+    usageElement.style.setProperty('--size', `${rangeTranslate(roundedPercentage, [0, 100], [0, 88])}%`);
+    usageElement.textContent = `${humanFileSize(data)} (${percentage}%) / 1 GB`;
 }
 
 function loadErrorWelcome(errorType, error){
