@@ -42,3 +42,15 @@ class glassmorphism{
 
 // I couldn't solve the equation
 // I'm stupid
+
+// I really liked the challenge but there is and always were
+// such an easy answer to the question...
+
+// small.style.backgroundSize = "cover";
+// small.style.backgroundPosition = "center";
+// small.style.backgroundAttachment = "fixed";
+// small.style.backgroundRepeat = "no-repeat";
+
+// This is the solution
+
+// https://multiple.js.org/

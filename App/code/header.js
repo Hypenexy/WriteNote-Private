@@ -36,6 +36,10 @@ function loadHeader(){
     attachTooltip(showSubHeader, locale["show_subheader"]);
     ButtonEvent(showSubHeader, toggleSubHeader);
 
+    const weather = createAppendElement("weather", infotainment);
+    weather.innerHTML = "<div>" + storedData.weather.temp.toString().split('.')[0] + "°C</div>";
+    weather.style.backgroundImage = `url("${weatherServer}images/${storedData.weather.image}.jpg")`;
+
     const profile = createAppendElement("profile", infotainment);
     attachOnlineStatus(profile);
     attachTooltip(profile, locale["view_profile"]);

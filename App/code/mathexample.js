@@ -49,9 +49,15 @@ console.log(right);
 
 
 big.style.background = "linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(0,212,255,1) 100%)";
-small.style.background = `linear-gradient(90deg, rgba(2,0,36,1) ${left}%, rgba(0,212,255,1) ${right}%)`;
+// small.style.background = `linear-gradient(90deg, rgba(2,0,36,1) ${left}%, rgba(0,212,255,1) ${right}%)`;
+small.style.background = `linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(0,212,255,1) 100%)`;
 
 
+
+small.style.backgroundSize = "cover";
+small.style.backgroundPosition = "center";
+small.style.backgroundAttachment = "fixed";
+small.style.backgroundRepeat = "no-repeat";
 
 
 
