@@ -526,14 +526,19 @@ function updateDeviceList(data){ // This might not be properly formatted on the 
     console.log(data)
 }
 
-function showDeviceOptions(element, data){
+function showDeviceOptions(){
+    const element = arguments[0];
+    const data = arguments[1];
     // Add the functionality to change other devices' settings
     // from this one
+
+
+
     const infoElement = document.createElement("div");
     infoElement.classList.add("deviceInfo");
 
     var name = document.createElement("div");
-    name.textContent = data.toString();
+    name.textContent = JSON.stringify(Object.keys(data)[0]);
     infoElement.appendChild(name);
 
     var btns = [ // Rethink those
@@ -544,32 +549,45 @@ function showDeviceOptions(element, data){
     for (let i = 0; i < btns.length; i++) {
         const btn = btns[i];
         const htmlElement = document.createElement("div");
+        htmlElement.classList.add("btn");
+        if(btns.length - 1 == i){
+            htmlElement.classList.add("logout");
+        }
         htmlElement.innerHTML = `<i>${btn[0]}</i><span>${btn[1]}</span>`;
         infoElement.appendChild(htmlElement);
     }
+    const caret = document.createElement("div");
+    caret.classList.add("caret");
+    infoElement.appendChild(caret);
 
     
     function show(){
         // var elementOffset = normalizeOffset([element.offsetLeft, element.offsetTop, element.offsetLeft + element.offsetWidth, element.offsetTop + element.offsetHeight]);
         var elementOffset = getBoundingClientRectObject(element);
 
-        app.appendChild(infoElement);
-        
         infoElement.style.top = (elementOffset.bottom + 10) + "px";
         infoElement.style.left = (elementOffset.right) + "px";
-        // var normalized = normalizeOffset(getBoundingClientRectObject(infoElement))
+
+        app.appendChild(infoElement);
         
-        // infoElement.style.top = normalized.top + "px";
-        // infoElement.style.right = normalized.right + "px";
-        
-        var reac = getBoundingClientRectObject(infoElement);
-        var offset = normalizeOffset([reac.left, reac.top, reac.right, reac.bottom]);
-        infoElement.style.top = offset.top + "px";
-        infoElement.style.left = offset.left - offset.width/2 + "px";
+        infoElement.style.left = (elementOffset.right) - (infoElement.offsetWidth / 2) + "px";
+       
+        var offsetRight = infoElement.offsetLeft + infoElement.offsetWidth;
+        if(offsetRight > window.innerWidth){
+            infoElement.style.left = infoElement.offsetLeft - (offsetRight - window.innerWidth) + "px";
+        }
 
         infoElement.classList.add("show");
+
+        var caretOffset = getBoundingClientRectObject(caret);
+        var infoElOffset = getBoundingClientRectObject(infoElement);
+        // caret.style.left = ((elementOffset.left - infoElement.offsetLeft) + elementOffset.width / 2 - caret.offsetWidth / 2) + "px";
+        caret.style.left = ((elementOffset.left - infoElOffset.left) + elementOffset.width / 2 - caretOffset.width / 2) - 1 + "px";
     }
-    function hide(){
+    function hide(e){
+        if(e.toElement == infoElement || e.toElement == element){
+            return;
+        }
         infoElement.classList.remove("show");
         setTimeout(() => {
             infoElement.remove();
@@ -577,6 +595,8 @@ function showDeviceOptions(element, data){
     }
 
     element.addEventListener("mouseover", show);
+    element.addEventListener("mouseleave", hide);
+    infoElement.addEventListener("mouseleave", hide);
 }
 
 function addDeviceElement(data){
