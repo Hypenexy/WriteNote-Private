@@ -38,8 +38,8 @@ async function connectMidelight(){
                 // console.log("loading took: " + (Date.now() - loadStartDate) + "ms");
                 logForensic("loading " + (Date.now() - loadStartDate) + "ms");
                 welcome.classList.add("loaded");
-                loadWelcome(responseData);
                 if(responseData.user != false){
+                    loadWelcome(responseData);
                     socket = io(WriteNoteServer);
 
                     socket.on("disconnect", () => {
@@ -96,8 +96,7 @@ async function connectMidelight(){
                     });
                 }
                 else{
-                    // make a specific menu for this
-                    textPopup("You're not logged in");
+                    unloggedWelcome();
                 }
         }
         return response;

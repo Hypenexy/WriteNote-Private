@@ -659,3 +659,61 @@ background: linear-gradient(90deg, rgba(107,99,251,1) 0%, rgba(152,36,211,1) 66%
     border-right: 6px solid transparent;
     border-bottom: 9px solid #444;
 }
+
+
+
+.welcome .welcomeText{
+    color: #eee;
+    font-size: 32px;
+    margin: 60px 0;
+}
+
+.welcome .imaginery{
+
+
+    position: absolute;
+    /* background-color: #bbb; */
+    right: 0;
+    top: 0;
+    width: 300px;
+    height: 150%;
+    /* transform: rotate(6deg); */
+}
+
+.welcome .imaginery .line{
+    transform: rotate(6deg);
+    /* -webkit-backface-visibility: hidden;
+    backface-visibility: hidden; */
+    position: absolute;
+    left: 0;
+    top: -10px;
+    width: 2px;
+    height: 120%;
+    box-shadow: inset 4px 0 2px -2px #888;
+}
+
+
+.welcome .imaginery .usageElement{
+    position: absolute;
+    top: 0;
+    left: 80px;
+}
+.welcome .imaginery .top .create{
+    top: 5px;
+    left: 55px;   
+}
+.welcome .imaginery .contextMenu{
+    top: 230px;
+    left: 130px;
+}
+.welcome .imaginery .notesSide .notes .note{
+    position: absolute;
+    top: 400px;
+    left: 40px;
+}
+.welcome .imaginery .notesSide .notes .create{
+    position: absolute;
+    top: 460px;
+    left: 120px;
+    z-index: 50;
+}

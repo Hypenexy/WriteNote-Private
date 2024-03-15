@@ -80,4 +80,5 @@ var locale = {
     date_opened: "Date opened",
     date_modified: "Date modified",
     date_created: "Date created",
+    welcome_to: "Welcome to your new",
 };

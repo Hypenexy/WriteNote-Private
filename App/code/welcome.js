@@ -614,9 +614,13 @@ function removeDeviceElement(data){
     devicesSide.querySelector("['DID'='"+DID+"']");
 }
 
-function loadUsageWelcome(data){
-    const rawRatio = data/8000000000;
-    attachTooltip(usageElement, `${rawRatio}%`);
+function loadUsageWelcome(data, isDecoration){
+    if(typeof isDecoration != "undefined"){
+        console.log(typeof isDecoration)
+        usageElement = isDecoration;
+    }
+    const rawRatio = data/1000000000;
+    attachTooltip(usageElement, `${rawRatio*100}%`);
     const percentage = Math.round((rawRatio*100 + Number.EPSILON) * 100) / 100;
     const roundedPercentage = Math.round(percentage);
     const gradient = `linear-gradient(90deg, rgba(0,207,255,1) 0%, rgba(127,255,212,1) ${100 + 36 - roundedPercentage}%, rgba(228,243,89,1) ${100 + 76 - roundedPercentage}%, rgba(243,89,89,1) ${100 + 94 - roundedPercentage}%)`;
@@ -664,4 +668,34 @@ function loadErrorWelcome(errorType, error){
 
     ButtonEvent(btns[0], retry);
     ButtonEvent(btns[1], status);
+}
+
+function unloggedWelcome(){
+    const mdblock = createAppendElement("mdblock", welcome);
+
+    const imaginery = createAppendElement("imaginery", welcome);
+    
+    createAppendElement("line", imaginery);
+
+    const notesSide = createAppendElement("notesSide", imaginery);
+    const top = createAppendElement("top", notesSide);
+    
+    const usageDecoration = createAppendElement("usageElement", top);
+    loadUsageWelcome(1000000000, usageDecoration);
+
+    const otherTop = createAppendElement("otherTop", top);
+    otherTop.innerHTML = `
+        <p class="btn create" tabindex="0"><i>folder</i><span>New folder</span></p>
+        <div class="contextMenu"><div class="drag"></div><div class="i extra btn"><i>view_carousel</i>View<i>chevron_right</i></div><div class="i extra btn"><i>sort</i>Sort<i>chevron_right</i></div><div class="i btn"><i>select_all</i>Select All</div><div class="i btn"><i>folder</i>New folder</div></div>
+    `;
+
+    const notes = createAppendElement("notes", notesSide);
+    notes.innerHTML = `
+        <div class="note create"><i>add</i><p> Create new</p></div>
+        <div class="note" nid="3053ba"><p class="title">Star</p><p class="description">One star in the sky</p><p class="info"><span>2.6 kB</span><span>note</span></p></div>
+    `;
+
+    const welcomeText = createAppendElement("welcomeText", mdblock);
+    welcomeText.textContent = locale.welcome_to;
+
 }
