@@ -589,9 +589,11 @@ function showDeviceOptions(){
             return;
         }
         infoElement.classList.remove("show");
+        // var transitionDuration = infoElement.computedStyleMap().get('transition').value * 1000;
+        var transitionDuration = .2 * 1000;
         setTimeout(() => {
             infoElement.remove();
-        }, infoElement.computedStyleMap().get('transition').value * 1000);
+        }, transitionDuration);
     }
 
     element.addEventListener("mouseover", show);
