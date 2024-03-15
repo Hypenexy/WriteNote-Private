@@ -495,7 +495,8 @@ function loadNotesWelcome(data, space){
     appendNoteList(null, space);
 }
 
-
+// UA
+    // var parser = new UAParser(UserAgent)
 var devicesList = {};
 function loadDevicesWelcome(data){
     var devicesKeys = Object.keys(data.devices);

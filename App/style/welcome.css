@@ -279,6 +279,24 @@
     width: var(--size);
     height: 4px;
     border-radius: 99px;
+
+    animation-name: speedometerAnimation;
+    animation-duration: 1s;
+    animation-timing-function: ease;
+    animation-delay: 1s;
+    animation-direction: normal, reverse;
+}
+
+@keyframes speedometerAnimation {
+    0%{
+        width: var(--size);
+    }
+    50%{
+        width: 88%;
+    }
+    100%{
+        width: var(--size);
+    }
 }
 
 .welcome .notesSide .side{
