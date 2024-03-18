@@ -277,71 +277,7 @@ function noteContextMenu(noteData, element){
     noteContextMenu.add("text", dateOpenFormatted, {"icon":"calendar_month"});
     noteContextMenu.add("text", dateModifiedFormatted, {"icon":"calendar_month"});
     noteContextMenu.add("text", size, {"icon":"save"});
-
-    // noteContextMenu.add("button", locale.retry, {"action": retry, "icon":"refresh"});
-    // noteContextMenu.add("line", null, {"action": retry});
-    // noteContextMenu.add("button", locale.status, {"action": status, "icon":"public"});
-    // const extraTest = noteContextMenu.add("extra", locale.recover, {"action": status, "icon":"logout"});
-    // noteContextMenu.add("button", locale.actions, {"action":status,"submenu": extraTest});
-    noteContextMenu.attach(element);
 }
-
-// function noteContextMenu(noteData, e, element){
-//     e.preventDefault();
-//     var show = showContext();
-
-//     if(e.left){
-//         contextMenu.style.top = e.top + 20 + "px";
-//         contextMenu.style.left = e.left + 20 + "px";
-//     }
-//     else{
-//         contextMenu.style.top = e.clientY + "px";
-//         contextMenu.style.left = e.clientX + "px";
-//     }
-//     const NID = Object.keys(noteData)[0];
-
-//     const name = noteData[NID].name;
-//     if(!noteData[NID].size){
-//         noteData[NID].size = 0;
-//     }
-//     const size = humanFileSize(noteData[NID].size);
-//     const dateOpen = new Date(noteData[NID].fO);
-//     const dateOpenFormatted = dateOpen.toLocaleDateString() + ", " + dateOpen.toLocaleTimeString();
-//     const dateModified = new Date(noteData[NID].fM);
-//     const dateModifiedFormatted = dateModified.toLocaleDateString() + ", " + dateModified.toLocaleTimeString();
-
-//     if(!noteData[NID].bin){
-//         contextMenu.innerHTML = '<input value="'+name+'" placeholder=>'+
-//         "<de>"+locale.actions+"</de>"+
-//         "<p><i>share</i> "+locale.share+"</p>"+
-//         "<p><i>content_copy</i>"+locale.duplicate+"</p>"+
-//         "<p><i>delete</i>"+locale.delete+"</p>"+
-//         "<de>"+locale.properties+"</de>"+
-//         "<pr><i>calendar_month</i>opened: "+dateOpenFormatted+"</pr>"+
-//         "<pr><i>calendar_month</i>modified: "+dateModifiedFormatted+"</pr>"+
-//         "<pr><i>save</i>"+size+"</pr>";
-
-//         ButtonEvent(contextMenu.getElementsByTagName("p")[2], function(e){
-//             // e.stopPropagation();
-//             deleteNote(NID, function(success, error){
-//                 if(success){
-//                     element.remove();
-//                     hideContext();
-//                 }
-//             });
-//         }, null, true)
-//     }
-//     else{
-//         contextMenu.innerHTML = "<pr>"+name+"</pr>"+
-//         "<de>"+locale.actions+"</de>"+
-//         "<p><i>star</i> "+locale.recover+"</p>"+
-//         "<p><i>delete_forever</i> "+locale.perm_delete+"</p>"
-//     }
-
-
-
-//     show();
-// }
 
 var notesList = [];
 
@@ -453,7 +389,6 @@ function addNoteToList(notedata, space){
     noteContextMenu(notedata, element);
     if(notedata.type != "folder"){
         ButtonEvent(element, openNote, notedata);
-        // element.addEventListener("contextmenu", function(e){noteContextMenu(notedata, e, element)});
         element.innerHTML = "<p class='title'>"+notedata.name+"</p>";
         if(notedata.fL){
             element.innerHTML += "<p class='description'>"+notedata.fL+"</p>";
@@ -462,6 +397,9 @@ function addNoteToList(notedata, space){
     }
     else{
         element.classList.add("folder");
+        if(notedata.name == "New folder"){
+            notedata.name = locale.new_folder;
+        }
         element.innerHTML = "<i>folder</i><span>"+notedata.name+"<span>";
     }
     notesElement.appendChild(element);
@@ -471,22 +409,13 @@ var storedNotesData;
 function loadNotesWelcome(data, space){
     storedNotesData = data;
     notesElement.innerHTML = "";
-
-    // const filters = document.createElement("div");
-    // filters.classList.add("filters");
-    // notesElement.appendChild(filters);
-    // const sort = createSelect("Modified Date")
-    // sort.addOption("Opened Date");
-    // sort.classList.add("sort");
-    // filters.appendChild(sort);
-
+    
     if(notesList.length > 0){
         notesList = [];
     }
 
     for (let i = 0; i < data.notes.length; i++) {
         const element = data.notes[i];
-        // addNoteToList(element, space);
         const pushelement = element[Object.keys(element)[0]];
         pushelement["nid"] = Object.keys(element)[0];
         notesList.push(pushelement);
@@ -496,17 +425,28 @@ function loadNotesWelcome(data, space){
 }
 
 // UA
-    // var parser = new UAParser(UserAgent)
+var useragent = new UAParser(navigator.userAgent);
+const device = {
+    Browser: useragent.getBrowser(),
+    CPU: useragent.getCPU(),
+    Device: useragent.getDevice(),
+    Engine: useragent.getEngine(),
+    OS: useragent.getOS()
+};
+
+device["CPU"].cores = navigator.hardwareConcurrency;
+
 var devicesList = {};
 function loadDevicesWelcome(data){
     var devicesKeys = Object.keys(data.devices);
     for (let i = 0; i < devicesKeys.length; i++) {
-        devicesList[devicesKeys[i]] = data.devices[devicesKeys[i]];
-        addDeviceElement(data.devices[devicesKeys[i]]);
+        const DID = Object.keys(data.devices[devicesKeys[i]])[0];
+        devicesList[DID] = data.devices[devicesKeys[i]][DID];
+        addDeviceElement(DID);
     }
-    const count = data.devices.length;
-    console.log(data);
-    console.log(count); // work!! here. Okey
+    // const count = data.devices.length;
+    // console.log(data);
+    // console.log(count); // work!! here. Okey
 }
 function updateDeviceList(data){ // This might not be properly formatted on the database. Check later!
     if(data.type == "leave"){
@@ -524,12 +464,41 @@ function updateDeviceList(data){ // This might not be properly formatted on the 
         addDeviceElement(data) // fr fix the schema first then finish up here
     }
     // devicesList
-    console.log(data)
+    // console.log(data)
+}
+
+function getOS(DID){
+    if(socket.id != DID){
+        if(devicesList[DID] && devicesList[DID].device){
+            return devicesList[DID].device.OS.name + " " + devicesList[DID].device.OS.version;
+        }
+        else{
+            return "No system information";
+        }
+    }
+    else{
+        return device.OS.name + " " + device.OS.version + " • " + locale.you;
+    }
+}
+function getOSIcon(DID){
+    var icon = "computer";
+    if(socket.id != DID && devicesList[DID] && devicesList[DID].device){
+        if(devicesList[DID].device.Device.type == "mobile"){
+            icon = "smartphone";
+        }
+        if(devicesList[DID].device.Device.model == "iPhone"){
+            icon = "phone_iphone";
+        }
+        if(devicesList[DID].device.Device.model == "android"){
+            icon = "phone_android";
+        }
+    }
+    return icon;
 }
 
 function showDeviceOptions(){
     const element = arguments[0];
-    const data = arguments[1];
+    const DID = arguments[1];
     // Add the functionality to change other devices' settings
     // from this one
 
@@ -539,13 +508,12 @@ function showDeviceOptions(){
     infoElement.classList.add("deviceInfo");
 
     var name = document.createElement("div");
-    name.textContent = JSON.stringify(Object.keys(data)[0]);
     infoElement.appendChild(name);
 
     var btns = [ // Rethink those
-        ["sms", "Chat with device"], 
+        ["travel_explore", "View device"],
         ["settings", "Change device settings"],
-        ["logout", "Sign device out"],
+        ["wifi_off", "Disconnect"],
     ];
     for (let i = 0; i < btns.length; i++) {
         const btn = btns[i];
@@ -556,6 +524,20 @@ function showDeviceOptions(){
         }
         htmlElement.innerHTML = `<i>${btn[0]}</i><span>${btn[1]}</span>`;
         infoElement.appendChild(htmlElement);
+
+        switch (i) {
+            case 0:
+                ButtonEvent(htmlElement, openDevice, DID);
+                break;
+            case 1:
+                ButtonEvent(htmlElement, openDevice, DID);
+                break;
+            case 2:
+                ButtonEvent(htmlElement, openDevice, DID);
+                break;
+            default:
+                break;
+        }
     }
     const caret = document.createElement("div");
     caret.classList.add("caret");
@@ -563,6 +545,9 @@ function showDeviceOptions(){
 
     
     function show(){
+        name.textContent = getOS(DID);
+
+
         // var elementOffset = normalizeOffset([element.offsetLeft, element.offsetTop, element.offsetLeft + element.offsetWidth, element.offsetTop + element.offsetHeight]);
         var elementOffset = getBoundingClientRectObject(element);
 
@@ -602,15 +587,13 @@ function showDeviceOptions(){
     infoElement.addEventListener("mouseleave", hide);
 }
 
-function addDeviceElement(data){
-    console.log(data);
+function addDeviceElement(DID){
     const element = document.createElement("i");
-    element.textContent = "computer";
-    // element.setAttribute("DID", DID);
-    showDeviceOptions(element, data);
+    element.textContent = getOSIcon(DID);
+    showDeviceOptions(element, DID);
     devicesSide.appendChild(element);
 }
-function removeDeviceElement(data){
+function removeDeviceElement(DID){
     devicesSide.querySelector("['DID'='"+DID+"']");
 }
 
@@ -687,13 +670,13 @@ function unloggedWelcome(){
 
     const otherTop = createAppendElement("otherTop", top);
     otherTop.innerHTML = `
-        <p class="btn create" tabindex="0"><i>folder</i><span>New folder</span></p>
-        <div class="contextMenu"><div class="drag"></div><div class="i extra btn"><i>view_carousel</i>View<i>chevron_right</i></div><div class="i extra btn"><i>sort</i>Sort<i>chevron_right</i></div><div class="i btn"><i>select_all</i>Select All</div><div class="i btn"><i>folder</i>New folder</div></div>
+        <p class="btn create" tabindex="0"><i>folder</i><span>${locale.new_folder}</span></p>
+        <div class="contextMenu"><div class="drag"></div><div class="i extra btn"><i>view_carousel</i>${locale.view}<i>chevron_right</i></div><div class="i extra btn"><i>sort</i>${locale.sort}<i>chevron_right</i></div><div class="i btn"><i>select_all</i>${locale.select_all}</div><div class="i btn"><i>folder</i>${locale.new_folder}</div></div>
     `;
 
     const notes = createAppendElement("notes", notesSide);
     notes.innerHTML = `
-        <div class="note create"><i>add</i><p> Create new</p></div>
+        <div class="note create"><i>add</i><p> ${locale.create_new}</p></div>
         <div class="note" nid="3053ba"><p class="title">Star</p><p class="description">One star in the sky</p><p class="info"><span>2.6 kB</span><span>note</span></p></div>
     `;
 

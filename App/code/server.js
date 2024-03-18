@@ -72,6 +72,7 @@ async function connectMidelight(){
                                         loadUsageWelcome(success);
                                     }
                                 });
+                                socket.emit("deviceInfo", {type: "device", content: device});
                                 // log('s', success);
                                 for (let i = 0; i < onlineStatusElements.length; i++) {
                                     const element = onlineStatusElements[i];
