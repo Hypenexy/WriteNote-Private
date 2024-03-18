@@ -81,4 +81,9 @@ var locale = {
     date_modified: "Date modified",
     date_created: "Date created",
     welcome_to: "Welcome to your new",
+    text_editor: "text editor",
+    photo_editor: "photo editor",
+    calculator: "calculator",
+    audio_player: "audio player",
+    notes_app: "notes app",
 };

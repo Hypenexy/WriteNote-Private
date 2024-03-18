@@ -662,14 +662,7 @@ background: linear-gradient(90deg, rgba(107,99,251,1) 0%, rgba(152,36,211,1) 66%
 
 
 
-.welcome .welcomeText{
-    color: #eee;
-    font-size: 32px;
-    margin: 60px 0;
-}
-
 .welcome .imaginery{
-
 
     position: absolute;
     /* background-color: #bbb; */
@@ -680,16 +673,23 @@ background: linear-gradient(90deg, rgba(107,99,251,1) 0%, rgba(152,36,211,1) 66%
     /* transform: rotate(6deg); */
 }
 
-.welcome .imaginery .line{
-    transform: rotate(6deg);
-    /* -webkit-backface-visibility: hidden;
-    backface-visibility: hidden; */
+.welcome .imaginery .fill{
     position: absolute;
-    left: 0;
-    top: -10px;
-    width: 2px;
-    height: 120%;
-    box-shadow: inset 4px 0 2px -2px #888;
+    background-color: #0099ff;
+    width: 100%;
+    height: 100%;
+    left: 70px;
+}
+
+.welcome .imaginery .line{
+    /* background-color: #0099ff; */
+    transform: rotate(-90deg);
+    height: 100%;
+    width: 900px;
+    top: -150px;
+    left: -50px;
+    position: absolute;
+
 }
 
 
@@ -716,4 +716,19 @@ background: linear-gradient(90deg, rgba(107,99,251,1) 0%, rgba(152,36,211,1) 66%
     top: 460px;
     left: 120px;
     z-index: 50;
+}
+
+.welcome{
+    color: #e9e9e9;
+}
+
+.welcome .welcomeText{
+    font-size: 32px;
+    margin: 60px 0 0 0;
+}
+
+.welcome .trait{
+    color: #fff;
+    font-size: 32px;
+    font-weight: 600;
 }

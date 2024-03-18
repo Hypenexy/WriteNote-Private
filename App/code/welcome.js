@@ -675,7 +675,9 @@ function unloggedWelcome(){
 
     const imaginery = createAppendElement("imaginery", welcome);
     
-    createAppendElement("line", imaginery);
+    createAppendElement("fill", imaginery);
+    const line = createAppendElement("line", imaginery);
+    line.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#0099ff" fill-opacity="1" d="M0,288L48,272C96,256,192,224,288,197.3C384,171,480,149,576,165.3C672,181,768,235,864,250.7C960,267,1056,245,1152,250.7C1248,256,1344,288,1392,304L1440,320L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>`;
 
     const notesSide = createAppendElement("notesSide", imaginery);
     const top = createAppendElement("top", notesSide);
@@ -698,4 +700,46 @@ function unloggedWelcome(){
     const welcomeText = createAppendElement("welcomeText", mdblock);
     welcomeText.textContent = locale.welcome_to;
 
+    const trait = createAppendElement("trait", mdblock);
+    var traits = [
+        locale.text_editor,
+        locale.photo_editor,
+        locale.calculator,
+        locale.audio_player,
+        locale.notes_app
+    ];
+
+    function traitscroll(){
+        foreachDelayed(traits, function(element){
+            trait.style.transition = "initial"
+            trait.style.opacity = 0
+            trait.style.transform = "translateX(-20px)"
+            setTimeout(function(){
+                trait.style.transition = ".3s"
+                trait.style.opacity = "initial"
+                trait.style.transform = "initial"
+                trait.innerHTML = element
+                setTimeout(function(){
+                    trait.style.opacity = 0
+                    trait.style.transform = "translateX(20px)"
+                    if(element == traits[traits.length-1]){
+                        setTimeout(function(){
+                            trait.innerHTML = traits[0]
+                            trait.style.transition = "initial"
+                            trait.style.opacity = 0
+                            trait.style.transform = "translateX(-20px)"
+                            setTimeout(function(){
+                                trait.style.transition = ".3s"
+                                trait.style.opacity = "initial"
+                                trait.style.transform = "initial"
+                            },0)
+                        }, 300)
+                    }
+                }, 1150)
+            }, 0);
+        }, 1500, true)
+    }
+    
+    traitscroll()
+    
 }
