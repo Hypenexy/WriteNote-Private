@@ -1,0 +1,66 @@
+.device{
+    width: 100%;
+    height: 100%;
+    max-width: 1200px;
+    max-height: 700px;
+
+    border-radius: 12px;
+    padding: 12px;
+
+    color: #ddd;
+    background: #111;
+}
+
+
+.device .filetypes{
+    display: flex;
+    justify-content: space-between;
+}
+
+.device .filetype{
+    cursor: pointer;
+    user-select: none;
+    
+    background: #1c1c1c;
+    padding: 12px;
+    border-radius: 12px;
+    transition: .2s;
+}
+
+.device .filetype.active{
+    background: #65baff;
+    color: #111;
+}
+
+
+.device .whois, .device .extraInfo{
+    display: inline-block;
+    background: #1c1c1c;
+    padding: 6px;
+    border-radius: 99px;
+}
+.device .whois i{
+    vertical-align: middle;
+    display: inline-block;
+    background-color: #333333bb;
+    box-shadow: 2px 2px 2px #11111155;
+    border-radius: 99px;
+    padding: 12px;
+}
+.device .whois p{
+    vertical-align: middle;
+    display: inline;
+    padding: 0 10px;
+}
+
+
+.device .extraInfo{
+    margin: 10px 0;
+    border-radius: 12px;
+}
+.device .extraInfo *{
+    vertical-align: middle;
+}
+.device .extraInfo i{
+    padding: 6px;
+}

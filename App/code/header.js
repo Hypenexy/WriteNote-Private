@@ -39,6 +39,7 @@ function loadHeader(){
     const weather = createAppendElement("weather", infotainment);
     weather.innerHTML = "<div>" + storedData.weather.temp.toString().split('.')[0] + "°C</div>";
     weather.style.backgroundImage = `url("${weatherServer}images/${storedData.weather.image}.jpg")`;
+    ButtonEvent(weather, openWeather);
 
     const profile = createAppendElement("profile", infotainment);
     attachOnlineStatus(profile);
