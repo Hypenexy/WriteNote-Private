@@ -40,6 +40,7 @@
     border-radius: 99px;
 }
 .device .whois i{
+    user-select: none;
     vertical-align: middle;
     display: inline-block;
     background-color: #333333bb;
@@ -62,5 +63,6 @@
     vertical-align: middle;
 }
 .device .extraInfo i{
+    user-select: none;
     padding: 6px;
 }
