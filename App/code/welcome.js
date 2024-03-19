@@ -424,85 +424,10 @@ function loadNotesWelcome(data, space){
     appendNoteList(null, space);
 }
 
-// UA
-var useragent = new UAParser(navigator.userAgent);
-const device = {
-    Browser: useragent.getBrowser(),
-    CPU: useragent.getCPU(),
-    Device: useragent.getDevice(),
-    Engine: useragent.getEngine(),
-    OS: useragent.getOS()
-};
-
-device["CPU"].cores = navigator.hardwareConcurrency;
-
-var devicesList = {};
-function loadDevicesWelcome(data){
-    var devicesKeys = Object.keys(data.devices);
-    for (let i = 0; i < devicesKeys.length; i++) {
-        const DID = Object.keys(data.devices[devicesKeys[i]])[0];
-        devicesList[DID] = data.devices[devicesKeys[i]][DID];
-        addDeviceElement(DID);
-    }
-    // const count = data.devices.length;
-    // console.log(data);
-    // console.log(count); // work!! here. Okey
-}
-function updateDeviceList(data){ // This might not be properly formatted on the database. Check later!
-    if(data.type == "leave"){
-        var devicesKeys = Object.keys(data.devices);
-        for (let i = 0; i < devicesKeys.length; i++) {
-            const element = devicesKeys[i];
-            if(devicesList[element].DID){ // device id
-
-            }
-            
-        }
-    }
-    if(data.type == "join"){
-        // devicesList[data.content] This scheme is weird
-        addDeviceElement(data) // fr fix the schema first then finish up here
-    }
-    // devicesList
-    // console.log(data)
-}
-
-function getOS(DID){
-    if(socket.id != DID){
-        if(devicesList[DID] && devicesList[DID].device){
-            return devicesList[DID].device.OS.name + " " + devicesList[DID].device.OS.version;
-        }
-        else{
-            return "No system information";
-        }
-    }
-    else{
-        return device.OS.name + " " + device.OS.version + " • " + locale.you;
-    }
-}
-function getOSIcon(DID){
-    var icon = "computer";
-    if(socket.id != DID && devicesList[DID] && devicesList[DID].device){
-        if(devicesList[DID].device.Device.type == "mobile"){
-            icon = "smartphone";
-        }
-        if(devicesList[DID].device.Device.model == "iPhone"){
-            icon = "phone_iphone";
-        }
-        if(devicesList[DID].device.Device.model == "android"){
-            icon = "phone_android";
-        }
-    }
-    return icon;
-}
 
 function showDeviceOptions(){
     const element = arguments[0];
     const DID = arguments[1];
-    // Add the functionality to change other devices' settings
-    // from this one
-
-
 
     const infoElement = document.createElement("div");
     infoElement.classList.add("deviceInfo");
@@ -547,7 +472,6 @@ function showDeviceOptions(){
     function show(){
         name.textContent = getOS(DID);
 
-
         // var elementOffset = normalizeOffset([element.offsetLeft, element.offsetTop, element.offsetLeft + element.offsetWidth, element.offsetTop + element.offsetHeight]);
         var elementOffset = getBoundingClientRectObject(element);
 
@@ -590,11 +514,13 @@ function showDeviceOptions(){
 function addDeviceElement(DID){
     const element = document.createElement("i");
     element.textContent = getOSIcon(DID);
+    element.setAttribute("DID", DID);
     showDeviceOptions(element, DID);
     devicesSide.appendChild(element);
 }
 function removeDeviceElement(DID){
-    devicesSide.querySelector("['DID'='"+DID+"']");
+    const element = devicesSide.querySelector("[DID='"+DID+"']");
+    element.remove();
 }
 
 function loadUsageWelcome(data, isDecoration){

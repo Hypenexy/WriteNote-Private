@@ -55,7 +55,11 @@ async function connectMidelight(){
 
                     socket.on("connect", () => {
                         socketOnline = true;
-                        socket.emit("logon", responseData.user.sessionId, (success, error) => {
+                        const logonData = {
+                            sessionCookie: responseData.user.sessionId,
+                            deviceInfo: device
+                        };
+                        socket.emit("logon", logonData, (success, error) => {
                             if(success){
                                 socket.emit("getNotes", null, (success, error) => {
                                     if(success){
@@ -72,7 +76,6 @@ async function connectMidelight(){
                                         loadUsageWelcome(success);
                                     }
                                 });
-                                socket.emit("deviceInfo", {type: "device", content: device});
                                 // log('s', success);
                                 for (let i = 0; i < onlineStatusElements.length; i++) {
                                     const element = onlineStatusElements[i];
