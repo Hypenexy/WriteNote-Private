@@ -617,6 +617,9 @@ background: linear-gradient(90deg, rgba(107,99,251,1) 0%, rgba(152,36,211,1) 66%
     transform: initial;
     opacity: 1;
 }
+.deviceInfo .name{
+    padding: 8px;
+}
 .deviceInfo .btn{
     color: inherit;
     background: inherit;

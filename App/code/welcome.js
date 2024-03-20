@@ -433,6 +433,7 @@ function showDeviceOptions(){
     infoElement.classList.add("deviceInfo");
 
     var name = document.createElement("div");
+    name.classList.add("name");
     infoElement.appendChild(name);
 
     var btns = [ // Rethink those
