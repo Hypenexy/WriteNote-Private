@@ -18,9 +18,6 @@ function loadDevicesWelcome(data){
         devicesList[DID] = data.devices[devicesKeys[i]][DID];
         addDeviceElement(DID);
     }
-    // const count = data.devices.length;
-    // console.log(data);
-    // console.log(count); // work!! here. Okey
 }
 
 function updateDeviceList(data){
@@ -55,7 +52,7 @@ function getOS(DID){
 }
 function getOSIcon(DID){
     var icon = "computer";
-    if(socket.id != DID && devicesList[DID] && devicesList[DID].device){
+    if(devicesList[DID] && devicesList[DID].device){
         if(devicesList[DID].device.Device.type == "mobile"){
             icon = "smartphone";
         }
