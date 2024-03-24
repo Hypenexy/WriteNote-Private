@@ -277,6 +277,8 @@ function noteContextMenu(noteData, element){
     noteContextMenu.add("text", dateOpenFormatted, {"icon":"calendar_month"});
     noteContextMenu.add("text", dateModifiedFormatted, {"icon":"calendar_month"});
     noteContextMenu.add("text", size, {"icon":"save"});
+
+    noteContextMenu.attach(element);
 }
 
 var notesList = [];

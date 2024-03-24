@@ -42,7 +42,7 @@ var locale = {
     "strikethrough": "Üst çizgi",
     "view_profile": "Profili Görüntüle",
     "open_new": "Yeni aç",
-    "create_new": "Yeni oluşturmak",
+    "create_new": "Yeni oluştur",
     "unsaved_changes": "Kaydedilmemiş değişiklikler",
     "unsaved_changes_longer": "Kaydedilmemiş değişiklikleriniz mevcut",
     "binned_note": "Not çöp kutusunda",
