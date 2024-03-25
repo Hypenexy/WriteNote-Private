@@ -266,6 +266,17 @@ header.noSubHeader .showSubHeader{
     margin-right: 7px;
     padding: 4px;
 }
+@media screen and (max-width: 590px) {
+    header .noteList .note:not(.active){
+        display: none;
+    }
+    header .new{
+        display: none;
+    }
+    header .weather{
+        display: none;
+    }
+}
 
 .subHeader{
     z-index: 2;
@@ -283,6 +294,15 @@ header.noSubHeader .showSubHeader{
 .subHeader.hidden{
     opacity: 0;
     top: 10px;
+}
+
+@media screen and (max-width: 590px) {
+    .subHeader{
+        display: flex;
+        height: auto;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
 }
 
 .subHeader .btn{

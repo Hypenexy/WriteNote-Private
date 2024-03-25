@@ -2,6 +2,10 @@ const header = document.createElement("header");
 const noteList = createAppendElement("noteList", header);
 
 function loadHeader(){
+    if(window.innerWidth <= 590){
+        toggleSubHeader();
+    }
+    
     const headerContextMenu = contextMenu();
     headerContextMenu.add("button", locale.create_new, {"action": createNewNote, "icon":"add"});
     headerContextMenu.add("button", locale.open_new, {"action": function(e){
