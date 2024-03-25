@@ -202,6 +202,23 @@
     text-shadow: 1px 1px 1px 2px #11111199;
 }
 
+
+@media screen and (max-width: 790px) {
+    .welcome{
+        max-height: 95%;
+    }
+    .welcome .userHalf, .welcome .weatherHalf{
+        position: initial;
+        display: block;
+        width: 100%;
+        float: initial;
+        height: initial;
+    }
+    .welcome .userHalf p{
+        margin: 0;
+    }
+}
+
 .welcome .notesSide{
     margin-top: 128px;
     height: calc(100% - 186px);
@@ -685,6 +702,8 @@ background: linear-gradient(90deg, rgba(107,99,251,1) 0%, rgba(152,36,211,1) 66%
 }
 
 .welcome .imaginery .line{
+    pointer-events: none;
+    
     /* background-color: #0099ff; */
     transform: rotate(-90deg);
     height: 100%;
@@ -694,7 +713,6 @@ background: linear-gradient(90deg, rgba(107,99,251,1) 0%, rgba(152,36,211,1) 66%
     position: absolute;
 
 }
-
 
 .welcome .imaginery .usageElement{
     position: absolute;
@@ -721,6 +739,40 @@ background: linear-gradient(90deg, rgba(107,99,251,1) 0%, rgba(152,36,211,1) 66%
     z-index: 50;
 }
 
+.welcome .imaginery .usageElement, 
+.welcome .imaginery .top .create,
+.welcome .imaginery .contextMenu
+{
+    animation-name: upAndDown;
+    animation-duration: 5s;
+    animation-delay: 1s;
+}
+.welcome .imaginery .notesSide .notes .note,
+.welcome .imaginery .notesSide .notes .create
+{
+    animation-name: fileAppear, upAndDown;
+    animation-duration: 0s, 11s;
+    animation-delay: 0s, 0s;
+}
+.welcome .imaginery .notesSide .notes .create{
+    animation-duration: 0s, 14s;
+}
+
+@keyframes upAndDown {
+    0%{
+        transform: initial;
+    }
+    33%{
+        transform: translateY(30px);
+    }
+    66%{
+        transform: translateY(-10px);
+    }
+    100%{
+        transform: initial;
+    }
+}
+
 .welcome{
     color: #e9e9e9;
 }
@@ -734,4 +786,109 @@ background: linear-gradient(90deg, rgba(107,99,251,1) 0%, rgba(152,36,211,1) 66%
     color: #fff;
     font-size: 32px;
     font-weight: 600;
+}
+
+.welcome .loggedout, .welcome .password{
+    display: block;
+    background-color: #222;
+    padding: 12px;
+    border-radius: 12px;
+    width: 300px;
+    margin: 10px 0;
+}
+.welcome .loggedout img{
+    width: 48px;
+    height: 48px;
+    border-radius: 99px;
+    vertical-align: middle;
+}
+.welcome .loggedout div{
+    display: inline-block;
+    vertical-align: middle;
+    padding-left: 12px;
+}
+.welcome .loggedout .logout{
+    color: #F35959;
+}
+
+.welcome .password{
+    display: flex;
+    align-items: center;
+    position: relative;
+    background-color: #555;
+    padding: 1px;
+}
+.welcome .password .text{
+    position: absolute;
+    left: 12px;
+    pointer-events: none;
+    color: #999;
+    transition: .2s;
+}
+.welcome .password .text.hide{
+    opacity: 0;
+}
+.welcome .password input{
+    padding: 11px;
+    border-radius: 12px;
+    width: 100%;
+    height: 100%;
+    background-color: #141414;
+}
+
+.welcome .loginbtn{
+    text-align: center;
+    width: 300px;
+}
+
+@media screen and (max-width: 790px) {
+    .welcome .imaginery{
+        left: 0;
+        top: initial;
+        bottom: 0;
+        width: 100%;
+        height: 100px;
+    }
+
+    .welcome .imaginery .fill{
+        width: 100%;
+        height: 100%;
+        left: 0;
+    }
+
+    .welcome .imaginery .line{
+        transform: initial;
+        height: 100%;
+        width: 900px;
+        top: -200px;
+        left: -50px;
+
+    }
+
+    .welcome .imaginery .usageElement{
+        position: absolute;
+        top: 0;
+        left: 80px;
+    }
+    .welcome .imaginery .top .create{
+        top: 5px;
+        left: 55px;   
+    }
+    .welcome .imaginery .contextMenu{
+        top: 230px;
+        left: 130px;
+    }
+    .welcome .imaginery .notesSide{    
+        margin-top: initial;
+        height: initial
+    }
+    .welcome .imaginery .notesSide .notes .note{
+        position: absolute;
+        top: -25px;
+        left: 300px;
+    }
+    .welcome .imaginery .notesSide .notes .create{
+        top: 0;
+        left: 500px;
+    }
 }

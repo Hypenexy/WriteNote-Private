@@ -11,6 +11,7 @@ var binBtn;
 var usageElement = document.createElement("div");
 usageElement.classList.add("usageElement");
 function loadWelcome(responseData){
+    welcome.innerHTML = "";
     function createMOTD(name){
         var now24 = new Date().toLocaleTimeString([], { hour: '2-digit', minute: "2-digit", hour12: false });
         var hour = parseInt(now24.slice(0, 2));
@@ -582,7 +583,7 @@ function loadErrorWelcome(errorType, error){
     ButtonEvent(btns[1], status);
 }
 
-function unloggedWelcome(){
+function unloggedWelcome(user){
     const mdblock = createAppendElement("mdblock", welcome);
 
     const imaginery = createAppendElement("imaginery", welcome);
@@ -652,6 +653,64 @@ function unloggedWelcome(){
         }, 1500, true)
     }
     
-    traitscroll()
-    
+    traitscroll();
+   
+
+    if(user){
+        const loggedout = createAppendElement("loggedout", mdblock);
+        const pfpURL = getUserPfpURL();
+        loggedout.innerHTML = `
+            <img src='${pfpURL}'>
+            <div>
+                <p>${user.username}</p>
+                <p class='logout'>${locale.logged_out}</p>
+            </div>
+        `;
+        const passwordLabel = createAppendElement("password", mdblock);
+        const passwordText = createAppendElement("text", passwordLabel);
+        passwordText.textContent = locale.password;
+        const passwordInput = document.createElement("input");
+        passwordInput.type = "password";
+        passwordLabel.appendChild(passwordInput);
+
+        passwordInput.addEventListener("input", () => {
+            if(passwordInput.value != ""){
+                passwordText.classList.add("hide");
+            }
+            else{
+                passwordText.classList.remove("hide");
+            }
+        });
+
+        const loginBtn = createAppendElement("loginbtn", mdblock);
+        loginBtn.classList.add("btn");
+        loginBtn.textContent = locale.sign_in;
+
+        ButtonEvent(loginBtn, relog);
+        
+        async function relog(){
+            const relogData = {
+                identity: user.username,
+                password: passwordInput.value
+            };
+            const data = queryStringSerialize(relogData);
+            const response = await fetch(MidelightServer + "app/relog.php", {
+                method: 'POST',
+                body: data,
+                credentials: "include",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            }).catch((error) => {
+                console.log(error);
+            });
+
+            const responseData = await response.text();
+            
+            if(responseData == "201"){
+                loadWelcome(storedData);
+            }
+        }
+    }
 }

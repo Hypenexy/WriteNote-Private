@@ -87,4 +87,7 @@ var locale = {
     calculator: "calculator",
     audio_player: "audio player",
     notes_app: "notes app",
+    logged_out: "Logged out",
+    password: "Password",
+    sign_in: "Sign In",
 };

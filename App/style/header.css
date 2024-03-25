@@ -267,6 +267,9 @@ header.noSubHeader .showSubHeader{
     padding: 4px;
 }
 @media screen and (max-width: 590px) {
+    header .noteList .note .x{
+        display: none;
+    }
     header .noteList .note:not(.active){
         display: none;
     }
