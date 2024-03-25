@@ -38,9 +38,9 @@ async function connectMidelight(){
                 // console.log("loading took: " + (Date.now() - loadStartDate) + "ms");
                 logForensic("loading " + (Date.now() - loadStartDate) + "ms");
                 welcome.classList.add("loaded");
+                socket = io(WriteNoteServer);
                 if(responseData.user != false){
                     loadWelcome(responseData);
-                    socket = io(WriteNoteServer);
 
                     socket.on("disconnect", () => {
                         socketOnline = false;
