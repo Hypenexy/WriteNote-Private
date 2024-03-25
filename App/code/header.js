@@ -49,10 +49,7 @@ function loadHeader(){
     attachOnlineStatus(profile);
     attachTooltip(profile, locale["view_profile"]);
     profile.innerHTML = "<div class='line'></div><p>"+storedData.user.username+"</p> ";
-    var pfpURL = assetsServer + "/ui/pfp.png";
-    if(storedData.user.pfp){
-        pfpURL = imageServer+"?i="+storedData.user.pfp;
-    }
+    const pfpURL = getUserPfpURL();
     profile.innerHTML += "<img src='"+pfpURL+"'>";
     ButtonEvent(profile, function(e){
         e.stopPropagation();

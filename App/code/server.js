@@ -39,7 +39,7 @@ async function connectMidelight(){
                 logForensic("loading " + (Date.now() - loadStartDate) + "ms");
                 welcome.classList.add("loaded");
                 socket = io(WriteNoteServer);
-                if(responseData.user != false){
+                if(responseData.user != false && responseData.user.loggedout != true){
                     loadWelcome(responseData);
 
                     socket.on("disconnect", () => {
@@ -100,7 +100,12 @@ async function connectMidelight(){
                     });
                 }
                 else{
-                    unloggedWelcome();
+                    if(responseData.user.loggedout != true){
+                        unloggedWelcome();
+                    }
+                    else{
+                        unloggedWelcome(responseData.user);
+                    }
                 }
         }
         return response;
@@ -126,4 +131,12 @@ function attachOnlineStatus(element){
         element.classList.add("offline");
     }
     onlineStatusElements.push(element);
+}
+
+function getUserPfpURL(){
+    var pfpURL = assetsServer + "/ui/pfp.png";
+    if(storedData.user.pfp){
+        pfpURL = imageServer+"?i="+storedData.user.pfp;
+    }
+    return pfpURL;
 }
