@@ -548,6 +548,7 @@ function loadUsageWelcome(data, isDecoration){
 }
 
 function loadErrorWelcome(errorType, error){
+    welcome.innerHTML = "";
     function retry(){
         location.reload();
     }
@@ -713,4 +714,26 @@ function unloggedWelcome(user){
             }
         }
     }
+
+    const QRCodeElement = createAppendElement("QR", mdblock);
+    QRCodeElement.id = "qrcode";
+    var qrcode = new QRCode("qrcode", {
+        width: 128,
+        height: 128,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+    });   
+    
+    socket.on("connect", () => { // make sure to disable this after no longer needed
+        socket.emit("qrcode", null, (data) => {
+            if(Object.keys(data)[0] == "code"){
+                qrcode.makeCode(`${WriteNoteServer}/?code=${data.code}`);
+            }
+        });
+    });
+    socket.on("qrcode", (data) => {
+        console.log(data);
+        console.log("logged in!!!!!")
+    });
 }

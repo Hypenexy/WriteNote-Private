@@ -841,6 +841,12 @@ background: linear-gradient(90deg, rgba(107,99,251,1) 0%, rgba(152,36,211,1) 66%
     width: 300px;
 }
 
+.welcome .QR{
+    border-radius: 6px;
+    display: inline-block;
+    border: 6px solid #fff;
+}
+
 @media screen and (max-width: 790px) {
     .welcome .imaginery{
         left: 0;
