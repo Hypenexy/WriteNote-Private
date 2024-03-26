@@ -826,8 +826,32 @@ background: linear-gradient(90deg, rgba(107,99,251,1) 0%, rgba(152,36,211,1) 66%
     transition: .2s;
 }
 .welcome .password .text.hide{
-    opacity: 0;
+    color: #555;
+    background-color: #111;
+    transform: translateY(-20px);
+    /* opacity: 0; */
 }
+.welcome .password .text.hide span{
+    color: #F35959;
+}
+.welcome .password .text span{
+    position: absolute;
+    left: 0;
+    margin-left: 0;
+    width: 300px;
+    bottom: -55px;
+}
+.welcome .password .text span:nth-child(2){
+    bottom: -75px;
+}
+.welcome .password .text span:only-child{
+    position: initial;
+    left: initial;
+    margin-left: 6px;
+    width: initial;
+    bottom: initial;
+}
+
 .welcome .password input{
     padding: 11px;
     border-radius: 12px;
@@ -839,9 +863,25 @@ background: linear-gradient(90deg, rgba(107,99,251,1) 0%, rgba(152,36,211,1) 66%
 .welcome .loginbtn{
     text-align: center;
     width: 300px;
+    margin-top: 100px;
 }
 
+.welcome .QRContainer{
+    position: absolute;
+    text-align: center;
+
+    right: 300px;
+    top: 100px;
+}
+@media screen and (max-width: 990px) {
+    .welcome .QRContainer{
+        top: initial;
+        right: initial;
+        bottom: 200px;
+    }
+}
 .welcome .QR{
+    image-rendering: pixelated;
     border-radius: 6px;
     display: inline-block;
     border: 6px solid #fff;

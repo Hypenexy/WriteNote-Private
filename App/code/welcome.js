@@ -16,7 +16,7 @@ function loadWelcome(responseData){
         var now24 = new Date().toLocaleTimeString([], { hour: '2-digit', minute: "2-digit", hour12: false });
         var hour = parseInt(now24.slice(0, 2));
         var welcomeMessage = locale.goodmorning; // From 6 to 12
-        if(hour>12&&hour<18){ // From 14:00 to 17:00
+        if(hour>12&&hour<18){ // From 13:00 to 17:00
             welcomeMessage = locale.goodafternoon;
         }
         if(hour>17&&hour<23){ // From 18:00 to 22:00
@@ -658,6 +658,8 @@ function unloggedWelcome(user){
    
 
     if(user){
+        welcomeText.textContent = locale.welcome_back;
+
         const loggedout = createAppendElement("loggedout", mdblock);
         const pfpURL = getUserPfpURL();
         loggedout.innerHTML = `
@@ -670,11 +672,37 @@ function unloggedWelcome(user){
         const passwordLabel = createAppendElement("password", mdblock);
         const passwordText = createAppendElement("text", passwordLabel);
         passwordText.textContent = locale.password;
+        let warnings = [];
+        function addWarning(messagelocale){
+            for (let i = 0; i < warnings.length; i++){
+                if(warnings[i][0] == messagelocale){
+                    return;
+                }
+            }
+            const element = document.createElement("span");
+            element.textContent = locale[messagelocale];
+            passwordText.appendChild(element);
+            warnings.push([messagelocale, element]);
+        }
+        function removeWarning(messagelocale){
+            for (let i = 0; i < warnings.length; i++){
+                if(warnings[i][0] == messagelocale){
+                    warnings[i][1].remove();
+                    warnings.splice(i, 1);
+                }
+            }
+        }
+        let lastSubmitted = "";
         const passwordInput = document.createElement("input");
         passwordInput.type = "password";
         passwordLabel.appendChild(passwordInput);
 
         passwordInput.addEventListener("input", () => {
+            if(warnings.length > 0){
+                removeWarning("empty");
+                removeWarning("wrong_password");
+                removeWarning("at_least_change");
+            }
             if(passwordInput.value != ""){
                 passwordText.classList.add("hide");
             }
@@ -683,13 +711,35 @@ function unloggedWelcome(user){
             }
         });
 
+        passwordInput.addEventListener("keydown", (e) => {
+            var caps = e.getModifierState && e.getModifierState('CapsLock');
+            if(caps){
+                addWarning("caps_enabled");
+            }
+            else{
+                removeWarning("caps_enabled");
+            }
+
+            if(e.key == "Enter"){
+                relog();
+            }
+        });
+
         const loginBtn = createAppendElement("loginbtn", mdblock);
         loginBtn.classList.add("btn");
         loginBtn.textContent = locale.sign_in;
 
         ButtonEvent(loginBtn, relog);
-        
+
         async function relog(){
+            if(passwordInput.value == ""){
+                addWarning("empty");
+                return;
+            }
+            if(passwordInput.value == lastSubmitted){
+                addWarning("at_least_change");
+                return;
+            }
             const relogData = {
                 identity: user.username,
                 password: passwordInput.value
@@ -707,19 +757,26 @@ function unloggedWelcome(user){
                 console.log(error);
             });
 
+            lastSubmitted = passwordInput.value;
+
             const responseData = await response.text();
             
             if(responseData == "201"){
                 loadWelcome(storedData);
             }
+            if(responseData == "wrongInfo"){
+                addWarning("wrong_password");
+            }
         }
     }
 
-    const QRCodeElement = createAppendElement("QR", mdblock);
+    const QRCodeContainer = createAppendElement("QRContainer", mdblock);
+    QRCodeContainer.innerHTML = `<p>${locale.sign_in_qr}</p>`;
+    const QRCodeElement = createAppendElement("QR", QRCodeContainer);
     QRCodeElement.id = "qrcode";
     var qrcode = new QRCode("qrcode", {
-        width: 128,
-        height: 128,
+        width: 200,
+        height: 200,
         colorDark : "#000000",
         colorLight : "#ffffff",
         correctLevel : QRCode.CorrectLevel.H

@@ -81,6 +81,7 @@ var locale = {
     date_modified: "Date modified",
     date_created: "Date created",
     welcome_to: "Welcome to your new",
+    welcome_back: "Welcome back to your",
     you: "You",
     text_editor: "text editor",
     photo_editor: "photo editor",
@@ -90,4 +91,9 @@ var locale = {
     logged_out: "Logged out",
     password: "Password",
     sign_in: "Sign In",
+    caps_enabled: "Caps Lock is enabled",
+    wrong_password: "Wrong password",
+    empty: "Empty",
+    at_least_change: "At least change it",
+    sign_in_qr: "Sign In with QR",
 };
