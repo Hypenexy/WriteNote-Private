@@ -350,6 +350,10 @@ header.noSubHeader .showSubHeader{
     }
 }
 
+.headerDropdown .mobile{
+    display: none;
+}
+
 .noteExtraInfo{
     min-width: 260px;
     max-width: 350px;
@@ -374,3 +378,25 @@ header.noSubHeader .showSubHeader{
     display: inline;
     vertical-align: middle;
 }
+
+@media screen and (max-width: 590px){
+    .headerDropdown{
+        left: 0!important;
+        width: 100%;
+    }
+    .headerDropdown .mobile{
+        display: initial;
+    }
+    .headerDropdown .opennotes{
+        font-size: 20px;
+    }
+    .noteExtraInfo{
+        min-width: initial;
+        max-width: initial;
+        width: 100%;
+    }
+    .noteExtraInfo .btn{
+        display: inline-block;
+        margin: 0;
+    }
+} 

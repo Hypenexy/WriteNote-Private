@@ -680,15 +680,22 @@ function unloggedWelcome(user){
                 }
             }
             const element = document.createElement("span");
+            element.classList.add("hide");
             element.textContent = locale[messagelocale];
             passwordText.appendChild(element);
             warnings.push([messagelocale, element]);
+            setTimeout(() => {
+                element.classList.remove("hide");
+            }, 20);
         }
         function removeWarning(messagelocale){
             for (let i = 0; i < warnings.length; i++){
                 if(warnings[i][0] == messagelocale){
-                    warnings[i][1].remove();
-                    warnings.splice(i, 1);
+                    warnings[i][1].classList.add("hide");
+                    setTimeout(() => {
+                        warnings[i][1].remove();
+                        warnings.splice(i, 1);
+                    }, 300);
                 }
             }
         }

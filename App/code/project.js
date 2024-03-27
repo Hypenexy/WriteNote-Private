@@ -83,6 +83,10 @@ function openNote(noteData){
             ButtonEvent(btn, action);
         }
 
+        const opennotes = createAppendElement("opennotes", element);
+        opennotes.textContent = locale.open_notes;
+        opennotes.classList.add("mobile");
+
         createBtn("close", locale.close, function(){
             hideHeaderDropdown();
             closeNote(noteInfo, noteData); // fix this when closing something else.
@@ -96,6 +100,7 @@ function openNote(noteData){
             var unsaved = createAppendElement("info", element);
             unsaved.innerHTML = "<i>save</i><p>"+locale.unsaved_changes_longer+"</p>"
         }
+
         showHeaderDropdown("note", noteInfo, element);
     }
     ButtonEvent(noteInfo, function(e){
