@@ -779,6 +779,7 @@ function unloggedWelcome(user){
 
     const QRCodeContainer = createAppendElement("QRContainer", mdblock);
     QRCodeContainer.innerHTML = `<p>${locale.sign_in_qr}</p>`;
+    const QRLoader = createAppendElement("loader", QRCodeContainer);
     const QRCodeElement = createAppendElement("QR", QRCodeContainer);
     QRCodeElement.id = "qrcode";
     var qrcode = new QRCode("qrcode", {
@@ -787,17 +788,22 @@ function unloggedWelcome(user){
         colorDark : "#000000",
         colorLight : "#ffffff",
         correctLevel : QRCode.CorrectLevel.H
-    });   
-    
+    });
+
     socket.on("connect", () => { // make sure to disable this after no longer needed
         socket.emit("qrcode", null, (data) => {
             if(Object.keys(data)[0] == "code"){
+                QRLoader.remove();
                 qrcode.makeCode(`${WriteNoteServer}/?code=${data.code}`);
             }
         });
     });
     socket.on("qrcode", (data) => {
         console.log(data);
-        console.log("logged in!!!!!")
+        console.log("logged in!!!!!");
+        WriteNoteLogin({
+            refetch: true,
+            user: {sessionId: data}}
+        );
     });
 }
