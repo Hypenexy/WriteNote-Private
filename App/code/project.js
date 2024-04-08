@@ -98,7 +98,7 @@ function openNote(noteData){
         createBtn("delete", locale.delete);
         if(noteInfo.classList.contains("unsaved")){
             var unsaved = createAppendElement("info", element);
-            unsaved.innerHTML = "<i>save</i><p>"+locale.unsaved_changes_longer+"</p>"
+            unsaved.innerHTML = "<i>save</i><p>"+locale.unsaved_changes_longer+"</p>";
         }
 
         showHeaderDropdown("note", noteInfo, element);
@@ -166,7 +166,7 @@ function openNote(noteData){
     //     }
     // });
     noteInfo.addEventListener("dragend", function(e){
-        removeInstanceZones()
+        removeInstanceZones();
         noteInfo.classList.remove("dragging");
         console.log(e.clientX > document.body.clientWidth / 2);
         // addInstance();
@@ -178,24 +178,25 @@ function switchToNote(noteInfo, noteData){
     const NID = noteData.nid;
     socket.emit("openNote", NID, (success, error) => {
         if(success == true){
-            if(activeNID){
-                openNotes[activeNID].data = writenote[activeInstanceWN].unloadData();
-            }
-
-            if(noteList.getElementsByClassName("active").length > 0){
-                noteList.getElementsByClassName("active")[0].classList.remove("active");
-            }
-
-            showSubHeader(noteData.type);
-            noteInfo.classList.add("active");
-            activeNID = NID;
-            writenote[activeInstanceWN].loadData(openNotes[NID].data);
-            openNotes[NID].data = "";
+            // idk
         }
         if(error == "Not found"){
             // error something
         }
     });
+    if(activeNID){
+        openNotes[activeNID].data = writenote[activeInstanceWN].unloadData();
+    }
+
+    if(noteList.getElementsByClassName("active").length > 0){
+        noteList.getElementsByClassName("active")[0].classList.remove("active");
+    }
+
+    showSubHeader(noteData.type);
+    noteInfo.classList.add("active");
+    activeNID = NID;
+    writenote[activeInstanceWN].loadData(openNotes[NID].data);
+    openNotes[NID].data = "";
 }
 
 
