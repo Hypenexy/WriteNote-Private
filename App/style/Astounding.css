@@ -1,0 +1,52 @@
+app.Astounding{
+    z-index: 99;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+}
+
+app.Astounding .display{
+    color: #fff;
+    /* font-family: "ＭＳ Ｐゴシック"; */
+    font-family: "Astounding";
+    -webkit-font-smoothing : none;
+    text-rendering: optimizeSpeed;
+}
+
+app.Astounding .display.text{
+    text-align: center;
+    font-size: 32px;
+}
+
+app.Astounding:has(.display.text){
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@font-face {
+    font-family: "Astounding";
+    src: url("../assets/fonts/Astounding/Good\ Old\ DOS.ttf");
+}
+
+app.Astounding .display .clockBase{
+    /* background-color: red;
+    border-radius: 46%; */
+    position: relative;
+    width: 160px;
+    height: 160px;
+    background-image: url("../assets/ui/clock.png");
+    filter: invert(1);
+}
+app.Astounding .display .clockBase .hourHead{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #000;
+    width: 3px;
+    height: 40px;
+}
