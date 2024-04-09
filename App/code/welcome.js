@@ -776,6 +776,32 @@ function unloggedWelcome(user){
             }
         }
     }
+    else{
+        const submitbtn = createAppendElement("btn", mdblock);
+        submitbtn.textContent = "Submit POST request";
+        ButtonEvent(submitbtn, async function(){
+            const sentData = {
+                username: "Hypenexy",
+                password: "kysni"
+            };
+            const data = queryStringSerialize(sentData);
+
+            const response = await fetch(WriteNoteServer, {
+                method: 'POST',
+                body: data,
+                credentials: "include",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            }).catch((error) => {
+                console.log(error);
+            });
+            
+            const responseData = await response.text();
+            console.log(responseData);
+        });
+    }
 
     const QRCodeContainer = createAppendElement("QRContainer", mdblock);
     QRCodeContainer.innerHTML = `<p>${locale.sign_in_qr}</p>`;

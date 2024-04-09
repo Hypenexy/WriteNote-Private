@@ -54,4 +54,4 @@ class Astounding{
     }
 }
 
-new Astounding();
+// new Astounding();
