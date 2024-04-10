@@ -790,7 +790,7 @@ background: linear-gradient(90deg, rgba(107,99,251,1) 0%, rgba(152,36,211,1) 66%
     font-weight: 600;
 }
 
-.welcome .loggedout, .welcome .password{
+.welcome .loggedout, .welcome .label{
     display: block;
     background-color: #222;
     padding: 12px;
@@ -813,30 +813,30 @@ background: linear-gradient(90deg, rgba(107,99,251,1) 0%, rgba(152,36,211,1) 66%
     color: #F35959;
 }
 
-.welcome .password{
+.welcome .label{
     display: flex;
     align-items: center;
     position: relative;
     background-color: #555;
     padding: 1px;
 }
-.welcome .password .text{
+.welcome .label .text{
     position: absolute;
     left: 12px;
     pointer-events: none;
     color: #999;
     transition: .2s;
 }
-.welcome .password .text.hide{
+.welcome .label .text.hide{
     color: #555;
     background-color: #111;
     transform: translateY(-20px);
     /* opacity: 0; */
 }
-.welcome .password .text.hide span{
+.welcome .label .text.hide span{
     color: #F35959;
 }
-.welcome .password .text span{
+.welcome .label .text span{
     display: inline-block;
     position: absolute;
     left: 0;
@@ -845,22 +845,22 @@ background: linear-gradient(90deg, rgba(107,99,251,1) 0%, rgba(152,36,211,1) 66%
     bottom: -55px;
     transition: .3s;
 }
-.welcome .password .text span:nth-child(2){
+.welcome .label .text span:nth-child(2){
     bottom: -75px;
 }
-.welcome .password .text span:only-child{
+.welcome .label .text span:only-child{
     position: initial;
     left: initial;
     margin-left: 6px;
     width: initial;
     bottom: initial;
 }
-.welcome .password .text span.hide{
+.welcome .label .text span.hide{
     transform: translateX(-6px);
     opacity: 0;
 }
 
-.welcome .password input{
+.welcome .label input{
     padding: 11px;
     border-radius: 12px;
     width: 100%;
@@ -872,6 +872,15 @@ background: linear-gradient(90deg, rgba(107,99,251,1) 0%, rgba(152,36,211,1) 66%
     text-align: center;
     width: 300px;
     margin-top: 100px;
+}
+
+.welcome .form{
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 24px 0;
+    gap: 8px;
 }
 
 .welcome .QRContainer{

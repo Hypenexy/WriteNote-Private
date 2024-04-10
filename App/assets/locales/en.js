@@ -97,4 +97,5 @@ var locale = {
     at_least_change: "At least change it",
     sign_in_qr: "Sign In with QR",
     open_notes: "Open notes",
+    username: "Username",
 };

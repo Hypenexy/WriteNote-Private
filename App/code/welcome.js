@@ -656,20 +656,9 @@ function unloggedWelcome(user){
     
     traitscroll();
    
-
-    if(user){
-        welcomeText.textContent = locale.welcome_back;
-
-        const loggedout = createAppendElement("loggedout", mdblock);
-        const pfpURL = getUserPfpURL();
-        loggedout.innerHTML = `
-            <img src='${pfpURL}'>
-            <div>
-                <p>${user.username}</p>
-                <p class='logout'>${locale.logged_out}</p>
-            </div>
-        `;
-        const passwordLabel = createAppendElement("password", mdblock);
+    function createPasswordInput(form){
+        const passwordLabel = createAppendElement("password", form);
+        passwordLabel.classList.add("label");
         const passwordText = createAppendElement("text", passwordLabel);
         passwordText.textContent = locale.password;
         let warnings = [];
@@ -699,7 +688,6 @@ function unloggedWelcome(user){
                 }
             }
         }
-        let lastSubmitted = "";
         const passwordInput = document.createElement("input");
         passwordInput.type = "password";
         passwordLabel.appendChild(passwordInput);
@@ -732,7 +720,98 @@ function unloggedWelcome(user){
             }
         });
 
-        const loginBtn = createAppendElement("loginbtn", mdblock);
+        return [passwordInput, addWarning];
+    }
+
+    function createUsernameInput(form){
+        const usernameLabel = createAppendElement("username", form);
+        usernameLabel.classList.add("label");
+        const usernameText = createAppendElement("text", usernameLabel);
+        usernameText.textContent = locale.username;
+        let warnings = [];
+        function addWarning(messagelocale){
+            for (let i = 0; i < warnings.length; i++){
+                if(warnings[i][0] == messagelocale){
+                    return;
+                }
+            }
+            const element = document.createElement("span");
+            element.classList.add("hide");
+            element.textContent = locale[messagelocale];
+            usernameText.appendChild(element);
+            warnings.push([messagelocale, element]);
+            setTimeout(() => {
+                element.classList.remove("hide");
+            }, 20);
+        }
+        function removeWarning(messagelocale){
+            for (let i = 0; i < warnings.length; i++){
+                if(warnings[i][0] == messagelocale){
+                    warnings[i][1].classList.add("hide");
+                    setTimeout(() => {
+                        warnings[i][1].remove();
+                        warnings.splice(i, 1);
+                    }, 300);
+                }
+            }
+        }
+        const usernameInput = document.createElement("input");
+        usernameInput.type = "username";
+        usernameLabel.appendChild(usernameInput);
+
+        usernameInput.addEventListener("input", () => {
+            if(warnings.length > 0){
+                removeWarning("empty");
+                removeWarning("wrong_username");
+                removeWarning("at_least_change");
+            }
+            if(usernameInput.value != ""){
+                usernameText.classList.add("hide");
+            }
+            else{
+                usernameText.classList.remove("hide");
+            }
+        });
+
+        usernameInput.addEventListener("keydown", (e) => {
+            var caps = e.getModifierState && e.getModifierState('CapsLock');
+            if(caps){
+                addWarning("caps_enabled");
+            }
+            else{
+                removeWarning("caps_enabled");
+            }
+
+            if(e.key == "Enter"){
+                relog();
+            }
+        });
+
+        return [usernameInput, addWarning];
+    }
+
+
+    if(user){
+        let lastSubmitted = "";
+        welcomeText.textContent = locale.welcome_back;
+
+        const form = createAppendElement("form", mdblock);
+
+        const loggedout = createAppendElement("loggedout", form);
+        const pfpURL = getUserPfpURL();
+        loggedout.innerHTML = `
+            <img src='${pfpURL}'>
+            <div>
+                <p>${user.username}</p>
+                <p class='logout'>${locale.logged_out}</p>
+            </div>
+        `;
+
+        var passwordInputFunction = createPasswordInput(form);
+        var passwordInput = passwordInputFunction[0];
+        var addWarning = passwordInputFunction[1];
+
+        const loginBtn = createAppendElement("loginbtn", form);
         loginBtn.classList.add("btn");
         loginBtn.textContent = locale.sign_in;
 
@@ -777,12 +856,23 @@ function unloggedWelcome(user){
         }
     }
     else{
-        const submitbtn = createAppendElement("btn", mdblock);
-        submitbtn.textContent = "Submit POST request";
+        const form = createAppendElement("form", mdblock);
+
+        var usernameInputFunction = createUsernameInput(form);
+        var usernameInput = usernameInputFunction[0];
+        var addWarningUsername = usernameInputFunction[1];
+
+        var passwordInputFunction = createPasswordInput(form);
+        var passwordInput = passwordInputFunction[0];
+        var addWarningPassword = passwordInputFunction[1];
+
+        const submitbtn = createAppendElement("btn", form);
+        submitbtn.textContent = locale.sign_in;
         ButtonEvent(submitbtn, async function(){
             const sentData = {
-                username: "Hypenexy",
-                password: "kysni"
+                type: "login",
+                username: usernameInput.value,
+                password: passwordInput.value
             };
             const data = queryStringSerialize(sentData);
 

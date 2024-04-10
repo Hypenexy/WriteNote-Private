@@ -6,6 +6,7 @@ const MidelightServer = "https://writenote.midelight.net/",
 var socket;
 var storedData; // Object is linked not cloned! Do not modify response.
 var socketOnline = false;
+var serverOnline = false;
 
 async function midelightStartup(){
     const loadStartDate = Date.now();
@@ -34,9 +35,20 @@ async function midelightStartup(){
             "Accept": "application/json",
             "Content-Type": "application/x-www-form-urlencoded"
         }
-    }).catch((error) => {
-        alert(error);
     })
+    .catch((error) => {
+        serverOnline = false;
+        loadErrorWelcome("couldnt_connect", error);
+    });
+
+    if(response && response.status == 200){
+        serverOnline = true;
+    }
+
+    if(serverOnline == false){
+        return;
+    }
+
     socket = io(WriteNoteServer);
 
     try {
@@ -65,8 +77,8 @@ async function midelightStartup(){
                     unloggedWelcome(responseData.user);
                 }
             }
-    }
-    return response;
+        }
+        return response;
     } catch (error) {
         loadErrorWelcome("wrong_response", error);
     }
