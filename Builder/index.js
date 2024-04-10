@@ -212,3 +212,13 @@ function clean(){
     fs.rmSync(dir, { recursive: true, force: true });
     console.log(`${colors.red}All ${fileCount()} successfully cleaned!${colors.reset}`);
 }
+
+function twirlTimer(){
+    var P = ["\\", "|", "/", "-"];
+    var x = 0;
+    return setInterval(function() {
+      process.stdout.write("\r" + P[x++]);
+      x &= 3;
+    }, 250);
+};
+  

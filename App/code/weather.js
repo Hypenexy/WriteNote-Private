@@ -1,5 +1,9 @@
 const loadedBigWeatherImage = document.createElement("img");
 
+function getWeatherInFahrenheit(temp){
+    return (temp*1.8)+32 + "°F";
+}
+
 function openWeather(){
     const element = document.createElement("div");
     

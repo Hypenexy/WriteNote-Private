@@ -199,6 +199,9 @@ function switchToNote(noteInfo, noteData){
     openNotes[NID].data = "";
 }
 
+// keybind alt left and alt right
+// to go to left or right note
+
 
 //rework everything here!!!!!!!!!!!!!!!!!!!!!!!!!!
 function closeNote(noteInfo, noteData){

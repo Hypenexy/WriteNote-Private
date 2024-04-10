@@ -9,19 +9,34 @@ var socketOnline = false;
 
 async function midelightStartup(){
     const loadStartDate = Date.now();
-    const data = queryStringSerialize(datalog);
+    const data = queryStringSerialize({
+        type: "startup",
+        v: version,
+        datalog,
+    });
 
-    const response = await fetch(MidelightServer + "app/startup.php", {
-        method: 'POST',
+    // const response = await fetch(MidelightServer + "app/startup.php", {
+    //     method: 'POST',
+    //     body: data,
+    //     credentials: "include",
+    //     headers: {
+    //         'Accept': 'application/json',
+    //         'Content-Type': 'application/x-www-form-urlencoded'
+    //     }
+    // }).catch((error) => {
+    //     console.log(error);
+    // });
+    const response = await fetch(WriteNoteServer, {
+        method: "POST",
         body: data,
         credentials: "include",
         headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/x-www-form-urlencoded'
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded"
         }
     }).catch((error) => {
-        console.log(error);
-    });
+        alert(error);
+    })
     socket = io(WriteNoteServer);
 
     try {
