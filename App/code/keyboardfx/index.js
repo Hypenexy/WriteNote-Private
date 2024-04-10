@@ -82,7 +82,7 @@ class keyboardSFX{
     }
     load = () => {
         const request = new XMLHttpRequest();
-        request.open("GET", "code/keyboardfx/keyboard-test-sound.mp3");
+        request.open("GET", "assets/ui/keyboard-test-sound.mp3");
         request.responseType = "arraybuffer";
         const audioCtx = this.audioCtx;
         var that = this; 

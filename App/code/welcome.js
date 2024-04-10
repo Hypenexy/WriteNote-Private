@@ -1,6 +1,6 @@
 const welcome = document.createElement("div");
 welcome.classList.add("welcome");
-welcome.innerHTML = "<img class='logo' src='/assets/ui/logo.svg'>";
+welcome.innerHTML = "<img class='logo' src='assets/ui/logo.svg'>";
 // welcome.appendChild(logo);
 app.appendChild(welcome);
 const notesSide = document.createElement("div");

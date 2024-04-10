@@ -9,7 +9,7 @@ var logoData = '<svg width="1024" height="1024" xmlns="http://www.w3.org/2000/sv
 // TO-DO: expland the path somehow and make it circle around!
 
 const logo = document.createElement("div");
-// logo.innerHTML = "<img src='/assets/ui/logo.svg'>";
+// logo.innerHTML = "<img src='assets/ui/logo.svg'>";
 logo.innerHTML = `${logoData}${logoData}`
 logo.classList.add("loading");
 // setTimeout(() => {

@@ -114,6 +114,7 @@ function build(version){
     const index = fs.readFileSync("../App/index.html", 'utf-8');
 
     fs.mkdirSync(dir, { recursive: true });
+    fs.mkdirSync(`${dir}/dst`);
 
     // function combineInOne(folder){
     //     var combination = "";
@@ -169,7 +170,7 @@ function build(version){
             const options = {}; 
             minified = new CleanCSS(options).minify(combination).styles;
         }
-        fs.writeFileSync(`${dir}/${newFile}`, minified);
+        fs.writeFileSync(`${dir}/dst/${newFile}`, minified);
     }
 
     getFiles("code.js", codeRegex, "uglifyJS");
@@ -178,20 +179,24 @@ function build(version){
 
     fs.cpSync(assetsFolder, `${dir}/assets/`, { recursive: true });
 
-    const newIndex = `<!DOCTYPE html><html style="background: #111"lang="en"><head><meta charset="UTF-8"><meta name="viewport"content="width=device-width,initial-scale=1.0"><title>WriteNote</title><link rel="stylesheet"href="style.css"></head><body><script src="code.js"></script></body></html>`;
+    const newIndex = `<!DOCTYPE html><html style="background:#111"lang="en"><head><meta charset="UTF-8"><meta name="viewport"content="width=device-width,initial-scale=1.0"><title>WriteNote</title><link rel="stylesheet"href="dst/style.css"></head><body><script src="dst/code.js"></script></body></html>`;
     fs.writeFileSync(`${dir}/index.html`, newIndex, {encoding: "utf-8"});
+
+    fs.copyFileSync(`${appFolder}favicon.ico`, `${dir}/favicon.ico`);
 
     console.log(`${colors.green}Version successfully built!${colors.reset}`);
 }
 
 function fileCount(){
+    var dir = "./dst/WriteNoteApp/";
+    log('s', dir)
     if(!fs.existsSync(dir)){
-        return `no files`;
+        return `no versions`;
     }
     var dir = "./dst/WriteNoteApp/";
     const count = fs.readdirSync(dir).length;
     const countstr = count > 1 ? "s" : "";
-    return `${count} file${countstr}`;
+    return `${count} version${countstr}`;
 }
 
 function status(){
