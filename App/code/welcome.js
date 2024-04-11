@@ -727,9 +727,6 @@ function unloggedWelcome(user){
                 removeWarning("caps_enabled");
             }
 
-            if(e.key == "Enter"){
-                relog();
-            }
         });
 
         return [passwordInput, addWarning];
@@ -799,10 +796,6 @@ function unloggedWelcome(user){
             else{
                 removeWarning("caps_enabled");
             }
-
-            if(e.key == "Enter"){
-                relog();
-            }
         });
 
         return [usernameInput, addWarning];
@@ -871,10 +864,6 @@ function unloggedWelcome(user){
             }
             else{
                 removeWarning("caps_enabled");
-            }
-
-            if(e.key == "Enter"){
-                relog();
             }
         });
 
@@ -1043,7 +1032,7 @@ function unloggedWelcome(user){
                 const username = usernameInput.value.trim();
 
                 const sentData = {
-                    type: "login",
+                    type: "register",
                     email: email,
                     username: username,
                     password: passwordInput.value
