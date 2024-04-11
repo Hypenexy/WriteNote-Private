@@ -697,12 +697,24 @@ function unloggedWelcome(user){
                 removeWarning("empty");
                 removeWarning("wrong_password");
                 removeWarning("at_least_change");
+                if(!passwordInput.value.startsWith(" ")){
+                    removeWarning("starts_with_whitespace");
+                }
+                if(!passwordInput.value.endsWith(" ") || passwordInput.value.length <= 1){
+                    removeWarning("ends_with_whitespace");
+                }
             }
             if(passwordInput.value != ""){
                 passwordText.classList.add("hide");
             }
             else{
                 passwordText.classList.remove("hide");
+            }
+            if(passwordInput.value.startsWith(" ")){
+                addWarning("starts_with_whitespace");
+            }
+            if(passwordInput.value.endsWith(" ") && passwordInput.value.length > 1){
+                addWarning("ends_with_whitespace");
             }
         });
 
@@ -764,6 +776,12 @@ function unloggedWelcome(user){
                 removeWarning("empty");
                 removeWarning("wrong_username");
                 removeWarning("at_least_change");
+                if(usernameInput.value.length <= 30){
+                    removeWarning("username_too_long");
+                }
+            }
+            if(usernameInput.value.length > 30){
+                addWarning("username_too_long");
             }
             if(usernameInput.value != ""){
                 usernameText.classList.add("hide");
@@ -788,6 +806,79 @@ function unloggedWelcome(user){
         });
 
         return [usernameInput, addWarning];
+    }
+
+    function createEmailInput(form){
+        const emailLabel = createAppendElement("email", form);
+        emailLabel.classList.add("label");
+        const emailText = createAppendElement("text", emailLabel);
+        emailText.textContent = locale.email;
+        let warnings = [];
+        function addWarning(messagelocale){
+            for (let i = 0; i < warnings.length; i++){
+                if(warnings[i][0] == messagelocale){
+                    return;
+                }
+            }
+            const element = document.createElement("span");
+            element.classList.add("hide");
+            element.textContent = locale[messagelocale];
+            emailText.appendChild(element);
+            warnings.push([messagelocale, element]);
+            setTimeout(() => {
+                element.classList.remove("hide");
+            }, 20);
+        }
+        function removeWarning(messagelocale){
+            for (let i = 0; i < warnings.length; i++){
+                if(warnings[i][0] == messagelocale){
+                    warnings[i][1].classList.add("hide");
+                    setTimeout(() => {
+                        warnings[i][1].remove();
+                        warnings.splice(i, 1);
+                    }, 300);
+                }
+            }
+        }
+        const emailInput = document.createElement("input");
+        emailInput.type = "email";
+        emailLabel.appendChild(emailInput);
+
+        emailInput.addEventListener("input", () => {
+            if(warnings.length > 0){
+                removeWarning("empty");
+                removeWarning("wrong_email");
+                removeWarning("at_least_change");
+                if(emailInput.value.length <= 100){
+                    removeWarning("email_too_long");
+                }
+            }
+            if(emailInput.value.length > 100){
+                addWarning("email_too_long");
+            }
+            if(emailInput.value != ""){
+                emailText.classList.add("hide");
+            }
+            else{
+                emailText.classList.remove("hide");
+            }
+        });
+
+        emailInput.addEventListener("keydown", (e) => {
+            var caps = e.getModifierState && e.getModifierState('CapsLock');
+            if(caps){
+                addWarning("caps_enabled");
+            }
+            else{
+                removeWarning("caps_enabled");
+            }
+
+            if(e.key == "Enter"){
+                relog();
+            }
+        });
+
+        return [emailInput, addWarning];
     }
 
 
@@ -856,41 +947,134 @@ function unloggedWelcome(user){
         }
     }
     else{
-        const form = createAppendElement("form", mdblock);
-
-        var usernameInputFunction = createUsernameInput(form);
-        var usernameInput = usernameInputFunction[0];
-        var addWarningUsername = usernameInputFunction[1];
-
-        var passwordInputFunction = createPasswordInput(form);
-        var passwordInput = passwordInputFunction[0];
-        var addWarningPassword = passwordInputFunction[1];
-
-        const submitbtn = createAppendElement("btn", form);
-        submitbtn.textContent = locale.sign_in;
-        ButtonEvent(submitbtn, async function(){
-            const sentData = {
-                type: "login",
-                username: usernameInput.value,
-                password: passwordInput.value
-            };
-            const data = queryStringSerialize(sentData);
-
-            const response = await fetch(WriteNoteServer, {
-                method: 'POST',
-                body: data,
-                credentials: "include",
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
-            }).catch((error) => {
-                console.log(error);
-            });
+        function createForm(message){
+            const lastform = mdblock.getElementsByClassName("form");
+            for (let i = 0; i < lastform.length; i++) {
+                const element = lastform[i];
+                const rect = element.getBoundingClientRect();
+                const rect2 = welcome.getBoundingClientRect();
+                element.style.position = "fixed";
+                element.style.top = rect.top - rect2.top + "px";
+                element.style.left = rect.left - rect2.left + "px";
+                element.classList.add("fromleft");
+                setTimeout(()=>{
+                    element.remove();
+                }, 300)
+            }
+            const form = createAppendElement("form", mdblock);
+            form.classList.add("fromright");
+            setTimeout(() => {
+                form.classList.remove("fromright");
+            }, 5);
+    
+            const signinText = createAppendElement("ifnew", form);
+            signinText.textContent = locale[message];
+            return form;
+        }
+        function showLogin(){
+            const form = createForm("sign_in");
             
-            const responseData = await response.text();
-            console.log(responseData);
-        });
+            var usernameInputFunction = createUsernameInput(form);
+            var usernameInput = usernameInputFunction[0];
+            var addWarningUsername = usernameInputFunction[1];
+            
+            var passwordInputFunction = createPasswordInput(form);
+            var passwordInput = passwordInputFunction[0];
+            var addWarningPassword = passwordInputFunction[1];
+            
+            const submitbtn = createAppendElement("btn", form);
+            submitbtn.textContent = locale.sign_in;
+            ButtonEvent(submitbtn, async function(){
+                const sentData = {
+                    type: "login",
+                    username: usernameInput.value,
+                    password: passwordInput.value
+                };
+                const data = queryStringSerialize(sentData);
+    
+                const response = await fetch(WriteNoteServer, {
+                    method: 'POST',
+                    body: data,
+                    credentials: "include",
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                }).catch((error) => {
+                    console.log(error);
+                });
+                
+                const responseData = await response.text();
+                console.log(responseData);
+            });
+    
+            const ifnew = createAppendElement("ifnew", form);
+            ifnew.textContent = locale.if_new;
+            const newbtn = createAppendElement("btn", form);
+            newbtn.textContent = locale.create_account;
+            ButtonEvent(newbtn, showRegister);
+        }
+        function showRegister(){
+            const form = createForm("create_account");
+
+            var emailInputFunction = createEmailInput(form);
+            var emailInput = emailInputFunction[0];
+            var addWarningEmail = emailInputFunction[1];
+            
+            var usernameInputFunction = createUsernameInput(form);
+            var usernameInput = usernameInputFunction[0];
+            var addWarningUsername = usernameInputFunction[1];
+            
+            var passwordInputFunction = createPasswordInput(form);
+            var passwordInput = passwordInputFunction[0];
+            var addWarningPassword = passwordInputFunction[1];
+            
+            const submitbtn = createAppendElement("btn", form);
+            submitbtn.textContent = locale.sign_up;
+    
+            async function register(){
+                if(emailInput.value.length > 100){
+                    return;
+                }
+                if(usernameInput.value.length > 30){
+                    return;
+                }
+                const email = emailInput.value.trim();
+                const username = usernameInput.value.trim();
+
+                const sentData = {
+                    type: "login",
+                    email: email,
+                    username: username,
+                    password: passwordInput.value
+                };
+                const data = queryStringSerialize(sentData);
+    
+                const response = await fetch(WriteNoteServer, {
+                    method: 'POST',
+                    body: data,
+                    credentials: "include",
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                }).catch((error) => {
+                    console.log(error);
+                });
+                
+                const responseData = await response.text();
+                console.log(responseData);
+            }
+
+            ButtonEvent(submitbtn, register);
+
+            const ifold = createAppendElement("ifnew", form);
+            ifold.textContent = locale.already_account;
+            const newbtn = createAppendElement("btn", form);
+            newbtn.textContent = locale.sign_in;
+            ButtonEvent(newbtn, showLogin);
+        }
+        showLogin();
     }
 
     const QRCodeContainer = createAppendElement("QRContainer", mdblock);

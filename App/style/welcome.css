@@ -796,7 +796,7 @@ background: linear-gradient(90deg, rgba(107,99,251,1) 0%, rgba(152,36,211,1) 66%
     padding: 12px;
     border-radius: 12px;
     width: 300px;
-    margin: 10px 0;
+    /* margin: 10px 0; */
 }
 .welcome .loggedout img{
     width: 48px;
@@ -881,6 +881,21 @@ background: linear-gradient(90deg, rgba(107,99,251,1) 0%, rgba(152,36,211,1) 66%
     align-items: flex-start;
     padding: 24px 0;
     gap: 8px;
+    transition: .3s;
+}
+
+.welcome .form .ifnew{
+    margin-top: 24px;
+    font-size: 20px;
+}
+
+.welcome .form.fromright{
+    transform: translateX(50px);
+    opacity: 0;
+}
+.welcome .form.fromleft{
+    transform: translateX(-50px);
+    opacity: 0;
 }
 
 .welcome .QRContainer{

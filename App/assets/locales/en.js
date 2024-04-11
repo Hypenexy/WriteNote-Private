@@ -98,4 +98,12 @@ var locale = {
     sign_in_qr: "Sign In with QR",
     open_notes: "Open notes",
     username: "Username",
+    username_too_long: "Username is too long",
+    if_new: "Don't have an account?",
+    create_account: "Create an account",
+    already_account: "Already have an account?",
+    sign_up: "Sign Up",
+    email: "Email",
+    starts_with_whitespace: "Your password starts with space",
+    ends_with_whitespace: "Your password ends with space",
 };
