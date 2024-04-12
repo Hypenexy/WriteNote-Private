@@ -49,7 +49,9 @@ async function midelightStartup(){
         return;
     }
 
-    socket = io(WriteNoteServer);
+    socket = io(WriteNoteServer, {
+        withCredentials: true
+    });
 
     try {
         const responseData = await response.json();
@@ -145,6 +147,8 @@ function WriteNoteLogin(responseData){
                 socket.emit("getUsage", null, (success, error) => {
                     if(success){
                         loadUsageWelcome(success);
+                        console.log(error);
+                        console.log(success);
                     }
                 });
                 // log('s', success);

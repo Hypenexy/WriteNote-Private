@@ -681,6 +681,15 @@ background: linear-gradient(90deg, rgba(107,99,251,1) 0%, rgba(152,36,211,1) 66%
     border-right: 6px solid transparent;
     border-bottom: 9px solid #444;
 }
+.deviceInfo .caret::after{
+    content: ' ';
+    top: 2px;
+    left: -5px;
+    position: absolute;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 8px solid #222;
+}
 
 
 

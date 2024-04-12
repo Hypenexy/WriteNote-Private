@@ -41,7 +41,7 @@ function loadHeader(){
     ButtonEvent(showSubHeader, toggleSubHeader);
 
     const weather = createAppendElement("weather", infotainment);
-    weather.innerHTML = "<div>" + storedData.weather.temp.toString().split('.')[0] + "°C</div>";
+    weather.innerHTML = "<div>" + storedData.weather.main.temp.toString().split('.')[0] + "°C</div>";
     weather.style.backgroundImage = `url("${weatherServer}images/${storedData.weather.image}.jpg")`;
     ButtonEvent(weather, openWeather);
 

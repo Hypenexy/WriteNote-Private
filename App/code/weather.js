@@ -14,7 +14,7 @@ function openWeather(){
 
     const text = document.createElement("p");
     text.classList.add("big");
-    text.innerHTML = `<span>${weather.city} ${weather.temp}°C</span>`;
+    text.innerHTML = `<span>${weather.name} ${weather.main.temp}°C</span>`;
     element.appendChild(text);
     
     CreateModal(element, "weatherBig");
