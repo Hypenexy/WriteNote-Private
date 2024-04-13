@@ -48,7 +48,7 @@ function loadHeader(){
     const profile = createAppendElement("profile", infotainment);
     attachOnlineStatus(profile);
     attachTooltip(profile, locale["view_profile"]);
-    profile.innerHTML = "<div class='line'></div><p>"+storedData.user.username+"</p> ";
+    profile.innerHTML = "<div class='line'></div><p>"+storedData.user.Username+"</p> ";
     const pfpURL = getUserPfpURL();
     profile.innerHTML += "<img src='"+pfpURL+"'>";
     ButtonEvent(profile, function(e){

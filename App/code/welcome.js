@@ -173,7 +173,7 @@ function loadWelcome(responseData){
             binBtn = htmlElement;
         }
         if(topBtnsIcons[i] == "folder"){
-            ButtonEvent(htmlElement, createFolder)
+            ButtonEvent(htmlElement, createFolder);
         }
     }
     top.appendChild(usageElement);
@@ -537,6 +537,9 @@ function removeDeviceElement(DID){
 function loadUsageWelcome(data, isDecoration){
     if(typeof isDecoration != "undefined"){
         usageElement = isDecoration;
+    }
+    if(data == "empty"){
+        data = 0;
     }
     const rawRatio = data/1000000000;
     attachTooltip(usageElement, `${rawRatio*100}%`);

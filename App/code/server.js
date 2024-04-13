@@ -147,8 +147,6 @@ function WriteNoteLogin(responseData){
                 socket.emit("getUsage", null, (success, error) => {
                     if(success){
                         loadUsageWelcome(success);
-                        console.log(error);
-                        console.log(success);
                     }
                 });
                 // log('s', success);
@@ -193,8 +191,8 @@ function attachOnlineStatus(element){
 
 function getUserPfpURL(){
     var pfpURL = assetsServer + "/ui/pfp.png";
-    if(storedData.user.pfp){
-        pfpURL = imageServer+"?i="+storedData.user.pfp;
+    if(storedData.user.Avatar){
+        pfpURL = imageServer+"?i="+storedData.user.Avatar;
     }
     return pfpURL;
 }
