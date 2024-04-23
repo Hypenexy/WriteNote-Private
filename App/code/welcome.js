@@ -450,12 +450,13 @@ function showDeviceOptions(){
         ["travel_explore", "View device"],
         ["settings", "Change device settings"],
         ["wifi_off", "Disconnect"],
+        ["logout", "Logout"],
     ];
     for (let i = 0; i < btns.length; i++) {
         const btn = btns[i];
         const htmlElement = document.createElement("div");
         htmlElement.classList.add("btn");
-        if(btns.length - 1 == i){
+        if(btns.length - 3 < i){
             htmlElement.classList.add("logout");
         }
         htmlElement.innerHTML = `<i>${btn[0]}</i><span>${btn[1]}</span>`;
@@ -469,7 +470,10 @@ function showDeviceOptions(){
                 ButtonEvent(htmlElement, openDevice, DID);
                 break;
             case 2:
-                ButtonEvent(htmlElement, openDevice, DID);
+                ButtonEvent(htmlElement, disconnectDevice, DID);
+                break;
+            case 3:
+                ButtonEvent(htmlElement, logoutDevice, DID);
                 break;
             default:
                 break;
@@ -945,6 +949,7 @@ function unloggedWelcome(user){
         }
     }
     else{
+        const isEmpty = str => !str.trim().length;
         function createForm(message){
             const lastform = mdblock.getElementsByClassName("form");
             for (let i = 0; i < lastform.length; i++) {
@@ -979,10 +984,21 @@ function unloggedWelcome(user){
             var passwordInputFunction = createPasswordInput(form);
             var passwordInput = passwordInputFunction[0];
             var addWarningPassword = passwordInputFunction[1];
+
+            const error = createAppendElement("serverError", form);
             
             const submitbtn = createAppendElement("btn", form);
             submitbtn.textContent = locale.sign_in;
             ButtonEvent(submitbtn, async function(){
+                var anyEmpty = false;
+                if(isEmpty(usernameInput.value)){
+                    addWarningUsername("empty");
+                }
+
+                if(isEmpty(passwordInput.value)){
+                    addWarningPassword("empty");
+                }
+
                 const sentData = {
                     type: "login",
                     username: usernameInput.value,
@@ -1002,7 +1018,15 @@ function unloggedWelcome(user){
                     console.log(error);
                 });
                 
-                const responseData = await response.text();
+                const responseData = await response.json();
+                if(responseData.status == "success"){
+                    midelightStartup();
+                }
+                if(responseData.error){
+                    if(responseData.error == "Didn't find account"){
+                        error.textContent = locale.incorrect_username_password;
+                    }
+                }
                 console.log(responseData);
             });
     

@@ -3,7 +3,7 @@ const version = [1, 0, 0];
 const app = document.createElement("app");
 document.body.appendChild(app);
 
-const writenote = [new WriteNote({linkEngine: "http://ixeo.midelightdev.localhost/Metadata/"})];
+const writenote = [new WriteNote({linkEngine: `https://midelight.net:2053/Metadata`})];
 var activeInstanceWN = 0;
 
 writenote[activeInstanceWN].init(app);
@@ -11,7 +11,7 @@ writenote[activeInstanceWN].init(app);
 writenote[activeInstanceWN].enabled(false);
 
 function addInstance(){
-    writenote.push(new WriteNote({linkEngine: "http://ixeo.midelightdev.localhost/Metadata/"}));
+    writenote.push(new WriteNote({linkEngine: `https://midelight.net:2053/Metadata`}));
 }
 
 function createInstanceZones(){

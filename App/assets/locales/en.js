@@ -106,4 +106,5 @@ var locale = {
     email: "Email",
     starts_with_whitespace: "Your password starts with space",
     ends_with_whitespace: "Your password ends with space",
+    incorrect_username_password: "Incorrect username or password",
 };

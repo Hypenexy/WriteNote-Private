@@ -109,7 +109,7 @@ function createCookie(name, value, days, path) {
 function WriteNoteLogin(responseData){
     if(responseData.refetch == true){
         // createCookie("PHPSESSID", responseData.user.sessionId, 20, ".midelight.net");
-        docCookies.setItem("PHPSESSID", responseData.user.sessionId, 1000, "/", ".midelight.net", true, "none");
+        // docCookies.setItem("PHPSESSID", responseData.user.sessionId, 1000, "/", ".midelight.net", true, "none");
         midelightStartup();
     }
 
@@ -171,6 +171,7 @@ function WriteNoteLogin(responseData){
     socket.on("deviceInfo", function(data){
         updateDeviceList(data);
     });
+    socket.on("deviceAction", deviceAction);
 }
 
 connectMidelight();

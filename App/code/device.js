@@ -108,3 +108,33 @@ function openDevice(DID){
 
     CreateModal(element, "device");
 }
+
+function disconnectDevice(DID){
+    socket.emit("deviceAction", {
+            type: "disconnect",
+            DID: DID,
+        },
+        (success, error) => {
+            console.log(success);
+            console.log(error);
+        }
+    );
+}
+
+function logoutDevice(DID){
+    socket.emit("deviceAction", {
+            type: "logout",
+            DID: DID,
+        },
+        (success, error) => {
+            console.log(success);
+            console.log(error);
+        }
+    );
+}
+
+function deviceAction(data){
+    if(data.type == "logout"){
+        location.reload();
+    }
+}

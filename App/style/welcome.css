@@ -805,7 +805,7 @@ background: linear-gradient(90deg, rgba(107,99,251,1) 0%, rgba(152,36,211,1) 66%
     padding: 12px;
     border-radius: 12px;
     width: 300px;
-    /* margin: 10px 0; */
+    margin-bottom: 6px;
 }
 .welcome .loggedout img{
     width: 48px;
@@ -905,6 +905,9 @@ background: linear-gradient(90deg, rgba(107,99,251,1) 0%, rgba(152,36,211,1) 66%
 .welcome .form.fromleft{
     transform: translateX(-50px);
     opacity: 0;
+}
+.welcome .form .serverError{
+    color: #F35959;
 }
 
 .welcome .QRContainer{
