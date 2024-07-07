@@ -35,7 +35,7 @@ function openNote(noteData){
         return;
     }
     if(activeNID){
-        openNotes[activeNID].data = writenote[activeInstanceWN].unloadData();
+        openNotes[activeNID].data = writenote[activeInstanceWN].unloadData(noteData.type);
     }
     if(noteList.getElementsByClassName("active").length > 0){
         noteList.getElementsByClassName("active")[0].classList.remove("active");
@@ -58,6 +58,9 @@ function openNote(noteData){
     showSubHeader(noteData.type);
     if(noteData.type == "note"){
         noteInfo.innerHTML += "<i>description</i>";
+    }
+    if(noteData.type == "presentation" || noteData.type == "web app"){
+        noteInfo.innerHTML += "<i>web_asset</i>";
     }
     noteInfo.innerHTML += " <p>"+noteData.name+"</p>";
     noteInfo.innerHTML += "<div class='line'></div>";
@@ -122,10 +125,10 @@ function openNote(noteData){
         if(success == true){
             socket.emit("modifyNote", {type: "load"}, (success, error) => {
                 if(success){
-                    writenote[activeInstanceWN].loadData(success);
+                    writenote[activeInstanceWN].loadData(success, noteData.type);
                 }
                 if(error=="Note empty"){
-                    writenote[activeInstanceWN].loadData("");
+                    writenote[activeInstanceWN].loadData("", noteData.type);
                 }
             });
         }
@@ -169,11 +172,10 @@ function openNote(noteData){
         removeInstanceZones();
         noteInfo.classList.remove("dragging");
         console.log(e.clientX > document.body.clientWidth / 2);
-        // addInstance();
+        addInstance();
     });
 }
 
-// This is real weird design, because each time you switch note it connects and awaits for a response
 function switchToNote(noteInfo, noteData){
     const NID = noteData.nid;
     socket.emit("openNote", NID, (success, error) => {
@@ -185,7 +187,9 @@ function switchToNote(noteInfo, noteData){
         }
     });
     if(activeNID){
-        openNotes[activeNID].data = writenote[activeInstanceWN].unloadData();
+        // openNotes[activeNID].selection = writenote[activeInstanceWN].saveSelection(writenote[activeInstanceWN].notearea);
+        // console.log(writenote[activeInstanceWN].saveSelection(writenote[activeInstanceWN].notearea));
+        openNotes[activeNID].data = writenote[activeInstanceWN].unloadData(noteData.type);
     }
 
     if(noteList.getElementsByClassName("active").length > 0){
@@ -195,13 +199,49 @@ function switchToNote(noteInfo, noteData){
     showSubHeader(noteData.type);
     noteInfo.classList.add("active");
     activeNID = NID;
-    writenote[activeInstanceWN].loadData(openNotes[NID].data);
+    writenote[activeInstanceWN].loadData(openNotes[NID].data, openNotes[NID].type);
+    // writenote[activeInstanceWN].restoreSelection(
+    //     penNotes[NID].selection,
+    //     writenote[activeInstanceWN].notearea
+    // );
     openNotes[NID].data = "";
 }
 
 // keybind alt left and alt right
 // to go to left or right note
 
+function closestNoteLeft(){
+    const noteInfo = noteList.querySelector(`[nid='${activeNID}']`)
+    if(noteInfo.previousElementSibling != undefined){
+        return noteInfo.previousElementSibling;
+    }
+    return null;
+}
+function closestNoteRight(){
+    const noteInfo = noteList.querySelector(`[nid='${activeNID}']`)
+    if(noteInfo.nextElementSibling != undefined){
+        return noteInfo.nextElementSibling;
+    }
+    return null;
+}
+
+document.addEventListener("keydown", (e) => {
+    if(e.altKey){
+        var note;
+        if(e.key == "ArrowLeft"){
+            e.preventDefault();
+            note = closestNoteLeft();
+        }
+        if(e.key == "ArrowRight"){
+            e.preventDefault();
+            note = closestNoteRight();
+        }
+        if(note){
+            const NID = note.getAttribute("NID");
+            switchToNote(note, openNotes[NID]);
+        }
+    }
+});
 
 //rework everything here!!!!!!!!!!!!!!!!!!!!!!!!!!
 function closeNote(noteInfo, noteData){
@@ -241,7 +281,7 @@ function closeNote(noteInfo, noteData){
     });
 
     if(NID == activeNID){
-        writenote[activeInstanceWN].loadData("");
+        writenote[activeInstanceWN].loadData("", noteData.type);
     }
     
     if(Object.keys(openNotes).length>0){
@@ -257,7 +297,7 @@ function saveNote(NID){
     if(openNotes[NID].saved == false){
         var content;
         if(activeNID == NID){
-            content = writenote[activeInstanceWN].unloadData();
+            content = writenote[activeInstanceWN].unloadData(openNotes[NID].type);
         }
         else{
             content = openNotes[NID].data;
@@ -304,16 +344,25 @@ function createNewNote(){
     const element = document.createElement("div");
     
     const title = document.createElement("div");
+    title.classList.add("header");
+    title.innerText = locale.create_new_project;
     element.appendChild(title);
 
+    const nameLabel = document.createElement("label");
+    nameLabel.innerHTML = `<p>${locale.name}</p>`;
     const nameInput = document.createElement("input");
-    nameInput.classList.add("md");
-    element.appendChild(nameInput);
+    nameLabel.appendChild(nameInput);
+    element.appendChild(nameLabel);
+
+    const fileTypeText = document.createElement("p");
+    fileTypeText.textContent = locale.type;
+    element.appendChild(fileTypeText);
 
     var filetypes = {
-        "Note" : ["Text with media", "description"],
-        "Calculator" : ["Math optimized workspace", "calculate"],
-        "Webapp" : ["Site builder", "web_asset"]
+        [locale.note] : [locale.note_description, "description"],
+        [locale.calculator] : [locale.calculator_description, "calculate"],
+        [locale.webapp] : [locale.webapp_description, "web_asset"],
+        [locale.presentation] : [locale.presentation_description, "web_asset"]
     };
     var filetypesKeys = Object.keys(filetypes);
 

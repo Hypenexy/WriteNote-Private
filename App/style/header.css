@@ -308,11 +308,19 @@ header.noSubHeader .showSubHeader{
     }
 }
 
+
 .subHeader .btn{
     vertical-align: middle;
     padding: 4px;
     margin-right: 4px;
-    
+}
+
+.subHeader .btn.submit{
+    vertical-align: middle;
+    background-color: #65baff;
+    color: #111;
+    border-radius: 99px;
+    padding: 12px;
 }
 
 .subHeader .vl{

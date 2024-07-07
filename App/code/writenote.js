@@ -11,6 +11,7 @@ class WriteNote{
         this.notearea = document.createElement("notearea");
         this.isEnabled = false;
         this.mediaData = {};
+        this.workspaceData = {};
         this.writenote = document.createElement("writenote");
         this.features = document.createElement("features");
         this.lastSave;
@@ -18,6 +19,7 @@ class WriteNote{
         // this.workspace = workspace; think about this
         this.linkEngine = options.linkEngine; // debug this being null or incorrect
         this.parent;
+        this.typeLoaded = false;
 
         this.insertFile = this.insertFile.bind(this);
     }
@@ -184,14 +186,250 @@ class WriteNote{
 
     }
 
-    loadData(data){
-        this.notearea.innerHTML = data;
+    unloadType(){
+        this.typeLoaded = false;
+        const workspaces = this.writenote.getElementsByClassName("workspace");
+        for (let i = 0; i < workspaces.length; i++) {
+            const element = workspaces[i];
+            element.remove();
+        }
     }
 
-    unloadData(){
-        return this.notearea.innerHTML;
+    loadData(data, type){
+        const parsedType = arguments[1].toLowerCase();
+        if(this.typeLoaded == true){
+            this.unloadType();
+        }
+        if(parsedType == "presentation"){
+            this.loadPresentation(data);
+        }
+        if(parsedType == "note"){
+            this.notearea.innerHTML = data;
+        }
+        else{
+            this.typeLoaded = true;
+        }
     }
+
+    unloadData(type){
+        if(type == "note"){
+            return this.notearea.innerHTML;
+        }
+    }
+
+    // Workspaces
+
+    present(){
+        this.workspaceData.currentSlide = 1;
+        this.workspaceData.changeSlide = function(i) {
+            that.workspaceData.currentSlide = i;
+            viewport.style.backgroundImage = `url(${getURL(i)})`;
+        }
+
+        var that = this;
+        function nextSlide(){
+            that.workspaceData.changeSlide(that.workspaceData.currentSlide + 1);
+        }
+        function previousSlide(){
+            that.workspaceData.changeSlide(that.workspaceData.currentSlide - 1);
+        }
+
+        var docElm = document.documentElement;
+        if (docElm.requestFullscreen) {
+            docElm.requestFullscreen();
+        } else if (docElm.mozRequestFullScreen) {
+            docElm.mozRequestFullScreen();
+        } else if (docElm.webkitRequestFullScreen) {
+            docElm.webkitRequestFullScreen();
+        } else if (docElm.msRequestFullscreen) {
+            docElm.msRequestFullscreen();
+        }
+
+        const viewport = document.createElement("div")
+        viewport.classList.add("presentViewport");
+        function getURL(i){
+            return `./assets/ui/presentTemp/${i}.png`;
+        }
+
+
+        viewport.style.backgroundImage = `url(${getURL(1)})`;
+        app.appendChild(viewport);
+
+        document.addEventListener("keydown", function(e){
+            if(e.key == "Escape"){
+                viewport.remove();
+            }
+        });
+        document.addEventListener("fullscreenchange", () => {
+            if(!document.fullscreenElement){
+                viewport.remove();
+            }
+        });
+        viewport.addEventListener("click", nextSlide);
+    }
+
     
+    loadPresentation(data){
+        const presentationLayer = document.createElement("div");
+        presentationLayer.classList.add("workspace");
+        presentationLayer.classList.add("presentation");
+        this.writenote.appendChild(presentationLayer);
+
+        const slidesSide = document.createElement("div");
+        slidesSide.classList.add("slidesSide");
+        presentationLayer.appendChild(slidesSide);
+
+        var that = this;
+
+        this.workspaceData.slidesCount = 0;
+        this.workspaceData.currentSlide = 0;
+
+        const slideButtons = [];
+
+        function addSlide(imageId, text){
+            that.workspaceData.slidesCount++;
+        }
+
+        function newSlide(){
+            that.workspaceData.slidesCount++;
+            var slideButton = document.createElement("div");
+            slideButton.classList.add("btn");
+            slidesSide.insertBefore(slideButton, createSlideBtn)
+
+            slideButtons.push(slideButton);
+        }
+        
+        if(data!=""){
+
+        }
+
+        const createSlideBtn = document.createElement("div");
+        createSlideBtn.classList.add("btn");
+        createSlideBtn.innerHTML = `<i>add</i> ${locale.add_slide}`;
+        ButtonEvent(createSlideBtn, newSlide);
+        slidesSide.appendChild(createSlideBtn);
+
+        
+        const viewportContainer = document.createElement("div");
+        const viewport = document.createElement("div");
+        viewportContainer.appendChild(viewport);
+        viewportContainer.classList.add("viewport");
+        presentationLayer.appendChild(viewportContainer);
+        
+        
+        // viewport.addEventListener("drop", function(e){
+        //     console.log("im triggered");
+        //     var files = e.dataTransfer.files;
+        //     if(files.length!=0){
+        //         e.stopPropagation();
+        //         e.preventDefault();
+        //     }
+        //     for (let i = 0; i < files.length; i++) {
+        //         const file = files[i];
+        //         if(file.type.startsWith("image/")){
+        //             that.insertImage(file)
+        //             continue
+        //         }
+        //         if(file.type.startsWith("audio/")){
+        //             that.insertAudio(file)
+        //             continue
+        //         }
+        //         that.insertFile(file)
+        //     }
+        // })
+
+        for (let i = 1; i <= 7; i++) {
+            const imgURL = `./assets/ui/presentTemp/${i}.png`;
+
+            var slideButton = document.createElement("div");
+            slideButton.classList.add("btn");
+            slideButton.style.backgroundImage = `url(${imgURL})`;
+            
+            slidesSide.insertBefore(slideButton, createSlideBtn);
+
+            const buttonNow = slideButton;
+
+            ButtonEvent(slideButton, () => {
+                var lastSelected = slidesSide.getElementsByClassName("active");
+                for (let i = 0; i < lastSelected.length; i++) {
+                    const element = lastSelected[i];
+                    element.classList.remove("active");
+                }
+                buttonNow.classList.add("active");
+                view(i);
+            });
+            
+            this.workspaceData.slidesCount++;
+        }
+        this.workspaceData.currentSlide = 1;
+
+        function view(content){
+            if(content == "noimage"){
+                viewport.textContent = "Drop image here";
+            }
+            else{
+                const url = `./assets/ui/presentTemp/${content}.png`;
+                viewport.innerHTML = `<img src="${url}">`;
+            }
+        }
+
+        view(1);
+        slidesSide.children[0].classList.add("active");
+    }
+
+    loadPresentationRemote(data){
+        const presentationRemoteElement = document.createElement("div");
+        presentationRemoteElement.classList.add("presentationRemote");
+        this.writenote.appendChild(presentationRemoteElement);
+        
+
+        const presentBtn = document.createElement("div");
+        presentBtn.classList.add("present");
+        presentationRemoteElement.appendChild(presentBtn);
+        const presentingOn = document.createElement("div");
+        presentingOn.textContent = `${locale.presenting_on} ${getOS(data.presentingDevice)}`;
+        presentationRemoteElement.appendChild(presentingOn);
+        const slides = document.createElement("div");
+        function slideCounter(){
+            slides.innerHTML = `<span>Slide ${data.currentSlide}</span>/<span>${data.totalSlides}</span>`;
+        }
+        slideCounter();
+        presentationRemoteElement.appendChild(slides);
+
+        function changeSlide(i){
+            slideCounter();
+            presentationAction({
+                type: "changeSlide",
+                device: data.presentingDevice,
+                data: i,
+            });
+        }
+
+        function nextSlideFunc(){
+            data.currentSlide++;
+            changeSlide(data.currentSlide);
+        }
+        function previousSlideFunc(){
+            data.currentSlide--;
+            changeSlide(data.currentSlide);
+        }
+
+        const buttons = document.createElement("div");
+        buttons.classList.add("buttons");
+        presentationRemoteElement.appendChild(buttons);
+        const previousSlide = document.createElement("div");
+        previousSlide.classList.add("btn");
+        previousSlide.textContent = locale.previous_slide;
+        ButtonEvent(previousSlide, ()=>{previousSlideFunc()});
+        buttons.appendChild(previousSlide);
+        const nextSlide = document.createElement("div");
+        nextSlide.classList.add("btn");
+        nextSlide.textContent = locale.next_slide;
+        ButtonEvent(nextSlide, ()=>{nextSlideFunc()});
+        buttons.appendChild(nextSlide);
+    }
+
+    // Some functions
 
     insertNode(element){
         var range = window.getSelection().getRangeAt(0)
@@ -524,6 +762,69 @@ class WriteNote{
             }
         }
     }
+
+    getSelectionStyles(){
+        return {
+            "isBold" : isSelectionEl("b"),
+            "isItalic" : isSelectionEl("i"),
+            "isUnderlined" : isSelectionEl("u"),
+            "isStrikeThrough" : isSelectionEl("strike")
+        }
+    }
+
+    isSelectionEl(el){
+        var sel;
+        if (window.getSelection){
+            sel = window.getSelection(); 
+        }
+        else if (document.getSelection){
+            sel = document.getSelection(); 
+        }
+    
+        var raw_html = getSelectionAsHtml();
+    
+        if(raw_html==="") return false;
+    
+        var tempDiv = document.createElement('div')
+        tempDiv.innerHTML = raw_html
+    
+        var el_nodes = []
+        for (var node of tempDiv.childNodes){
+            var tags = [node.nodeName.toLowerCase()]
+            if(tags.includes("#text")){
+            for (let i = 0; i < 4; i++){
+                    var tagName = getParentNode(sel.anchorNode, i+1).nodeName.toLowerCase()
+                    el_nodes.push(tagName)
+                }
+            }
+        }
+    
+        if(el_nodes.includes(el)){
+            return (true)
+        }
+        return false
+    }
+
+    getSelectionAsHtml() {
+        var html = "";
+        if(typeof window.getSelection != "undefined"){
+            var sel = window.getSelection();
+            if (sel.rangeCount) {
+                var container = document.createElement("div");
+                for (var i = 0, len = sel.rangeCount; i < len; ++i){
+                    container.appendChild(sel.getRangeAt(i).cloneContents());
+                }
+                html = container.innerHTML;
+            }
+        }else if (typeof document.selection != "undefined"){
+            if (document.selection.type == "Text"){
+                html = document.selection.createRange().htmlText;
+            }
+        }
+        return html;
+    }
+
+    
 
     readFromSerialPort(){
         // https://developer.mozilla.org/en-US/docs/Web/API/SerialPort
@@ -985,6 +1286,7 @@ class WriteNote{
         }
     }
 
+    // This is really stupid, since now I can't reapply the function to existing links upon loading a note
     insertLink(url){ // if a link is inserted outside this function, either paste or detection, the event handler will not be handlin'
         var parent = this.parent
         var writenote = this.writenote

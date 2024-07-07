@@ -151,6 +151,7 @@ mselect{
     user-select: none;
     cursor: pointer;
     display: inline-block;
+    color: #eee;
     background: #222;
     border: 1px solid #333;
     padding: 8px;

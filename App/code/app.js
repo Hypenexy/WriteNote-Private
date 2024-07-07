@@ -179,7 +179,8 @@ function createSelect(defaultOption, isPlaceholder, usingNames){
             search.addEventListener("input", searchEvent)
             contextMenu.appendChild(search)
             options.forEach(value => {
-                var element = document.createElement("p")
+                var element = document.createElement("div");
+                element.classList.add("btn");
                 element.addEventListener("click", function(){
                     if(action){
                         if(usingNames){
@@ -247,7 +248,7 @@ function showContext(){
     }
 
     contextMenu = document.createElement("div")
-    contextMenu.classList.add("contextmenu")
+    contextMenu.classList.add("contextMenu")
     contextMenu.classList.add("transition")
 
     function show(){

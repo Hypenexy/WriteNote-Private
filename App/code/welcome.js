@@ -46,12 +46,14 @@ function loadWelcome(responseData){
     const userHalf = document.createElement("div");
     userHalf.classList.add("userHalf");
     if(responseData.user.Banner){
-        userHalf.innerHTML = "<div style='background-image: url(\""+imageServer+"?i="+responseData.user.Banner+"\")'>"
+        userHalf.innerHTML = "<div class='banner' style='background-image: url(\""+imageServer+"?i="+responseData.user.Banner+"\")'>"
     }
-    if(responseData.user.Avatar){
-        userHalf.innerHTML += "<img src='"+imageServer+"?i="+responseData.user.Avatar+"'>";
-    }
-    userHalf.innerHTML += "<p>"+responseData.user.Username+"</p>";
+    
+    userHalf.innerHTML += `<div class='justUser'><img src='${getUserPfpURL()}'> <p>${responseData.user.Username}</p></div>`;
+    
+    const justUser = userHalf.getElementsByClassName("justUser")[0];
+    attachTooltip(justUser, locale.view_profile);
+
     welcome.appendChild(userHalf);
 
     function WeatherStyled(info){ // reconsider these 💫 cute names ✨
@@ -989,14 +991,31 @@ function unloggedWelcome(user){
             
             const submitbtn = createAppendElement("btn", form);
             submitbtn.textContent = locale.sign_in;
-            ButtonEvent(submitbtn, async function(){
+            ButtonEvent(submitbtn, submit);
+
+            function submitOnEnter(e){
+                if(e.key == "Enter"){
+                    submit();
+                }
+            }
+
+            usernameInput.addEventListener("keydown", submitOnEnter);
+            passwordInput.addEventListener("keydown", submitOnEnter);
+
+            async function submit(){
                 var anyEmpty = false;
                 if(isEmpty(usernameInput.value)){
                     addWarningUsername("empty");
+                    anyEmpty = true;
                 }
 
                 if(isEmpty(passwordInput.value)){
                     addWarningPassword("empty");
+                    anyEmpty = true;
+                }
+
+                if(anyEmpty == true){
+                    return;
                 }
 
                 const sentData = {
@@ -1028,7 +1047,7 @@ function unloggedWelcome(user){
                     }
                 }
                 console.log(responseData);
-            });
+            }
     
             const ifnew = createAppendElement("ifnew", form);
             ifnew.textContent = locale.if_new;
@@ -1121,11 +1140,12 @@ function unloggedWelcome(user){
         });
     });
     socket.on("qrcode", (data) => {
-        console.log(data);
-        console.log("logged in!!!!!");
-        WriteNoteLogin({
-            refetch: true,
-            user: {sessionId: data}}
-        );
+        if(data == "success"){
+            console.log("logged in!!!!!");
+            WriteNoteLogin({
+                refetch: true,
+                user: {sessionId: data}}
+            );
+        }
     });
 }

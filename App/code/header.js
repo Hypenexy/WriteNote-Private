@@ -98,10 +98,44 @@ function showSubHeader(type){
         const italic = subHeaderButton("format_italic", "italic");
         const underline = subHeaderButton("format_underline", "underline");
         const strikethrough = subHeaderButton("format_strikethrough", "strikethrough");
-        const hideMenu = subHeaderButton("expand_less", "hide_subheader");
-        hideMenu.classList.add("hideMenu");
-        ButtonEvent(hideMenu, toggleSubHeader);
     }
+
+    if(type == "presentation"){
+        const present = document.createElement("div");
+        present.classList.add("btn", "submit");
+        present.textContent = locale.present;
+        ButtonEvent(present,
+            function(){
+                writenote[activeInstanceWN].present();
+            } 
+        );
+        subHeader.appendChild(present);
+
+        // subHeaderButton("phonelink_ring", "select_device_remote_control");
+        var selectedDevice = locale.none;
+        var selectedDeviceName = locale.none;
+        if(openNotes[activeNID] && openNotes[activeNID].remoteDevice){
+            selectedDevice = openNotes[activeNID].remoteDevice
+            var deviceInfo = devicesList[selectedDevice];
+            selectedDeviceName = `${deviceInfo.OS.name} ${deviceInfo.OS.version}`;
+        }
+
+        const deviceSelector = createSelect(selectedDevice, null, selectedDeviceName);
+
+        var devicesIds = Object.keys(devicesList);
+        for (let i = 0; i < devicesIds.length; i++) {
+            const element = devicesIds[i];
+            deviceSelector.addOption(element, `${devicesList[element].device.OS.name} ${devicesList[element].device.OS.version}`)
+        }
+
+        deviceSelector.addAction(selectRemote);
+
+        subHeader.appendChild(deviceSelector);
+    }
+
+    const hideMenu = subHeaderButton("expand_less", "hide_subheader");
+    hideMenu.classList.add("hideMenu");
+    ButtonEvent(hideMenu, toggleSubHeader);
 }
 
 function toggleSubHeader(){

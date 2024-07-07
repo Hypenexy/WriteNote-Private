@@ -455,3 +455,75 @@ writenote .filepreview::-webkit-scrollbar-thumb{
 writenote .filepreview::selection{
     background: #555;
 }
+
+writenote .presentation{
+    display: flex;
+
+    background-color: #111;
+    z-index: 5;
+    position: absolute;
+    top: 0;
+    border: 0;
+    border-radius: 0;
+    cursor: auto;
+    resize: none;
+    outline: none;
+    color: #fff;
+    padding: 8px 4px;
+    padding-top: 123px;
+    width: 100%;
+    height: 100%;
+    transition: 0.2s;
+}
+
+writenote .presentation .slidesSide{
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    text-align: center;
+    min-width: 150px;
+    padding: 15px;
+}
+writenote .presentation .slidesSide .btn{
+    aspect-ratio: 16 / 9;
+    background-size: cover;
+    background-position: center;
+    /* min-height: 5em; */
+    min-height: 68px;
+    /* height: 68px; */
+    padding: 24px;
+    padding-left: 36px;
+}
+writenote .presentation .slidesSide .btn.active{
+    border: 1px solid #65baff;
+}
+writenote .presentation .viewport{
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 15px;
+}
+writenote .presentation .viewport div{
+    aspect-ratio: 16 / 9;
+    background: #000;
+    flex: 1;
+}
+writenote .presentation .viewport div img{
+    width: 100%;
+    height: 100%;
+}
+
+.presentViewport{
+    position: absolute;
+    z-index: 100;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-size: cover;
+    background-position: center;
+}

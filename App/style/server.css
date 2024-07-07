@@ -1,0 +1,63 @@
+.shutdown div.menu{
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+
+    /* background-color: #121212; */
+    background-color: #ccc;
+    /* color: #eee; */
+    box-shadow: 0 0 4px 2px #111111cc;
+
+    padding: 24px;
+    border-radius: 12px;
+    min-width: 310px;
+    width: 100%;
+    height: 100%;
+    
+    transition: .3s;
+}
+
+.shutdown:has(.wait){
+    color: #bbb;
+}
+.shutdown div.menu.wait{
+    justify-content: center;
+
+    background-color: #222;
+    color: #eee;
+
+    min-width: 400px;
+    min-height: 200px;
+}
+
+.shutdown div.menu .status span::before{
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    content: '•';
+    left: 0;
+}
+.shutdown div.menu .status span.offline::before{
+    color: #F35959;
+}
+.shutdown div.menu .status span.online::before{
+    color: #58da97;
+}
+
+.shutdown div.menu .status.online .offline{
+    display: none;
+}
+.shutdown div.menu .status.offline .online{
+    display: none;
+}
+
+.shutdown div.menu .status span{
+    position: relative;
+    padding-left: 12px;
+}
+
+.shutdown .text{
+    text-align: left;
+    padding: 5px 0;
+}

@@ -172,11 +172,42 @@ function WriteNoteLogin(responseData){
         updateDeviceList(data);
     });
     socket.on("deviceAction", deviceAction);
+    socket.on("serverShutdown", serverShutdown);
+    socket.on("presentationRemote", presentationRemote);
 }
 
 connectMidelight();
 
+function serverShutdown(){
+    textPopup(locale.server_shutting_down);
 
+    function wait(){
+        element.innerHTML = "";
+        element.classList.add("wait");
+        const status = createAppendElement("status", element);
+        status.innerHTML = `<p>Server status <span class='offline'>${locale.offline}</span><span class='online'>${locale.online}</span></p>`;
+        attachOnlineStatus(status);
+    }
+    
+    const element = document.createElement("div");
+    element.classList.add("menu")
+    const text = createAppendElement("text", element);
+    text.textContent = locale.server_shutting_down;
+
+    const saveWait = createAppendElement("btn", element);
+    saveWait.textContent = locale.save_wait;
+    ButtonEvent(saveWait, () => {wait();});
+
+    const saveExit = createAppendElement("btn", element);
+    saveExit.textContent = locale.save_exit;
+    ButtonEvent(saveWait, () => {wait();});
+
+    const dontSaveWait = createAppendElement("btn", element);
+    dontSaveWait.textContent = locale.dont_save_wait;
+    ButtonEvent(saveWait, () => {wait();});
+
+    CreateModal(element, "shutdown");
+}
 
 var onlineStatusElements = [];
 

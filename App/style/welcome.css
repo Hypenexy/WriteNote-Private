@@ -11,6 +11,7 @@
     max-width: 1200px;
     max-height: 700px;
     background: #111;
+    /* background: #14151d; Consider colorfulnes*/
     border-radius: 12px;
     padding: 12px;
 }
@@ -141,20 +142,34 @@
     background: linear-gradient(90deg, #111, transparent);
 }
 
-.welcome .userHalf img{
+.welcome .userHalf div img{
     vertical-align: middle;
     border: 2px solid #111;
     width: 66px;
     height: 66px;
     border-radius: 50%;
 }
-.welcome .userHalf p{
+.welcome .userHalf div p{
     display: inline-block;
     vertical-align: middle;
     margin-left: 8px;
 }
+.welcome .userHalf .justUser{
+    cursor: pointer;
+    user-select: none;
 
-.welcome .weatherHalf img, .welcome .userHalf div{
+    display: inline-block;
+    border-radius: 12px;
+    padding: 8px;
+    margin: -8px;
+    margin-left: 0;
+    transition: .2s;
+}
+.welcome .userHalf .justUser:hover{
+    background-color: #222;
+}
+
+.welcome .weatherHalf img, .welcome .userHalf div.banner{
     left: 12px;
     z-index: -2;
     position: absolute;
